@@ -84,7 +84,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-12 md:h-14 rounded" />
+              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-16 md:h-20 rounded-lg shadow-md" />
             </motion.a>
 
             {/* Search */}
