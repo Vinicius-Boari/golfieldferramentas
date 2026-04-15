@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Wrench, Shield, Truck, Zap } from "lucide-react";
+import { ArrowRight, Wrench, Shield, Truck, Zap, Package } from "lucide-react";
+import { products } from "@/data/products";
 
 const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -156,7 +157,7 @@ const Hero = () => {
           {[
             { icon: Shield, label: "Qualidade Garantida", desc: "Produtos certificados" },
             { icon: Truck, label: "Envio Nacional", desc: "Para todo o Brasil" },
-            { icon: Wrench, label: "+400 Produtos", desc: "Catálogo completo" },
+            { icon: Package, label: `${products.length} Produtos`, desc: "Catálogo completo" },
           ].map((item, i) => (
             <motion.div
               key={i}
