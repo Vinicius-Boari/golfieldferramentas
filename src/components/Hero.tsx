@@ -292,7 +292,7 @@ const Hero = () => {
             transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
             className="hidden lg:flex items-center justify-center min-h-[420px]"
           >
-            <FloatingToolVisual />
+            <FloatingToolVisual scrollScale={toolScale} />
           </motion.div>
         </div>
 
