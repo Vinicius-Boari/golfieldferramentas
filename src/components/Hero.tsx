@@ -67,13 +67,7 @@ const Hero = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <div className="flex items-center gap-4 mb-6">
-              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-20 md:h-28 rounded-2xl border-2 border-primary/20 shadow-2xl shadow-primary/20 object-contain" />
-              <div className="flex flex-col">
-                <span className="font-display text-3xl md:text-5xl font-bold text-gradient-gold leading-none">GOLFIELD</span>
-                <span className="text-xs md:text-sm text-muted-foreground tracking-[0.3em] uppercase mt-1">Ferramentas Premium</span>
-              </div>
-            </div>
+            <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-24 md:h-36 rounded-2xl border-2 border-primary/20 shadow-2xl shadow-primary/20 object-contain mb-6" />
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
               <motion.span animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity }}>
                 <Wrench size={14} />

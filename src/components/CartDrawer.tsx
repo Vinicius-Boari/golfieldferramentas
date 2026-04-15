@@ -80,11 +80,11 @@ const CartDrawer = () => {
                         </p>
                         <div className="flex items-center gap-2 mt-2">
                           <div className="flex items-center bg-card rounded-lg overflow-hidden border border-border">
-                            <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="p-1.5 hover:bg-muted transition-colors">
+                            <button onClick={() => updateQuantity(item.product.id, Math.max(item.product.minQty, item.quantity - item.product.minQty))} className="p-1.5 hover:bg-muted transition-colors">
                               <Minus size={12} />
                             </button>
                             <span className="w-10 text-center text-xs font-medium">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="p-1.5 hover:bg-muted transition-colors">
+                            <button onClick={() => updateQuantity(item.product.id, item.quantity + item.product.minQty)} className="p-1.5 hover:bg-muted transition-colors">
                               <Plus size={12} />
                             </button>
                           </div>
