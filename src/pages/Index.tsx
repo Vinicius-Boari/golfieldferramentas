@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { CartProvider } from "@/context/CartContext";
 import { products } from "@/data/products";
-import { Sparkles, TrendingUp, Star, Search } from "lucide-react";
+import { Sparkles, TrendingUp, Star, Search, Calendar, Target, Globe, Lightbulb } from "lucide-react";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
