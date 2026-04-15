@@ -67,6 +67,7 @@ const Hero = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
+            <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-24 md:h-32 rounded-xl shadow-lg mb-6" />
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
               <motion.span animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity }}>
                 <Wrench size={14} />
