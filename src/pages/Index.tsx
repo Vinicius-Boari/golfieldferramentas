@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { CartProvider } from "@/context/CartContext";
 import { products } from "@/data/products";
-import { Sparkles, TrendingUp, Star } from "lucide-react";
+import { Sparkles, TrendingUp, Star, Search } from "lucide-react";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -20,6 +20,8 @@ const IndexContent = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("todos");
 
+  const [showAll, setShowAll] = useState(false);
+
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
       const matchesSearch = searchQuery === "" || p.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -27,6 +29,9 @@ const IndexContent = () => {
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, activeCategory]);
+
+  const isHomepage = activeCategory === "todos" && searchQuery === "" && !showAll;
+  const displayProducts = isHomepage ? filteredProducts.slice(0, 20) : filteredProducts;
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -100,6 +105,26 @@ const IndexContent = () => {
             </p>
           </motion.div>
 
+          {/* Search bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15, duration: 0.5 }}
+            className="max-w-xl mx-auto mb-8"
+          >
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+              <input
+                type="text"
+                placeholder="Buscar produto..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-secondary/60 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground placeholder:text-muted-foreground transition-all duration-300"
+              />
+            </div>
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -111,7 +136,7 @@ const IndexContent = () => {
 
           <div className="mt-10">
             <AnimatePresence mode="wait">
-              {filteredProducts.length === 0 ? (
+              {displayProducts.length === 0 ? (
                 <motion.div
                   key="empty"
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -131,12 +156,30 @@ const IndexContent = () => {
                   transition={{ duration: 0.3 }}
                   className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                 >
-                  {filteredProducts.map((product, i) => (
+                  {displayProducts.map((product, i) => (
                     <ProductCard key={product.id} product={product} index={i} />
                   ))}
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* Show all button */}
+            {isHomepage && filteredProducts.length > 20 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center mt-10"
+              >
+                <motion.button
+                  onClick={() => setShowAll(true)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-3 rounded-2xl bg-primary text-primary-foreground font-semibold"
+                >
+                  Ver todos os {filteredProducts.length} produtos
+                </motion.button>
+              </motion.div>
+            )}
           </div>
 
           <motion.p
