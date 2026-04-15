@@ -35,7 +35,7 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
           <motion.button
             key={cat.id}
             whileTap={{ scale: 0.95 }}
-            onClick={() => onCategoryChange(cat.id)}
+            onClick={() => onCategoryChange(String(cat.id))}
             className={`category-chip ${activeCategory === cat.id ? "active" : ""}`}
           >
             {cat.label}
