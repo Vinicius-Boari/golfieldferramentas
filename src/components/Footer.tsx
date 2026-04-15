@@ -41,7 +41,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Brand */}
           <motion.div variants={itemVariants} className="md:col-span-2">
-            <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-16 rounded-xl border-2 border-primary/20 shadow-lg shadow-primary/10 object-contain mb-4" />
+            <div className="relative inline-block mb-6">
+              <div className="absolute -inset-3 bg-gradient-to-r from-primary/10 via-gold/10 to-primary/10 rounded-2xl blur-xl" />
+              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="relative h-20 rounded-xl border border-primary/10 shadow-xl shadow-primary/10 object-contain bg-card/30 p-1.5" />
+            </div>
             <p className="text-muted-foreground leading-relaxed max-w-md mb-6">
               Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado. Sua satisfação é nossa prioridade.
             </p>
