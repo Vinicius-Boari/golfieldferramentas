@@ -40,27 +40,27 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="bg-card/80 border-b border-border/50 py-2"
+        className="bg-card/80 border-b border-border/50 py-2 text-slate-600"
       >
         <div className="container mx-auto px-4 flex items-center justify-between text-muted-foreground text-xs">
           <div className="flex items-center gap-4">
             <a href="https://wa.me/5511959409051" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-foreground transition-colors">
               <WhatsAppIcon size={12} />
-              <span>(11) 95940-9051</span>
+              <span className="text-primary-foreground">(11) 95940-9051</span>
             </a>
-            <span className="hidden sm:inline text-border">|</span>
+            <span className="hidden sm:inline border-primary-foreground text-primary-foreground">|</span>
             <a href="mailto:paula.profield@hotmail.com" className="hidden sm:flex items-center gap-1.5 hover:text-foreground transition-colors">
-              <Mail size={12} />
-              <span>paula.profield@hotmail.com</span>
+              <Mail size={12} className="text-primary-foreground" />
+              <span className="text-primary-foreground">paula.profield@hotmail.com</span>
             </a>
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <span>Seg a Sex 7h às 18h</span>
-            <span className="text-border">|</span>
+            <span className="text-primary-foreground">Seg a Sex 7h às 18h</span>
+            <span className="border-primary-foreground text-primary-foreground">|</span>
             <a href="https://www.instagram.com/golfield.ferramentas/" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-foreground transition-colors">
-              <InstagramIcon size={12} />
-              <span>@golfield.ferramentas</span>
+              <InstagramIcon size={12} className="text-primary-foreground" />
+              <span className="text-primary-foreground">@golfield.ferramentas</span>
             </a>
           </div>
         </div>
@@ -135,7 +135,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 whileTap={{ scale: 0.95 }}
                 className="relative p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
               >
-                <ShoppingCart size={20} />
+                <ShoppingCart size={20} className="text-primary-foreground" />
                 {totalItems > 0 && (
                   <motion.span
                     initial={{ scale: 0 }}
