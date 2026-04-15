@@ -165,12 +165,12 @@
   .search-input {
     @apply w-full px-5 py-3.5 rounded-xl text-foreground placeholder:text-muted-foreground transition-all duration-300;
     background: hsl(220, 15%, 8%);
-    border: 1px solid hsl(220, 12%, 16%);
+    border: 1.5px solid hsl(0, 78%, 52%, 0.4);
   }
   .search-input:focus {
     outline: none;
-    border-color: hsl(0, 78%, 52%, 0.5);
-    box-shadow: 0 0 0 3px hsl(0, 78%, 52%, 0.1);
+    border-color: hsl(0, 78%, 52%, 0.8);
+    box-shadow: 0 0 0 3px hsl(0, 78%, 52%, 0.12);
     background: hsl(220, 15%, 9%);
   }
 

@@ -11,11 +11,9 @@ const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
 const Hero = () => {
   const { scrollY } = useScroll();
   const parallaxY = useTransform(scrollY, [0, 600], [0, 120]);
-  const opacity = useTransform(scrollY, [0, 500], [1, 0]);
-  const scale = useTransform(scrollY, [0, 500], [1, 0.95]);
 
   return (
-    <motion.section style={{ opacity, scale }} className="relative overflow-hidden py-24 md:py-36 lg:py-44">
+    <section className="relative overflow-hidden py-24 md:py-36 lg:py-44">
       {/* Layered background */}
       <div className="absolute inset-0 bg-background" />
       
