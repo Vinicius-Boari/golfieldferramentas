@@ -297,14 +297,21 @@ const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-              className="mb-10"
+              className="mb-12"
             >
-              <div className="relative inline-block">
-                <div className="absolute -inset-6 bg-primary/5 rounded-3xl blur-3xl" />
+              <div className="relative inline-block group">
+                {/* Outer glow */}
+                <motion.div
+                  animate={{ opacity: [0.08, 0.18, 0.08], scale: [1, 1.05, 1] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute -inset-8 bg-gradient-to-br from-primary/15 via-gold/10 to-primary/15 rounded-[2rem] blur-[40px]"
+                />
+                {/* Subtle border glow */}
+                <div className="absolute -inset-[2px] bg-gradient-to-br from-primary/20 via-transparent to-gold/15 rounded-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
                 <img
                   src="/images/golfield-logo.jpeg"
                   alt="Golfield"
-                  className="relative h-20 md:h-28 rounded-2xl object-contain shadow-2xl shadow-background/50"
+                  className="relative h-24 md:h-36 lg:h-40 rounded-2xl object-contain shadow-2xl shadow-primary/10 bg-card/40 p-2 backdrop-blur-sm transition-transform duration-500 group-hover:scale-[1.03]"
                 />
               </div>
             </motion.div>
