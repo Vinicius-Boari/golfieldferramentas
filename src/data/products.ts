@@ -46,7 +46,7 @@ export const products: Product[] = [
   { id: 2, name: "ALICATE BOMBA D'AGUA 10PL", price: 26.43, category: "alicates", image: `${IMG}Img_ftr_rp_401-300x300.JPG`, minQty: 6 },
   { id: 3, name: "ALICATE BOMBA D'AGUA 12\"", price: 37.08, category: "alicates", image: `${IMG}Img_ftr_rp_501-300x300.JPG`, minQty: 6 },
   { id: 4, name: "ALICATE UNIVERSAL 8\"", price: 16.50, category: "alicates", image: `${IMG}Img_ftr_rp_52701-300x300.PNG`, minQty: 12 },
-  { id: 5, name: "ALICATE DE PRESSÃO CROMADO 10PL", price: 20.80, category: "alicates", image: `${IMG}Img_ftr_rp_52701-300x300.PNG`, minQty: 6 },
+  { id: 5, name: "ALICATE DE PRESSÃO CROMADO 10PL", price: 20.80, category: "alicates", image: "/images/alicate-pressao.png", minQty: 6 },
 
   // === APLICADORES ===
   { id: 6, name: "APLICADOR DE SILICONE 12\" 580G", price: 37.08, category: "aplicadores", image: `${IMG}Img_ftr_rp_56201-300x300.PNG`, minQty: 10 },
