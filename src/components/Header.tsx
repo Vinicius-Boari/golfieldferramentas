@@ -49,9 +49,9 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               <span className="font-medium group-hover:underline">(11) 95940-9051</span>
             </a>
             <span className="hidden sm:inline opacity-50">|</span>
-            <a href="mailto:acrossls@hotmail.com" className="hidden sm:flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+            <a href="mailto:paula.profield@hotmail.com" className="hidden sm:flex items-center gap-1.5 hover:opacity-80 transition-opacity">
               <Mail size={14} />
-              <span>acrossls@hotmail.com</span>
+              <span>paula.profield@hotmail.com</span>
             </a>
           </div>
           <div className="hidden md:flex items-center gap-4">
@@ -188,8 +188,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                   />
                 </div>
                 <div className="flex flex-col gap-2 text-sm">
-                  <a href="mailto:acrossls@hotmail.com" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2">
-                    <Mail size={14} /> acrossls@hotmail.com
+                  <a href="mailto:paula.profield@hotmail.com" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2">
+                    <Mail size={14} /> paula.profield@hotmail.com
                   </a>
                   <a href="https://www.instagram.com/golfield.ferramentas/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2">
                     <InstagramIcon size={14} /> @golfield.ferramentas

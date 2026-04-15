@@ -84,9 +84,9 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="mailto:acrossls@hotmail.com" className="flex items-center gap-2 hover:text-foreground transition-colors group">
+                <a href="mailto:paula.profield@hotmail.com" className="flex items-center gap-2 hover:text-foreground transition-colors group">
                   <Mail size={14} className="text-primary flex-shrink-0 group-hover:scale-110 transition-transform" />
-                  acrossls@hotmail.com
+                  paula.profield@hotmail.com
                 </a>
               </li>
               <li className="flex items-start gap-2">
