@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { ShoppingCart, Plus, Minus, Check } from "lucide-react";
 import type { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
@@ -14,6 +14,21 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
 
+  // 3D tilt effect
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useTransform(y, [-100, 100], [8, -8]);
+  const rotateY = useTransform(x, [-100, 100], [-8, 8]);
+  const springRotateX = useSpring(rotateX, { stiffness: 300, damping: 30 });
+  const springRotateY = useSpring(rotateY, { stiffness: 300, damping: 30 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    x.set(e.clientX - rect.left - rect.width / 2);
+    y.set(e.clientY - rect.top - rect.height / 2);
+  };
+  const handleMouseLeave = () => { x.set(0); y.set(0); };
+
   const handleAdd = () => {
     addItem(product, qty);
     setAdded(true);
@@ -22,23 +37,31 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 40, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.5, delay: (index % 4) * 0.06, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative rounded-2xl border border-border/60 bg-card overflow-hidden transition-all duration-500 hover:border-border hover:shadow-2xl hover:shadow-primary/5"
+      transition={{ duration: 0.6, delay: (index % 4) * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      style={{ rotateX: springRotateX, rotateY: springRotateY, transformPerspective: 800 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="group relative rounded-2xl border border-border/60 bg-card overflow-hidden transition-all duration-500 hover:border-primary/30 hover:shadow-[0_25px_60px_-15px_hsl(0,78%,52%,0.12)]"
     >
-      {/* Hover gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/0 group-hover:from-primary/[0.02] group-hover:to-gold/[0.02] transition-all duration-700 z-0" />
+      {/* Animated gradient overlay on hover */}
+      <motion.div
+        className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+        style={{
+          background: "radial-gradient(ellipse at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(0,78%,52%,0.06), transparent 70%)"
+        }}
+      />
 
       {/* Image */}
       <div className="relative aspect-square bg-secondary/20 flex items-center justify-center overflow-hidden">
         {product.badge && (
           <motion.span
-            initial={{ x: -20, opacity: 0 }}
+            initial={{ x: -30, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className={`absolute top-3 left-3 px-3 py-1 rounded-lg text-[11px] font-semibold z-10 ${
               product.badge === "Novidade"
                 ? "bg-primary text-primary-foreground"
@@ -52,8 +75,20 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         <motion.img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-contain p-6 transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-contain p-6"
           loading="lazy"
+          whileHover={{ scale: 1.12, rotate: 2 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        />
+
+        {/* Hover shine sweep */}
+        <motion.div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background: "linear-gradient(105deg, transparent 40%, hsl(0,0%,100%,0.04) 50%, transparent 60%)"
+          }}
+          animate={{ x: ["-100%", "200%"] }}
+          transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
@@ -61,18 +96,24 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
 
       {/* Info */}
       <div className="relative z-10 p-5">
-        <h3 className="text-sm font-semibold leading-tight mb-1.5 line-clamp-2 min-h-[2.5rem] text-foreground/90 group-hover:text-foreground transition-colors duration-300">
+        <motion.h3
+          className="text-sm font-semibold leading-tight mb-1.5 line-clamp-2 min-h-[2.5rem] text-foreground/90 group-hover:text-foreground transition-colors duration-300"
+        >
           {product.name}
-        </h3>
+        </motion.h3>
         <p className="text-xs text-muted-foreground mb-4">
           Mín. {product.minQty} un. • Atacado
         </p>
 
         <div className="flex items-end justify-between mb-5">
           <div>
-            <p className="text-2xl font-bold text-primary tracking-tight">
+            <motion.p
+              className="text-2xl font-bold text-primary tracking-tight"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            >
               R$ {product.price.toFixed(2).replace('.', ',')}
-            </p>
+            </motion.p>
             <p className="text-[10px] text-muted-foreground mt-0.5">por unidade</p>
           </div>
         </div>
@@ -81,7 +122,8 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         <div className="flex items-center gap-2">
           <div className="flex items-center bg-secondary/60 rounded-lg overflow-hidden border border-border/40">
             <motion.button
-              whileTap={{ scale: 0.8 }}
+              whileTap={{ scale: 0.75 }}
+              whileHover={{ backgroundColor: "hsl(220,15%,15%)" }}
               onClick={() => setQty(Math.max(product.minQty, qty - product.minQty))}
               className="p-2 hover:bg-secondary transition-colors"
             >
@@ -94,7 +136,8 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
               className="w-12 text-center bg-transparent text-sm font-medium outline-none"
             />
             <motion.button
-              whileTap={{ scale: 0.8 }}
+              whileTap={{ scale: 0.75 }}
+              whileHover={{ backgroundColor: "hsl(220,15%,15%)" }}
               onClick={() => setQty(qty + product.minQty)}
               className="p-2 hover:bg-secondary transition-colors"
             >
@@ -103,17 +146,17 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
           </div>
           <motion.button
             onClick={handleAdd}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.97 }}
+            whileHover={{ scale: 1.04, y: -1 }}
+            whileTap={{ scale: 0.95 }}
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-400 ${
               added
-                ? "bg-[hsl(142,70%,45%)] text-primary-foreground"
-                : "bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/20"
+                ? "bg-[hsl(142,70%,45%)] text-primary-foreground shadow-lg shadow-[hsl(142,70%,45%,0.3)]"
+                : "bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/25"
             }`}
           >
             {added ? (
               <>
-                <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
+                <motion.span initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300 }}>
                   <Check size={15} />
                 </motion.span>
                 Adicionado!
