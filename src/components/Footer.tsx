@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, ArrowUpRight } from "lucide-react";
 
 const InstagramIcon = ({ size = 20 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -17,19 +17,19 @@ const WhatsAppIcon = ({ size = 20 }: { size?: number }) => (
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } }
+  visible: { transition: { staggerChildren: 0.08 } }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } }
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }
 };
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border gradient-dark relative overflow-hidden">
-      {/* Decorative glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+    <footer className="relative border-t border-border/50 bg-card/30">
+      {/* Top accent line */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
       <motion.div
         variants={containerVariants}
@@ -38,83 +38,79 @@ const Footer = () => {
         viewport={{ once: true, margin: "-50px" }}
         className="container mx-auto px-4 py-16"
       >
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
           {/* Brand */}
-          <motion.div variants={itemVariants} className="md:col-span-2">
-            <div className="relative inline-block mb-6">
-              <div className="absolute -inset-3 bg-gradient-to-r from-primary/10 via-gold/10 to-primary/10 rounded-2xl blur-xl" />
-              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="relative h-20 rounded-xl border border-primary/10 shadow-xl shadow-primary/10 object-contain bg-card/30 p-1.5" />
-            </div>
-            <p className="text-muted-foreground leading-relaxed max-w-md mb-6">
-              Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado. Sua satisfação é nossa prioridade.
+          <motion.div variants={itemVariants} className="md:col-span-5">
+            <img
+              src="/images/golfield-logo.jpeg"
+              alt="Golfield"
+              className="h-14 rounded-xl object-contain mb-5"
+            />
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-6">
+              Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <motion.a
                 href="https://www.instagram.com/golfield.ferramentas/"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.15, rotate: 5 }}
+                whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="p-3 rounded-xl bg-secondary hover:bg-gradient-to-br hover:from-[hsl(340,80%,50%)] hover:to-[hsl(30,90%,55%)] hover:text-primary-foreground transition-all duration-300"
-                title="Siga-nos no Instagram"
+                className="p-2.5 rounded-xl bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
               >
-                <InstagramIcon size={20} />
+                <InstagramIcon size={18} />
               </motion.a>
               <motion.a
                 href="https://wa.me/5511959409051"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.15, rotate: -5 }}
+                whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="p-3 rounded-xl bg-secondary hover:bg-[hsl(142,70%,45%)] hover:text-primary-foreground transition-all duration-300"
-                title="WhatsApp"
+                className="p-2.5 rounded-xl bg-secondary/60 text-muted-foreground hover:text-[hsl(142,70%,45%)] hover:bg-secondary transition-all duration-300"
               >
-                <WhatsAppIcon size={20} />
+                <WhatsAppIcon size={18} />
               </motion.a>
             </div>
           </motion.div>
 
           {/* Contato */}
-          <motion.div variants={itemVariants}>
-            <h3 className="font-display text-lg font-bold mb-4">Contato</h3>
-            <ul className="space-y-3 text-sm text-muted-foreground">
+          <motion.div variants={itemVariants} className="md:col-span-4">
+            <h3 className="text-sm font-semibold tracking-wider uppercase text-muted-foreground mb-5">Contato</h3>
+            <ul className="space-y-3.5 text-sm">
               <li>
-                <a href="https://wa.me/5511959409051" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-foreground transition-colors group">
-                  <Phone size={14} className="text-primary flex-shrink-0 group-hover:scale-110 transition-transform" />
+                <a href="https://wa.me/5511959409051" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors group">
+                  <Phone size={14} className="text-primary/60 group-hover:text-primary transition-colors" />
                   (11) 95940-9051
                 </a>
               </li>
               <li>
-                <a href="mailto:paula.profield@hotmail.com" className="flex items-center gap-2 hover:text-foreground transition-colors group">
-                  <Mail size={14} className="text-primary flex-shrink-0 group-hover:scale-110 transition-transform" />
+                <a href="mailto:paula.profield@hotmail.com" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors group">
+                  <Mail size={14} className="text-primary/60 group-hover:text-primary transition-colors" />
                   paula.profield@hotmail.com
                 </a>
               </li>
-              <li className="flex items-start gap-2">
-                <MapPin size={14} className="text-primary flex-shrink-0 mt-0.5" />
+              <li className="flex items-start gap-3 text-muted-foreground">
+                <MapPin size={14} className="text-primary/60 flex-shrink-0 mt-0.5" />
                 <span>São Paulo - SP, Brasil</span>
               </li>
-              <li className="flex items-center gap-2">
-                <Clock size={14} className="text-primary flex-shrink-0" />
+              <li className="flex items-center gap-3 text-muted-foreground">
+                <Clock size={14} className="text-primary/60 flex-shrink-0" />
                 <span>Seg a Sex: 7h às 18h</span>
               </li>
             </ul>
           </motion.div>
 
           {/* Categorias */}
-          <motion.div variants={itemVariants}>
-            <h3 className="font-display text-lg font-bold mb-4">Categorias</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              {["Alicates", "Brocas", "Discos", "Chaves", "Trenas", "Torneiras", "Martelos", "Serras"].map((cat, i) => (
-                <motion.li
-                  key={cat}
-                  whileHover={{ x: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <a href="#produtos" className="hover:text-primary transition-colors inline-flex items-center gap-1">
-                    <span className="text-primary/40">›</span> {cat}
+          <motion.div variants={itemVariants} className="md:col-span-3">
+            <h3 className="text-sm font-semibold tracking-wider uppercase text-muted-foreground mb-5">Categorias</h3>
+            <ul className="space-y-2.5 text-sm">
+              {["Alicates", "Brocas", "Discos", "Chaves", "Trenas", "Torneiras", "Martelos", "Serras"].map((cat) => (
+                <li key={cat}>
+                  <a href="#produtos" className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors group">
+                    <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
+                    {cat}
                   </a>
-                </motion.li>
+                </li>
               ))}
             </ul>
           </motion.div>
@@ -122,7 +118,7 @@ const Footer = () => {
 
         <motion.div
           variants={itemVariants}
-          className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground"
+          className="border-t border-border/50 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground"
         >
           <p>© {new Date().getFullYear()} Golfield. Todos os direitos reservados.</p>
           <p>Os valores são exclusivos para compras por atacado.</p>
