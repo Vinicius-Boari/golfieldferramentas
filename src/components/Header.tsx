@@ -80,11 +80,12 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             {/* Logo */}
             <motion.a
               href="/"
-              className="flex-shrink-0"
-              whileHover={{ scale: 1.03 }}
+              className="flex-shrink-0 relative group/logo"
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
             >
-              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-14 md:h-16 rounded-xl border-2 border-primary/20 shadow-lg shadow-primary/10 object-contain" />
+              <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 via-gold/20 to-primary/20 rounded-2xl blur-lg opacity-0 group-hover/logo:opacity-100 transition-opacity duration-500" />
+              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="relative h-14 md:h-[4.5rem] rounded-xl border border-primary/10 shadow-xl shadow-primary/5 object-contain bg-card/50 p-1" />
             </motion.a>
 
             {/* Search */}

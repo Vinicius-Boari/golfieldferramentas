@@ -38,7 +38,7 @@ const CartDrawer = () => {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-border">
               <div className="flex items-center gap-3">
-                <ShoppingCart size={22} className="text-primary" />
+                <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-9 rounded-lg object-contain" />
                 <h2 className="font-display text-xl font-bold">Orçamento</h2>
                 <span className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-bold">
                   {totalItems}
