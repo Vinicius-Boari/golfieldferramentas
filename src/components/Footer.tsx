@@ -28,102 +28,10 @@ const itemVariants = {
 const Footer = () => {
   return (
     <footer className="relative border-t border-border/50 bg-card/30">
-      {/* Top accent line */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-50px" }}
-        className="container mx-auto px-4 py-16"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
-          {/* Brand */}
-          <motion.div variants={itemVariants} className="md:col-span-5">
-            <img
-              src="/images/golfield-logo.jpeg"
-              alt="Golfield"
-              className="h-14 rounded-xl object-contain mb-5"
-            />
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-6">
-              Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado.
-            </p>
-            <div className="flex gap-2">
-              <motion.a
-                href="https://www.instagram.com/golfield.ferramentas/"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-2.5 rounded-xl bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
-              >
-                <InstagramIcon size={18} />
-              </motion.a>
-              <motion.a
-                href="https://wa.me/5511959409051"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-2.5 rounded-xl bg-secondary/60 text-muted-foreground hover:text-[hsl(142,70%,45%)] hover:bg-secondary transition-all duration-300"
-              >
-                <WhatsAppIcon size={18} />
-              </motion.a>
-            </div>
-          </motion.div>
-
-          {/* Contato */}
-          <motion.div variants={itemVariants} className="md:col-span-4">
-            <h3 className="text-sm font-semibold tracking-wider uppercase text-muted-foreground mb-5">Contato</h3>
-            <ul className="space-y-3.5 text-sm">
-              <li>
-                <a href="https://wa.me/5511959409051" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors group">
-                  <Phone size={14} className="text-primary/60 group-hover:text-primary transition-colors" />
-                  (11) 95940-9051
-                </a>
-              </li>
-              <li>
-                <a href="mailto:paula.profield@hotmail.com" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors group">
-                  <Mail size={14} className="text-primary/60 group-hover:text-primary transition-colors" />
-                  paula.profield@hotmail.com
-                </a>
-              </li>
-              <li className="flex items-start gap-3 text-muted-foreground">
-                <MapPin size={14} className="text-primary/60 flex-shrink-0 mt-0.5" />
-                <span>São Paulo - SP, Brasil</span>
-              </li>
-              <li className="flex items-center gap-3 text-muted-foreground">
-                <Clock size={14} className="text-primary/60 flex-shrink-0" />
-                <span>Seg a Sex: 7h às 18h</span>
-              </li>
-            </ul>
-          </motion.div>
-
-          {/* Categorias */}
-          <motion.div variants={itemVariants} className="md:col-span-3">
-            <h3 className="text-sm font-semibold tracking-wider uppercase text-muted-foreground mb-5">Categorias</h3>
-            <ul className="space-y-2.5 text-sm">
-              {["Alicates", "Brocas", "Discos", "Chaves", "Trenas", "Torneiras", "Martelos", "Serras"].map((cat) => (
-                <li key={cat}>
-                  <a href="#produtos" className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors group">
-                    <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
-                    {cat}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        </div>
-
-        <motion.div
-          variants={itemVariants}
-          className="border-t border-border/50 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground"
-        >
-          <p>© {new Date().getFullYear()} Golfield. Todos os direitos reservados.</p>
-          <p>Os valores são exclusivos para compras por atacado.</p>
-        </motion.div>
-      </motion.div>
+      <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
+        <p>© {new Date().getFullYear()} Golfield. Todos os direitos reservados.</p>
+        <p>Os valores são exclusivos para compras por atacado.</p>
+      </div>
     </footer>
   );
 };
