@@ -89,16 +89,7 @@ const IndexContent = () => {
             </motion.span>
             <h2 className="font-display text-4xl md:text-6xl font-bold mb-3">
               Nossos{" "}
-              <span className="text-primary relative">
-                Produtos
-                <motion.span
-                  className="absolute -bottom-2 left-0 w-full h-1 bg-primary rounded-full"
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5, duration: 0.6 }}
-                />
-              </span>
+              <span className="text-primary">Produtos</span>
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto text-lg">
               Selecione uma categoria ou busque pelo nome do produto
