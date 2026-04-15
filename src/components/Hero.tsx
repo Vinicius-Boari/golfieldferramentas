@@ -8,110 +8,161 @@ const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-/* 3D-style floating tool illustration using pure SVG/CSS */
-const FloatingToolVisual = () => (
-  <div className="relative w-full h-full flex items-center justify-center">
+/* 3D floating tool visual with scroll-based scale */
+const FloatingToolVisual = ({ scrollScale }: { scrollScale: any }) => (
+  <motion.div style={{ scale: scrollScale }} className="relative w-full h-full flex items-center justify-center">
     {/* Glow backdrop */}
     <motion.div
-      animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.25, 0.15] }}
-      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute w-72 h-72 bg-primary rounded-full blur-[100px]"
+      animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.22, 0.1] }}
+      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute w-80 h-80 bg-primary rounded-full blur-[120px]"
+    />
+    <motion.div
+      animate={{ scale: [1.1, 0.9, 1.1], opacity: [0.05, 0.12, 0.05] }}
+      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      className="absolute w-60 h-60 bg-gold rounded-full blur-[100px] translate-x-10 translate-y-10"
     />
 
-    {/* Main wrench - 3D perspective */}
+    {/* Rotating outer ring */}
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+      className="absolute w-[340px] h-[340px]"
+    >
+      <div className="absolute inset-0 rounded-full border border-border/10" />
+      <div className="absolute inset-4 rounded-full border border-dashed border-border/[0.06]" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-primary/30" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gold/25" />
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary/20" />
+    </motion.div>
+
+    {/* Counter-rotating inner ring */}
+    <motion.div
+      animate={{ rotate: -360 }}
+      transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+      className="absolute w-[240px] h-[240px]"
+    >
+      <div className="absolute inset-0 rounded-full border border-primary/[0.08]" />
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-primary/20 blur-[1px]" />
+    </motion.div>
+
+    {/* Main wrench - upright, 3D perspective rotation */}
     <motion.div
       animate={{
-        rotateY: [0, 15, -10, 0],
-        rotateX: [-5, 5, -5],
-        rotateZ: [-5, 0, -5],
+        rotateY: [0, 20, -15, 0],
+        rotateX: [-8, 8, -8],
       }}
-      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-      style={{ perspective: 800, transformStyle: "preserve-3d" }}
-      className="relative"
+      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      style={{ perspective: 1000, transformStyle: "preserve-3d" }}
+      className="relative z-10"
     >
       <motion.div
-        animate={{ y: [0, -12, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        animate={{ y: [0, -14, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <svg width="220" height="220" viewBox="0 0 200 200" className="drop-shadow-2xl">
-          {/* Wrench body */}
+        <svg width="260" height="260" viewBox="0 0 260 260" className="drop-shadow-2xl">
           <defs>
-            <linearGradient id="wrenchGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="hsl(220, 15%, 65%)" />
-              <stop offset="50%" stopColor="hsl(220, 15%, 45%)" />
-              <stop offset="100%" stopColor="hsl(220, 15%, 30%)" />
+            <linearGradient id="metalBody" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="hsl(215, 20%, 72%)" />
+              <stop offset="30%" stopColor="hsl(215, 18%, 55%)" />
+              <stop offset="70%" stopColor="hsl(215, 15%, 42%)" />
+              <stop offset="100%" stopColor="hsl(215, 12%, 32%)" />
             </linearGradient>
-            <linearGradient id="wrenchShine" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="hsl(220, 10%, 80%)" stopOpacity="0.6" />
-              <stop offset="50%" stopColor="hsl(220, 10%, 90%)" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="hsl(220, 10%, 80%)" stopOpacity="0" />
+            <linearGradient id="metalHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="hsl(215, 20%, 85%)" stopOpacity="0.5" />
+              <stop offset="30%" stopColor="hsl(215, 20%, 85%)" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="hsl(215, 20%, 85%)" stopOpacity="0" />
             </linearGradient>
-            <filter id="wrenchShadow">
-              <feDropShadow dx="3" dy="6" stdDeviation="8" floodColor="hsl(0, 0%, 0%)" floodOpacity="0.4"/>
+            <linearGradient id="metalEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="hsl(215, 12%, 30%)" />
+              <stop offset="100%" stopColor="hsl(215, 18%, 50%)" />
+            </linearGradient>
+            <linearGradient id="gripGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="hsl(0, 70%, 40%)" />
+              <stop offset="50%" stopColor="hsl(0, 78%, 52%)" />
+              <stop offset="100%" stopColor="hsl(0, 70%, 40%)" />
+            </linearGradient>
+            <filter id="mainShadow">
+              <feDropShadow dx="4" dy="8" stdDeviation="12" floodColor="hsl(0,0%,0%)" floodOpacity="0.45"/>
+            </filter>
+            <filter id="innerGlow">
+              <feGaussianBlur stdDeviation="2" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
             </filter>
           </defs>
-          {/* Handle */}
-          <rect x="70" y="60" width="20" height="110" rx="6" fill="url(#wrenchGrad)" filter="url(#wrenchShadow)" transform="rotate(-30 100 100)" />
-          {/* Handle grip lines */}
-          <rect x="73" y="120" width="14" height="2" rx="1" fill="hsl(220,10%,55%)" transform="rotate(-30 100 100)" opacity="0.5" />
-          <rect x="73" y="128" width="14" height="2" rx="1" fill="hsl(220,10%,55%)" transform="rotate(-30 100 100)" opacity="0.5" />
-          <rect x="73" y="136" width="14" height="2" rx="1" fill="hsl(220,10%,55%)" transform="rotate(-30 100 100)" opacity="0.5" />
-          {/* Head - open end */}
-          <path d="M60 45 L55 25 Q80 10 105 25 L100 45 Q80 55 60 45Z" fill="url(#wrenchGrad)" filter="url(#wrenchShadow)" transform="rotate(-30 100 100)" />
-          {/* Jaw opening */}
-          <path d="M68 35 L72 20 Q80 15 88 20 L92 35 Q80 42 68 35Z" fill="hsl(220, 20%, 4%)" transform="rotate(-30 100 100)" />
-          {/* Shine */}
-          <rect x="72" y="60" width="6" height="90" rx="3" fill="url(#wrenchShine)" transform="rotate(-30 100 100)" />
+
+          {/* Wrench handle - vertical/upright */}
+          <rect x="115" y="80" width="30" height="140" rx="5" fill="url(#metalBody)" filter="url(#mainShadow)" />
+          {/* Handle left edge bevel */}
+          <rect x="115" y="80" width="4" height="140" rx="2" fill="url(#metalEdge)" opacity="0.6" />
+          {/* Handle shine */}
+          <rect x="120" y="82" width="8" height="136" rx="4" fill="url(#metalHighlight)" />
+
+          {/* Red rubber grip */}
+          <rect x="113" y="165" width="34" height="50" rx="6" fill="url(#gripGrad)" />
+          <rect x="116" y="168" width="28" height="44" rx="4" fill="url(#gripGrad)" opacity="0.9" />
+          {/* Grip texture lines */}
+          {[0,1,2,3,4,5,6,7].map(i => (
+            <rect key={i} x="118" y={172 + i * 5} width="24" height="1.5" rx="0.75" fill="hsl(0,60%,35%)" opacity="0.4" />
+          ))}
+          {/* Grip highlight */}
+          <rect x="119" y="168" width="6" height="44" rx="3" fill="hsl(0,78%,65%)" opacity="0.2" />
+
+          {/* Wrench head - open jaw */}
+          <path d="M100 80 L100 30 Q100 18 112 15 L118 14 L118 50 L115 80Z" fill="url(#metalBody)" filter="url(#mainShadow)" />
+          <path d="M160 80 L160 30 Q160 18 148 15 L142 14 L142 50 L145 80Z" fill="url(#metalBody)" filter="url(#mainShadow)" />
+          {/* Jaw inner faces */}
+          <rect x="118" y="14" width="24" height="66" fill="hsl(220,20%,4%)" />
+          {/* Jaw top edges */}
+          <rect x="100" y="28" width="18" height="3" rx="1.5" fill="hsl(215,18%,60%)" opacity="0.3" />
+          <rect x="142" y="28" width="18" height="3" rx="1.5" fill="hsl(215,18%,60%)" opacity="0.3" />
+          {/* Head bevel highlights */}
+          <rect x="100" y="30" width="3" height="50" rx="1.5" fill="hsl(215,20%,70%)" opacity="0.3" />
+          <rect x="157" y="30" width="3" height="50" rx="1.5" fill="hsl(215,12%,35%)" opacity="0.3" />
+          {/* Head shine */}
+          <rect x="103" y="32" width="5" height="45" rx="2.5" fill="url(#metalHighlight)" opacity="0.6" />
+          <rect x="148" y="32" width="5" height="45" rx="2.5" fill="url(#metalHighlight)" opacity="0.4" />
+
+          {/* Size marking on head */}
+          <text x="130" y="78" textAnchor="middle" fontSize="7" fill="hsl(215,10%,55%)" fontFamily="Inter, sans-serif" fontWeight="600">24mm</text>
         </svg>
       </motion.div>
     </motion.div>
 
-    {/* Orbiting elements */}
+    {/* Floating glass cards with tool icons */}
     <motion.div
-      animate={{ rotate: 360 }}
-      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-      className="absolute w-64 h-64"
+      animate={{ y: [0, -12, 0], x: [0, 6, 0] }}
+      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+      className="absolute top-4 right-4 p-3.5 rounded-2xl glass-card shadow-xl"
     >
-      <motion.div
-        animate={{ scale: [1, 1.3, 1] }}
-        transition={{ duration: 3, repeat: Infinity }}
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-primary/40"
-      />
-      <motion.div
-        animate={{ scale: [1.2, 0.8, 1.2] }}
-        transition={{ duration: 4, repeat: Infinity }}
-        className="absolute bottom-4 right-4 w-2 h-2 rounded-full bg-gold/30"
-      />
+      <Shield size={22} className="text-primary/70" />
     </motion.div>
 
     <motion.div
-      animate={{ rotate: -360 }}
-      transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-      className="absolute w-80 h-80 border border-border/10 rounded-full"
-    />
-
-    {/* Small floating tool icons */}
-    <motion.div
-      animate={{ y: [0, -10, 0], x: [0, 5, 0] }}
-      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-      className="absolute top-8 right-8 p-3 rounded-xl glass-card"
+      animate={{ y: [0, 10, 0], x: [0, -8, 0] }}
+      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+      className="absolute bottom-8 left-4 p-3.5 rounded-2xl glass-card shadow-xl"
     >
-      <Shield size={20} className="text-primary/60" />
+      <Package size={22} className="text-gold/70" />
     </motion.div>
 
     <motion.div
-      animate={{ y: [0, 8, 0], x: [0, -5, 0] }}
-      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-      className="absolute bottom-12 left-8 p-3 rounded-xl glass-card"
+      animate={{ y: [0, -8, 0], x: [0, -4, 0] }}
+      transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+      className="absolute top-16 left-12 p-3 rounded-2xl glass-card shadow-xl"
     >
-      <Package size={20} className="text-gold/60" />
+      <Wrench size={18} className="text-foreground/40" />
     </motion.div>
-  </div>
+  </motion.div>
 );
 
 const Hero = () => {
   const { scrollY } = useScroll();
   const parallaxY = useTransform(scrollY, [0, 600], [0, 120]);
+  const toolScale = useTransform(scrollY, [0, 300, 600], [1, 1.15, 0.85]);
 
   return (
     <section className="relative overflow-hidden py-20 md:py-32 lg:py-40">
@@ -241,7 +292,7 @@ const Hero = () => {
             transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
             className="hidden lg:flex items-center justify-center min-h-[420px]"
           >
-            <FloatingToolVisual />
+            <FloatingToolVisual scrollScale={toolScale} />
           </motion.div>
         </div>
 
