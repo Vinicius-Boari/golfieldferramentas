@@ -88,7 +88,7 @@ export const products: Product[] = [
   { id: 34, name: "BROCA SDS 20*210", price: 14.44, category: "brocas_sds", image: `${IMG}Img_ftr_rp_27401-300x300.JPG`, minQty: 125 },
 
   // === CHAVES ===
-  { id: 35, name: "CHAVE DE FENDA 3/16 X 5\"", price: 5.80, category: "chaves", image: `${IMG}Img_ftr_rp_32201-300x300.JPG`, minQty: 24 },
+  { id: 35, name: "CHAVE DE FENDA 3/16 X 5\"", price: 5.80, category: "chaves", image: `${IMG}Img_ftr_rp_15401-300x300.JPG`, minQty: 24 },
   { id: 36, name: "CHAVE PHILLIPS 1/4 X 6\"", price: 6.20, category: "chaves", image: `${IMG}Img_ftr_rp_32201-300x300.JPG`, minQty: 24 },
   { id: 37, name: "CHAVE BIELA 8MM", price: 8.68, category: "chaves", image: `${IMG}Img_ftr_rp_28401-300x300.JPG`, minQty: 6 },
   { id: 38, name: "CHAVE BIELA 9MM", price: 9.04, category: "chaves", image: `${IMG}Img_ftr_rp_28501-300x300.JPG`, minQty: 6 },
