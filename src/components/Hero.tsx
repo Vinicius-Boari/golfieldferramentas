@@ -8,135 +8,122 @@ const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-const floatingVariants = {
-  animate: {
-    y: [0, -15, 0],
-    transition: { duration: 4, repeat: Infinity, ease: "easeInOut" as const }
-  }
-};
-
 const Hero = () => {
   const { scrollY } = useScroll();
-  const parallaxY = useTransform(scrollY, [0, 500], [0, 150]);
-  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const parallaxY = useTransform(scrollY, [0, 600], [0, 120]);
+  const opacity = useTransform(scrollY, [0, 500], [1, 0]);
+  const scale = useTransform(scrollY, [0, 500], [1, 0.95]);
 
   return (
-    <motion.section style={{ opacity }} className="relative overflow-hidden py-20 md:py-32">
-      {/* Background */}
-      <div className="absolute inset-0 gradient-dark" />
-      <div className="absolute inset-0 opacity-[0.03]"
+    <motion.section style={{ opacity, scale }} className="relative overflow-hidden py-24 md:py-36 lg:py-44">
+      {/* Layered background */}
+      <div className="absolute inset-0 bg-background" />
+      
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 opacity-[0.02]"
         style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, hsl(0,0%,60%) 1px, transparent 0)`,
-          backgroundSize: '32px 32px'
+          backgroundImage: `linear-gradient(hsl(220,10%,50%) 1px, transparent 1px), linear-gradient(90deg, hsl(220,10%,50%) 1px, transparent 1px)`,
+          backgroundSize: '60px 60px'
         }}
       />
 
-      {/* Animated glow orbs */}
+      {/* Gradient orbs */}
       <motion.div
-        animate={{ scale: [1, 1.3, 1], opacity: [0.08, 0.15, 0.08] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/3 left-1/5 w-[500px] h-[500px] bg-primary rounded-full blur-[150px]"
+        animate={{ scale: [1, 1.2, 1], opacity: [0.06, 0.12, 0.06] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-1/4 -left-32 w-[600px] h-[600px] bg-primary rounded-full blur-[200px]"
       />
       <motion.div
-        animate={{ scale: [1.2, 1, 1.2], opacity: [0.05, 0.1, 0.05] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-1/4 right-1/5 w-[400px] h-[400px] bg-gold rounded-full blur-[130px]"
+        animate={{ scale: [1.1, 0.9, 1.1], opacity: [0.04, 0.08, 0.04] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+        className="absolute -bottom-32 right-0 w-[500px] h-[500px] bg-gold rounded-full blur-[180px]"
       />
 
-      {/* Floating geometric shapes */}
+      {/* Subtle floating lines */}
       <motion.div
-        variants={floatingVariants}
-        animate="animate"
-        className="absolute top-20 right-[15%] w-20 h-20 border border-primary/20 rounded-xl rotate-45 hidden lg:block"
-      />
-      <motion.div
-        animate={{ y: [0, 20, 0], rotate: [0, 180, 360] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-        className="absolute bottom-32 right-[25%] w-8 h-8 bg-primary/10 rounded-full hidden lg:block"
-      />
-      <motion.div
-        animate={{ y: [0, -25, 0], x: [0, 10, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-40 right-[35%] w-3 h-3 bg-gold/30 rounded-full hidden lg:block"
-      />
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+        className="absolute top-20 right-[10%] w-64 h-64 hidden lg:block"
+      >
+        <div className="absolute inset-0 border border-border/20 rounded-full" />
+        <div className="absolute inset-8 border border-border/10 rounded-full" />
+      </motion.div>
 
       <motion.div style={{ y: parallaxY }} className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl">
+          {/* Logo with refined glow */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-10"
           >
-            <div className="relative inline-block mb-8">
-              <div className="absolute -inset-4 bg-gradient-to-br from-primary/15 via-gold/10 to-primary/15 rounded-3xl blur-2xl animate-pulse" />
-              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="relative h-28 md:h-44 rounded-2xl border border-primary/15 shadow-2xl shadow-primary/15 object-contain bg-card/30 p-2" />
+            <div className="relative inline-block">
+              <div className="absolute -inset-6 bg-primary/5 rounded-3xl blur-3xl" />
+              <img
+                src="/images/golfield-logo.jpeg"
+                alt="Golfield"
+                className="relative h-20 md:h-28 rounded-2xl object-contain shadow-2xl shadow-background/50"
+              />
             </div>
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
-              <motion.span animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity }}>
-                <Wrench size={14} />
-              </motion.span>
-              Site Exclusivo para Orçamentos por Atacado
-            </span>
           </motion.div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.9] mb-6"
-          >
-            <motion.span
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="block"
-            >
-              Ferramentas
-            </motion.span>
-            <motion.span
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.35 }}
-              className="block text-gradient-gold"
-            >
-              Premium
-            </motion.span>
-            <motion.span
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.5 }}
-              className="block text-muted-foreground/60 text-4xl md:text-5xl lg:text-6xl"
-            >
-              para Profissionais
-            </motion.span>
-          </motion.h2>
-
+          {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="space-y-3 mb-8"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-8"
+          >
+            <span className="section-badge">
+              <Wrench size={12} />
+              Orçamentos por Atacado
+            </span>
+          </motion.div>
+
+          {/* Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.92] mb-8 tracking-tight"
+          >
+            <span className="block text-foreground">Ferramentas</span>
+            <span className="block text-gradient-gold mt-1">Premium</span>
+            <span className="block text-muted-foreground text-3xl md:text-4xl lg:text-5xl mt-3 font-medium">
+              para Profissionais
+            </span>
+          </motion.h1>
+
+          {/* Description */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="space-y-4 mb-10"
           >
             <p className="text-lg md:text-xl text-muted-foreground max-w-lg leading-relaxed">
               Centenas de produtos com preços exclusivos de atacado.
               Monte seu orçamento online e receba atendimento personalizado.
             </p>
-            <p className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/20 text-primary text-sm font-semibold">
-              ⚠️ Pedido mínimo para orçamento: R$ 2.000,00
-            </p>
+            <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl glass-card text-sm font-medium text-primary">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              Pedido mínimo para orçamento: R$ 2.000,00
+            </div>
           </motion.div>
 
+          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.75 }}
+            transition={{ duration: 0.6, delay: 0.65 }}
             className="flex flex-wrap gap-4"
           >
             <motion.a
               href="#produtos"
               className="btn-golfield text-base"
-              whileHover={{ scale: 1.05, boxShadow: "0 15px 35px -8px hsl(0, 85%, 50%, 0.5)" }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
             >
               <Zap size={18} />
               Ver Produtos
@@ -147,8 +134,8 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="btn-outline-golfield text-base"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
             >
               <WhatsAppIcon size={18} />
               Falar com Vendedor
@@ -158,10 +145,10 @@ const Hero = () => {
 
         {/* Stats */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.9 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-16 max-w-2xl"
+          transition={{ duration: 0.8, delay: 0.85 }}
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-20 max-w-2xl"
         >
           {[
             { icon: Shield, label: "Qualidade Garantida", desc: "Produtos certificados" },
@@ -170,19 +157,14 @@ const Hero = () => {
           ].map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1 + i * 0.15 }}
-              whileHover={{ scale: 1.05, borderColor: "hsl(0, 85%, 50%)" }}
-              className="flex items-center gap-3 p-4 rounded-xl bg-secondary/50 border border-border transition-all duration-300"
+              transition={{ duration: 0.5, delay: 1 + i * 0.12 }}
+              className="stat-card flex items-center gap-4"
             >
-              <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
-                className="p-2.5 rounded-lg gradient-primary"
-              >
-                <item.icon size={18} className="text-primary-foreground" />
-              </motion.div>
+              <div className="p-2.5 rounded-xl bg-primary/10">
+                <item.icon size={18} className="text-primary" />
+              </div>
               <div>
                 <p className="font-semibold text-sm">{item.label}</p>
                 <p className="text-xs text-muted-foreground">{item.desc}</p>
@@ -192,8 +174,8 @@ const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
     </motion.section>
   );
 };

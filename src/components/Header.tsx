@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { Search, ShoppingCart, Phone, Menu, X, Mail } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, ShoppingCart, Menu, X, Mail, ChevronRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 const InstagramIcon = ({ size = 20 }: { size?: number }) => (
@@ -35,32 +35,32 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
 
   return (
     <>
-      {/* Top bar */}
+      {/* Minimal top bar */}
       <motion.div
-        initial={{ y: -40 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="gradient-primary py-2"
+        initial={{ y: -40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="bg-card/80 border-b border-border/50 py-2"
       >
-        <div className="container mx-auto px-4 flex items-center justify-between text-primary-foreground text-sm">
+        <div className="container mx-auto px-4 flex items-center justify-between text-muted-foreground text-xs">
           <div className="flex items-center gap-4">
-            <a href="https://wa.me/5511959409051" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:opacity-80 transition-opacity group">
-              <WhatsAppIcon size={14} />
-              <span className="font-medium group-hover:underline">(11) 95940-9051</span>
+            <a href="https://wa.me/5511959409051" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <WhatsAppIcon size={12} />
+              <span>(11) 95940-9051</span>
             </a>
-            <span className="hidden sm:inline opacity-50">|</span>
-            <a href="mailto:paula.profield@hotmail.com" className="hidden sm:flex items-center gap-1.5 hover:opacity-80 transition-opacity">
-              <Mail size={14} />
+            <span className="hidden sm:inline text-border">|</span>
+            <a href="mailto:paula.profield@hotmail.com" className="hidden sm:flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <Mail size={12} />
               <span>paula.profield@hotmail.com</span>
             </a>
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <span className="opacity-80">Seg a Sex 7h às 18h</span>
-            <span className="opacity-50">|</span>
+            <span>Seg a Sex 7h às 18h</span>
+            <span className="text-border">|</span>
             <a href="https://www.instagram.com/golfield.ferramentas/" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:opacity-80 transition-opacity group">
-              <InstagramIcon size={14} />
-              <span className="group-hover:underline">@golfield.ferramentas</span>
+              className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <InstagramIcon size={12} />
+              <span>@golfield.ferramentas</span>
             </a>
           </div>
         </div>
@@ -68,85 +68,80 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
 
       {/* Main header */}
       <motion.header
-        initial={{ y: -80 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-        className={`sticky top-0 z-50 border-b border-border transition-all duration-500 ${
-          scrolled ? "glass shadow-lg shadow-background/50" : "bg-card/95 backdrop-blur-md"
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        className={`sticky top-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? "glass shadow-2xl shadow-background/80 border-b border-border/30"
+            : "bg-background/95 backdrop-blur-sm"
         }`}
       >
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-6">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-4">
             {/* Logo */}
             <motion.a
               href="/"
-              className="flex-shrink-0 relative group/logo"
-              whileHover={{ scale: 1.05 }}
+              className="flex-shrink-0 group"
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 via-gold/20 to-primary/20 rounded-2xl blur-lg opacity-0 group-hover/logo:opacity-100 transition-opacity duration-500" />
-              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="relative h-14 md:h-[4.5rem] rounded-xl border border-primary/10 shadow-xl shadow-primary/5 object-contain bg-card/50 p-1" />
+              <img
+                src="/images/golfield-logo.jpeg"
+                alt="Golfield"
+                className="h-12 md:h-14 rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
+              />
             </motion.a>
 
             {/* Search */}
-            <motion.div
-              className="hidden md:flex flex-1 max-w-xl relative"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+            <div className="hidden md:flex flex-1 max-w-lg relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
               <input
                 type="text"
-                placeholder="Buscar ferramentas, produtos..."
-                className="search-input pl-11"
+                placeholder="Buscar ferramentas..."
+                className="search-input pl-11 text-sm"
                 value={searchQuery}
                 onChange={e => onSearchChange(e.target.value)}
               />
-            </motion.div>
+            </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-2">
-              {/* Instagram */}
+            <div className="flex items-center gap-1.5">
               <motion.a
                 href="https://www.instagram.com/golfield.ferramentas/"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.15, rotate: 5 }}
+                whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="p-3 rounded-xl bg-secondary hover:bg-gradient-to-br hover:from-[hsl(340,80%,50%)] hover:to-[hsl(30,90%,55%)] hover:text-primary-foreground transition-all duration-300"
-                title="Siga-nos no Instagram"
+                className="hidden sm:flex p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
               >
-                <InstagramIcon size={20} />
+                <InstagramIcon size={18} />
               </motion.a>
 
-              {/* WhatsApp */}
               <motion.a
                 href="https://wa.me/5511959409051"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.15, rotate: -5 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-3 rounded-xl bg-secondary hover:bg-[hsl(142,70%,45%)] hover:text-primary-foreground transition-all duration-300"
-                title="Fale conosco pelo WhatsApp"
-              >
-                <WhatsAppIcon size={20} />
-              </motion.a>
-
-              {/* Cart */}
-              <motion.button
-                onClick={() => setIsOpen(true)}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="relative p-3 rounded-xl bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                className="hidden sm:flex p-2.5 rounded-xl text-muted-foreground hover:text-[hsl(142,70%,45%)] hover:bg-[hsl(142,70%,45%,0.08)] transition-all duration-300"
               >
-                <ShoppingCart size={22} />
+                <WhatsAppIcon size={18} />
+              </motion.a>
+
+              <motion.button
+                onClick={() => setIsOpen(true)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
+              >
+                <ShoppingCart size={20} />
                 {totalItems > 0 && (
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 500 }}
-                    className="absolute -top-1 -right-1 w-5 h-5 gradient-primary rounded-full flex items-center justify-center text-[11px] font-bold text-primary-foreground"
+                    className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-[10px] font-bold text-primary-foreground"
                   >
                     {totalItems}
                   </motion.span>
@@ -154,43 +149,47 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               </motion.button>
 
               <button
-                className="md:hidden p-3 rounded-xl bg-secondary"
+                className="md:hidden p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 <motion.div animate={{ rotate: mobileMenuOpen ? 90 : 0 }} transition={{ duration: 0.3 }}>
-                  {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                  {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                 </motion.div>
               </button>
             </div>
           </div>
 
-          {/* Mobile search + links */}
+          {/* Mobile menu */}
           <AnimatePresence>
             {mobileMenuOpen && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-                className="md:hidden mt-4 overflow-hidden space-y-3"
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="md:hidden mt-3 overflow-hidden"
               >
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                  <input
-                    type="text"
-                    placeholder="Buscar ferramentas..."
-                    className="search-input pl-11"
-                    value={searchQuery}
-                    onChange={e => onSearchChange(e.target.value)}
-                  />
-                </div>
-                <div className="flex flex-col gap-2 text-sm">
-                  <a href="mailto:paula.profield@hotmail.com" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2">
-                    <Mail size={14} /> paula.profield@hotmail.com
-                  </a>
-                  <a href="https://www.instagram.com/golfield.ferramentas/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2">
-                    <InstagramIcon size={14} /> @golfield.ferramentas
-                  </a>
+                <div className="space-y-3 pb-2">
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                    <input
+                      type="text"
+                      placeholder="Buscar ferramentas..."
+                      className="search-input pl-11 text-sm"
+                      value={searchQuery}
+                      onChange={e => onSearchChange(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1 text-sm">
+                    <a href="mailto:paula.profield@hotmail.com" className="flex items-center justify-between text-muted-foreground hover:text-foreground transition-colors p-3 rounded-xl hover:bg-secondary">
+                      <span className="flex items-center gap-2"><Mail size={14} /> paula.profield@hotmail.com</span>
+                      <ChevronRight size={14} />
+                    </a>
+                    <a href="https://www.instagram.com/golfield.ferramentas/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between text-muted-foreground hover:text-foreground transition-colors p-3 rounded-xl hover:bg-secondary">
+                      <span className="flex items-center gap-2"><InstagramIcon size={14} /> @golfield.ferramentas</span>
+                      <ChevronRight size={14} />
+                    </a>
+                  </div>
                 </div>
               </motion.div>
             )}
