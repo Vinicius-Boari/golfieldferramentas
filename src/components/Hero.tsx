@@ -452,7 +452,7 @@ const Hero = () => {
                   className="absolute -inset-8 bg-gradient-to-br from-primary/15 via-gold/10 to-primary/15 rounded-[2rem] blur-[40px]"
                 />
                 <div className="absolute -inset-[2px] bg-gradient-to-br from-primary/20 via-transparent to-gold/15 rounded-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
-                <img src="/images/golfield-logo.jpeg" alt="Golfield" className="relative h-24 md:h-36 lg:h-40 rounded-2xl object-contain shadow-2xl shadow-primary/10 bg-card/40 p-2 backdrop-blur-sm transition-transform duration-500 group-hover:scale-[1.03]" />
+                <img src="/images/golfield-logo.jpeg" alt="Golfield" className="relative h-32 md:h-44 lg:h-52 w-auto min-w-[280px] md:min-w-[360px] lg:min-w-[420px] rounded-2xl object-contain shadow-2xl shadow-primary/10 bg-card/40 p-3 md:p-4 backdrop-blur-sm transition-transform duration-500 group-hover:scale-[1.03]" />
               </div>
             </motion.div>
 
