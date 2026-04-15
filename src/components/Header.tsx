@@ -80,11 +80,15 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             {/* Logo */}
             <motion.a
               href="/"
-              className="flex-shrink-0"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="flex-shrink-0 flex items-center gap-3"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
             >
-              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-16 md:h-20 rounded-lg shadow-md" />
+              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-12 md:h-14 rounded-xl border-2 border-primary/20 shadow-lg shadow-primary/10 object-contain" />
+              <div className="hidden sm:flex flex-col">
+                <span className="font-display text-xl md:text-2xl font-bold tracking-tight text-gradient-gold leading-none">GOLFIELD</span>
+                <span className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase">Ferramentas</span>
+              </div>
             </motion.a>
 
             {/* Search */}

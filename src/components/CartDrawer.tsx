@@ -111,15 +111,36 @@ const CartDrawer = () => {
                     R$ {totalPrice.toFixed(2).replace('.', ',')}
                   </span>
                 </div>
-                <a
-                  href={`https://wa.me/5511959409051?text=${generateWhatsAppMessage()}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-golfield w-full text-center"
-                >
-                  <MessageCircle size={18} />
-                  Enviar Orçamento via WhatsApp
-                </a>
+
+                {totalPrice < 2000 && (
+                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-sm">
+                    <p className="text-destructive font-semibold">Pedido mínimo: R$ 2.000,00</p>
+                    <p className="text-muted-foreground text-xs mt-1">
+                      Faltam R$ {(2000 - totalPrice).toFixed(2).replace('.', ',')} para enviar o orçamento.
+                    </p>
+                  </div>
+                )}
+
+                {totalPrice >= 2000 ? (
+                  <a
+                    href={`https://wa.me/5511959409051?text=${generateWhatsAppMessage()}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-golfield w-full text-center"
+                  >
+                    <MessageCircle size={18} />
+                    Enviar Orçamento via WhatsApp
+                  </a>
+                ) : (
+                  <button
+                    disabled
+                    className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-muted text-muted-foreground cursor-not-allowed text-sm font-semibold"
+                  >
+                    <MessageCircle size={18} />
+                    Pedido mínimo R$ 2.000,00
+                  </button>
+                )}
+
                 <button onClick={clearCart} className="w-full py-2 text-sm text-muted-foreground hover:text-destructive transition-colors">
                   Limpar orçamento
                 </button>
