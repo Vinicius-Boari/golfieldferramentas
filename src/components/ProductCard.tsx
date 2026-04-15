@@ -88,7 +88,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
           <div className="flex items-center bg-secondary rounded-lg overflow-hidden border border-border/50">
             <motion.button
               whileTap={{ scale: 0.8 }}
-              onClick={() => setQty(Math.max(1, qty - 1))}
+              onClick={() => setQty(Math.max(product.minQty, qty - product.minQty))}
               className="p-2 hover:bg-muted transition-colors"
             >
               <Minus size={14} />
@@ -96,12 +96,12 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
             <input
               type="number"
               value={qty}
-              onChange={e => setQty(Math.max(1, parseInt(e.target.value) || 1))}
+              onChange={e => { const v = parseInt(e.target.value) || product.minQty; setQty(Math.max(product.minQty, Math.round(v / product.minQty) * product.minQty)); }}
               className="w-12 text-center bg-transparent text-sm font-medium outline-none"
             />
             <motion.button
               whileTap={{ scale: 0.8 }}
-              onClick={() => setQty(qty + 1)}
+              onClick={() => setQty(qty + product.minQty)}
               className="p-2 hover:bg-muted transition-colors"
             >
               <Plus size={14} />

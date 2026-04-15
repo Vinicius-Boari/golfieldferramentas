@@ -40,11 +40,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const updateQuantity = useCallback((productId: number, qty: number) => {
-    if (qty <= 0) {
-      setItems(prev => prev.filter(i => i.product.id !== productId));
-    } else {
-      setItems(prev => prev.map(i => i.product.id === productId ? { ...i, quantity: qty } : i));
-    }
+    setItems(prev => {
+      const item = prev.find(i => i.product.id === productId);
+      if (!item || qty < item.product.minQty) {
+        return prev.filter(i => i.product.id !== productId);
+      }
+      return prev.map(i => i.product.id === productId ? { ...i, quantity: qty } : i);
+    });
   }, []);
 
   const clearCart = useCallback(() => setItems([]), []);
