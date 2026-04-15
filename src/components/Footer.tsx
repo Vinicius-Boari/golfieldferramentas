@@ -41,9 +41,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Brand */}
           <motion.div variants={itemVariants} className="md:col-span-2">
-            <h2 className="font-display text-3xl font-bold mb-4">
-              <span className="text-primary">GOL</span>FIELD
-            </h2>
+            <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-14 rounded mb-4" />
             <p className="text-muted-foreground leading-relaxed max-w-md mb-6">
               Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado. Sua satisfação é nossa prioridade.
             </p>
