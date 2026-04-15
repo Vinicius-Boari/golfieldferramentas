@@ -1,4 +1,4 @@
-import { Phone, Mail, Instagram, MapPin, Clock } from "lucide-react";
+import { Phone, Mail, MapPin, Clock } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -16,7 +16,7 @@ const Footer = () => {
             <div className="flex gap-3">
               <a href="https://instagram.com/golfield.ferramentas" target="_blank" rel="noopener noreferrer"
                 className="p-3 rounded-xl bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-                <Instagram size={20} />
+                <span className="text-lg">📷</span>
               </a>
             </div>
           </div>

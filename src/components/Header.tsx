@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingCart, Phone, Menu, X, Instagram } from "lucide-react";
+import { Search, ShoppingCart, Phone, Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 interface HeaderProps {
@@ -27,7 +27,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             <span className="opacity-80">Atendimento: Seg a Sex 7h às 18h</span>
             <a href="https://instagram.com/golfield.ferramentas" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
-              <Instagram size={14} />
+              <span className="text-sm">📷</span>
               <span>@golfield.ferramentas</span>
             </a>
           </div>
