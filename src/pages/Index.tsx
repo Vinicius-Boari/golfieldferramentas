@@ -62,9 +62,9 @@ const IndexContent = () => {
         viewport={{ once: true }}
         className="py-10 border-b border-border/30 relative overflow-hidden"
       >
-        {/* Subtle animated bg */}
-        <motion.div style={{ y: bgParallax }} className="absolute inset-0 opacity-[0.015]"
-          style={{ backgroundImage: `radial-gradient(circle, hsl(0,78%,52%) 1px, transparent 1px)`, backgroundSize: '40px 40px' }}
+        <motion.div
+          style={{ y: bgParallax, backgroundImage: `radial-gradient(circle, hsl(0,78%,52%) 1px, transparent 1px)`, backgroundSize: '40px 40px' }}
+          className="absolute inset-0 opacity-[0.015]"
         />
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap items-center justify-center gap-12 text-sm">
