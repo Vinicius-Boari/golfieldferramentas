@@ -8,17 +8,171 @@ const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-/* 3D floating tool visual with scroll-based scale */
+/* Floating SVG tool component */
+const FloatingTool = ({ children, delay, duration, yRange, xRange, rotateRange, className }: {
+  children: React.ReactNode; delay: number; duration: number;
+  yRange: [number, number, number]; xRange: [number, number, number];
+  rotateRange: [number, number, number]; className?: string;
+}) => (
+  <motion.div
+    animate={{ y: yRange, x: xRange, rotate: rotateRange }}
+    transition={{ duration, repeat: Infinity, ease: "easeInOut", delay }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
+
+/* Hammer SVG */
+const HammerSVG = ({ size = 90 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" className="drop-shadow-xl">
+    <defs>
+      <linearGradient id="hammerMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="hsl(215,18%,65%)" /><stop offset="100%" stopColor="hsl(215,15%,38%)" />
+      </linearGradient>
+      <linearGradient id="hammerWood" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="hsl(25,60%,35%)" /><stop offset="50%" stopColor="hsl(25,55%,45%)" /><stop offset="100%" stopColor="hsl(25,60%,35%)" />
+      </linearGradient>
+    </defs>
+    {/* Handle */}
+    <rect x="45" y="40" width="10" height="55" rx="3" fill="url(#hammerWood)" />
+    <rect x="47" y="42" width="3" height="50" rx="1.5" fill="hsl(25,50%,55%)" opacity="0.3" />
+    {/* Head */}
+    <rect x="25" y="22" width="50" height="22" rx="4" fill="url(#hammerMetal)" />
+    <rect x="25" y="22" width="50" height="3" rx="1.5" fill="hsl(215,20%,75%)" opacity="0.4" />
+    {/* Claw */}
+    <path d="M25 28 L18 18 Q16 14 20 12" stroke="url(#hammerMetal)" strokeWidth="5" fill="none" strokeLinecap="round" />
+  </svg>
+);
+
+/* Screwdriver SVG */
+const ScrewdriverSVG = ({ size = 100 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" className="drop-shadow-xl">
+    <defs>
+      <linearGradient id="sdMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="hsl(215,18%,70%)" /><stop offset="100%" stopColor="hsl(215,15%,42%)" />
+      </linearGradient>
+      <linearGradient id="sdGrip" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="hsl(45,80%,45%)" /><stop offset="50%" stopColor="hsl(45,85%,55%)" /><stop offset="100%" stopColor="hsl(45,80%,45%)" />
+      </linearGradient>
+    </defs>
+    {/* Blade */}
+    <rect x="46" y="8" width="8" height="45" rx="2" fill="url(#sdMetal)" />
+    <rect x="48" y="10" width="3" height="40" rx="1.5" fill="hsl(215,20%,80%)" opacity="0.3" />
+    {/* Tip */}
+    <path d="M46 8 L50 2 L54 8Z" fill="hsl(215,15%,50%)" />
+    {/* Handle */}
+    <rect x="42" y="53" width="16" height="40" rx="6" fill="url(#sdGrip)" />
+    <rect x="44" y="56" width="4" height="34" rx="2" fill="hsl(45,80%,65%)" opacity="0.25" />
+    {/* Handle lines */}
+    {[0,1,2,3,4].map(i => (
+      <rect key={i} x="44" y={60 + i * 6} width="12" height="1.5" rx="0.75" fill="hsl(45,70%,38%)" opacity="0.3" />
+    ))}
+  </svg>
+);
+
+/* Pliers SVG */
+const PliersSVG = ({ size = 95 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" className="drop-shadow-xl">
+    <defs>
+      <linearGradient id="plierMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="hsl(215,18%,68%)" /><stop offset="100%" stopColor="hsl(215,15%,35%)" />
+      </linearGradient>
+      <linearGradient id="plierGrip" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="hsl(0,70%,38%)" /><stop offset="50%" stopColor="hsl(0,78%,50%)" /><stop offset="100%" stopColor="hsl(0,70%,38%)" />
+      </linearGradient>
+    </defs>
+    {/* Left jaw */}
+    <path d="M38 10 Q30 20 35 35 L45 45" stroke="url(#plierMetal)" strokeWidth="7" fill="none" strokeLinecap="round" />
+    {/* Right jaw */}
+    <path d="M62 10 Q70 20 65 35 L55 45" stroke="url(#plierMetal)" strokeWidth="7" fill="none" strokeLinecap="round" />
+    {/* Pivot */}
+    <circle cx="50" cy="42" r="5" fill="hsl(215,15%,50%)" />
+    <circle cx="50" cy="42" r="2.5" fill="hsl(215,15%,60%)" />
+    {/* Left handle */}
+    <rect x="34" y="45" width="12" height="48" rx="5" fill="url(#plierGrip)" transform="rotate(-8 40 70)" />
+    {/* Right handle */}
+    <rect x="54" y="45" width="12" height="48" rx="5" fill="url(#plierGrip)" transform="rotate(8 60 70)" />
+    {/* Grip lines left */}
+    {[0,1,2,3].map(i => (
+      <rect key={`l${i}`} x="36" y={55 + i * 7} width="8" height="1.5" rx="0.75" fill="hsl(0,60%,35%)" opacity="0.35" transform="rotate(-8 40 70)" />
+    ))}
+  </svg>
+);
+
+/* Saw SVG */
+const SawSVG = ({ size = 85 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" className="drop-shadow-xl">
+    <defs>
+      <linearGradient id="sawBlade" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="hsl(215,18%,68%)" /><stop offset="100%" stopColor="hsl(215,15%,40%)" />
+      </linearGradient>
+    </defs>
+    {/* Blade */}
+    <path d="M15 35 L85 35 L85 50 L15 50Z" fill="url(#sawBlade)" />
+    {/* Teeth */}
+    {Array.from({ length: 14 }).map((_, i) => (
+      <path key={i} d={`M${17 + i * 5} 50 L${19.5 + i * 5} 55 L${22 + i * 5} 50`} fill="url(#sawBlade)" />
+    ))}
+    {/* Blade shine */}
+    <rect x="15" y="36" width="70" height="3" rx="1.5" fill="hsl(215,20%,80%)" opacity="0.3" />
+    {/* Handle */}
+    <path d="M10 25 Q8 30 10 35 L10 50 Q8 55 12 58 L30 58 L30 52 L20 50 L20 35 L30 33 L30 25Z" fill="hsl(25,55%,40%)" />
+    <path d="M12 28 L18 28 L18 52 L14 54 L12 52Z" fill="hsl(25,50%,50%)" opacity="0.3" />
+  </svg>
+);
+
+/* Main wrench SVG */
+const WrenchSVG = () => (
+  <svg width="180" height="180" viewBox="0 0 260 260" className="drop-shadow-2xl">
+    <defs>
+      <linearGradient id="metalBody" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="hsl(215, 20%, 72%)" />
+        <stop offset="30%" stopColor="hsl(215, 18%, 55%)" />
+        <stop offset="70%" stopColor="hsl(215, 15%, 42%)" />
+        <stop offset="100%" stopColor="hsl(215, 12%, 32%)" />
+      </linearGradient>
+      <linearGradient id="metalHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="hsl(215, 20%, 85%)" stopOpacity="0.5" />
+        <stop offset="30%" stopColor="hsl(215, 20%, 85%)" stopOpacity="0.15" />
+        <stop offset="100%" stopColor="hsl(215, 20%, 85%)" stopOpacity="0" />
+      </linearGradient>
+      <linearGradient id="gripGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="hsl(0, 70%, 40%)" />
+        <stop offset="50%" stopColor="hsl(0, 78%, 52%)" />
+        <stop offset="100%" stopColor="hsl(0, 70%, 40%)" />
+      </linearGradient>
+      <filter id="mainShadow">
+        <feDropShadow dx="3" dy="6" stdDeviation="10" floodColor="hsl(0,0%,0%)" floodOpacity="0.4"/>
+      </filter>
+    </defs>
+    <rect x="115" y="80" width="30" height="140" rx="5" fill="url(#metalBody)" filter="url(#mainShadow)" />
+    <rect x="120" y="82" width="8" height="136" rx="4" fill="url(#metalHighlight)" />
+    <rect x="113" y="165" width="34" height="50" rx="6" fill="url(#gripGrad)" />
+    {[0,1,2,3,4,5,6,7].map(i => (
+      <rect key={i} x="118" y={172 + i * 5} width="24" height="1.5" rx="0.75" fill="hsl(0,60%,35%)" opacity="0.4" />
+    ))}
+    <rect x="119" y="168" width="6" height="44" rx="3" fill="hsl(0,78%,65%)" opacity="0.2" />
+    <path d="M100 80 L100 30 Q100 18 112 15 L118 14 L118 50 L115 80Z" fill="url(#metalBody)" filter="url(#mainShadow)" />
+    <path d="M160 80 L160 30 Q160 18 148 15 L142 14 L142 50 L145 80Z" fill="url(#metalBody)" filter="url(#mainShadow)" />
+    <rect x="118" y="14" width="24" height="66" fill="hsl(220,20%,4%)" />
+    <rect x="103" y="32" width="5" height="45" rx="2.5" fill="url(#metalHighlight)" opacity="0.6" />
+    <rect x="148" y="32" width="5" height="45" rx="2.5" fill="url(#metalHighlight)" opacity="0.4" />
+    <text x="130" y="78" textAnchor="middle" fontSize="7" fill="hsl(215,10%,55%)" fontFamily="Inter, sans-serif" fontWeight="600">24mm</text>
+  </svg>
+);
+
+/* 3D floating tools visual with scroll-based scale */
 const FloatingToolVisual = ({ scrollScale }: { scrollScale: any }) => (
-  <motion.div style={{ scale: scrollScale }} className="relative w-full h-full flex items-center justify-center">
+  <motion.div style={{ scale: scrollScale }} className="relative w-full h-full flex items-center justify-center min-h-[450px]">
     {/* Glow backdrop */}
     <motion.div
-      animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.22, 0.1] }}
+      animate={{ scale: [1, 1.2, 1], opacity: [0.08, 0.18, 0.08] }}
       transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       className="absolute w-80 h-80 bg-primary rounded-full blur-[120px]"
     />
     <motion.div
-      animate={{ scale: [1.1, 0.9, 1.1], opacity: [0.05, 0.12, 0.05] }}
+      animate={{ scale: [1.1, 0.9, 1.1], opacity: [0.04, 0.1, 0.04] }}
       transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
       className="absolute w-60 h-60 bg-gold rounded-full blur-[100px] translate-x-10 translate-y-10"
     />
@@ -26,135 +180,80 @@ const FloatingToolVisual = ({ scrollScale }: { scrollScale: any }) => (
     {/* Rotating outer ring */}
     <motion.div
       animate={{ rotate: 360 }}
-      transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-      className="absolute w-[340px] h-[340px]"
+      transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
+      className="absolute w-[380px] h-[380px]"
     >
       <div className="absolute inset-0 rounded-full border border-border/10" />
-      <div className="absolute inset-4 rounded-full border border-dashed border-border/[0.06]" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-primary/30" />
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gold/25" />
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary/20" />
+      <div className="absolute inset-5 rounded-full border border-dashed border-border/[0.05]" />
     </motion.div>
 
     {/* Counter-rotating inner ring */}
     <motion.div
       animate={{ rotate: -360 }}
-      transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-      className="absolute w-[240px] h-[240px]"
+      transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+      className="absolute w-[260px] h-[260px]"
     >
-      <div className="absolute inset-0 rounded-full border border-primary/[0.08]" />
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-primary/20 blur-[1px]" />
+      <div className="absolute inset-0 rounded-full border border-primary/[0.06]" />
     </motion.div>
 
-    {/* Main wrench - upright, 3D perspective rotation */}
+    {/* CENTER: Main wrench */}
     <motion.div
-      animate={{
-        rotateY: [0, 20, -15, 0],
-        rotateX: [-8, 8, -8],
-      }}
+      animate={{ rotateY: [0, 18, -12, 0], rotateX: [-6, 6, -6] }}
       transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
       style={{ perspective: 1000, transformStyle: "preserve-3d" }}
       className="relative z-10"
     >
-      <motion.div
-        animate={{ y: [0, -14, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <svg width="260" height="260" viewBox="0 0 260 260" className="drop-shadow-2xl">
-          <defs>
-            <linearGradient id="metalBody" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="hsl(215, 20%, 72%)" />
-              <stop offset="30%" stopColor="hsl(215, 18%, 55%)" />
-              <stop offset="70%" stopColor="hsl(215, 15%, 42%)" />
-              <stop offset="100%" stopColor="hsl(215, 12%, 32%)" />
-            </linearGradient>
-            <linearGradient id="metalHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="hsl(215, 20%, 85%)" stopOpacity="0.5" />
-              <stop offset="30%" stopColor="hsl(215, 20%, 85%)" stopOpacity="0.15" />
-              <stop offset="100%" stopColor="hsl(215, 20%, 85%)" stopOpacity="0" />
-            </linearGradient>
-            <linearGradient id="metalEdge" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="hsl(215, 12%, 30%)" />
-              <stop offset="100%" stopColor="hsl(215, 18%, 50%)" />
-            </linearGradient>
-            <linearGradient id="gripGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="hsl(0, 70%, 40%)" />
-              <stop offset="50%" stopColor="hsl(0, 78%, 52%)" />
-              <stop offset="100%" stopColor="hsl(0, 70%, 40%)" />
-            </linearGradient>
-            <filter id="mainShadow">
-              <feDropShadow dx="4" dy="8" stdDeviation="12" floodColor="hsl(0,0%,0%)" floodOpacity="0.45"/>
-            </filter>
-            <filter id="innerGlow">
-              <feGaussianBlur stdDeviation="2" result="blur"/>
-              <feMerge>
-                <feMergeNode in="blur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-
-          {/* Wrench handle - vertical/upright */}
-          <rect x="115" y="80" width="30" height="140" rx="5" fill="url(#metalBody)" filter="url(#mainShadow)" />
-          {/* Handle left edge bevel */}
-          <rect x="115" y="80" width="4" height="140" rx="2" fill="url(#metalEdge)" opacity="0.6" />
-          {/* Handle shine */}
-          <rect x="120" y="82" width="8" height="136" rx="4" fill="url(#metalHighlight)" />
-
-          {/* Red rubber grip */}
-          <rect x="113" y="165" width="34" height="50" rx="6" fill="url(#gripGrad)" />
-          <rect x="116" y="168" width="28" height="44" rx="4" fill="url(#gripGrad)" opacity="0.9" />
-          {/* Grip texture lines */}
-          {[0,1,2,3,4,5,6,7].map(i => (
-            <rect key={i} x="118" y={172 + i * 5} width="24" height="1.5" rx="0.75" fill="hsl(0,60%,35%)" opacity="0.4" />
-          ))}
-          {/* Grip highlight */}
-          <rect x="119" y="168" width="6" height="44" rx="3" fill="hsl(0,78%,65%)" opacity="0.2" />
-
-          {/* Wrench head - open jaw */}
-          <path d="M100 80 L100 30 Q100 18 112 15 L118 14 L118 50 L115 80Z" fill="url(#metalBody)" filter="url(#mainShadow)" />
-          <path d="M160 80 L160 30 Q160 18 148 15 L142 14 L142 50 L145 80Z" fill="url(#metalBody)" filter="url(#mainShadow)" />
-          {/* Jaw inner faces */}
-          <rect x="118" y="14" width="24" height="66" fill="hsl(220,20%,4%)" />
-          {/* Jaw top edges */}
-          <rect x="100" y="28" width="18" height="3" rx="1.5" fill="hsl(215,18%,60%)" opacity="0.3" />
-          <rect x="142" y="28" width="18" height="3" rx="1.5" fill="hsl(215,18%,60%)" opacity="0.3" />
-          {/* Head bevel highlights */}
-          <rect x="100" y="30" width="3" height="50" rx="1.5" fill="hsl(215,20%,70%)" opacity="0.3" />
-          <rect x="157" y="30" width="3" height="50" rx="1.5" fill="hsl(215,12%,35%)" opacity="0.3" />
-          {/* Head shine */}
-          <rect x="103" y="32" width="5" height="45" rx="2.5" fill="url(#metalHighlight)" opacity="0.6" />
-          <rect x="148" y="32" width="5" height="45" rx="2.5" fill="url(#metalHighlight)" opacity="0.4" />
-
-          {/* Size marking on head */}
-          <text x="130" y="78" textAnchor="middle" fontSize="7" fill="hsl(215,10%,55%)" fontFamily="Inter, sans-serif" fontWeight="600">24mm</text>
-        </svg>
-      </motion.div>
+      <FloatingTool delay={0} duration={5} yRange={[0, -14, 0]} xRange={[0, 0, 0]} rotateRange={[0, 0, 0]}>
+        <WrenchSVG />
+      </FloatingTool>
     </motion.div>
 
-    {/* Floating glass cards with tool icons */}
+    {/* TOP-RIGHT: Hammer */}
     <motion.div
-      animate={{ y: [0, -12, 0], x: [0, 6, 0] }}
-      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-      className="absolute top-4 right-4 p-3.5 rounded-2xl glass-card shadow-xl"
+      animate={{ rotateY: [-10, 15, -10], rotateX: [5, -5, 5] }}
+      transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      style={{ perspective: 800, transformStyle: "preserve-3d" }}
+      className="absolute top-2 right-8 z-[5]"
     >
-      <Shield size={22} className="text-primary/70" />
+      <FloatingTool delay={0.5} duration={6} yRange={[0, -16, 0]} xRange={[0, 8, 0]} rotateRange={[-10, 10, -10]}>
+        <HammerSVG size={85} />
+      </FloatingTool>
     </motion.div>
 
+    {/* BOTTOM-LEFT: Screwdriver */}
     <motion.div
-      animate={{ y: [0, 10, 0], x: [0, -8, 0] }}
-      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-      className="absolute bottom-8 left-4 p-3.5 rounded-2xl glass-card shadow-xl"
+      animate={{ rotateY: [10, -20, 10], rotateX: [-5, 8, -5] }}
+      transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      style={{ perspective: 800, transformStyle: "preserve-3d" }}
+      className="absolute bottom-4 left-4 z-[5]"
     >
-      <Package size={22} className="text-gold/70" />
+      <FloatingTool delay={1} duration={7} yRange={[0, 12, 0]} xRange={[0, -6, 0]} rotateRange={[15, -5, 15]}>
+        <ScrewdriverSVG size={80} />
+      </FloatingTool>
     </motion.div>
 
+    {/* TOP-LEFT: Pliers */}
     <motion.div
-      animate={{ y: [0, -8, 0], x: [0, -4, 0] }}
-      transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-      className="absolute top-16 left-12 p-3 rounded-2xl glass-card shadow-xl"
+      animate={{ rotateY: [-15, 10, -15], rotateX: [8, -8, 8] }}
+      transition={{ duration: 13, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+      style={{ perspective: 800, transformStyle: "preserve-3d" }}
+      className="absolute top-12 left-6 z-[5]"
     >
-      <Wrench size={18} className="text-foreground/40" />
+      <FloatingTool delay={1.5} duration={6.5} yRange={[0, -10, 0]} xRange={[0, -8, 0]} rotateRange={[-15, 5, -15]}>
+        <PliersSVG size={75} />
+      </FloatingTool>
+    </motion.div>
+
+    {/* BOTTOM-RIGHT: Saw */}
+    <motion.div
+      animate={{ rotateY: [12, -18, 12], rotateX: [-6, 6, -6] }}
+      transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+      style={{ perspective: 800, transformStyle: "preserve-3d" }}
+      className="absolute bottom-10 right-4 z-[5]"
+    >
+      <FloatingTool delay={2} duration={5.5} yRange={[0, 14, 0]} xRange={[0, 6, 0]} rotateRange={[8, -12, 8]}>
+        <SawSVG size={80} />
+      </FloatingTool>
     </motion.div>
   </motion.div>
 );
