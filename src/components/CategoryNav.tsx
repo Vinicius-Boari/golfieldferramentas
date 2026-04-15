@@ -38,8 +38,7 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
             onClick={() => onCategoryChange(cat.id)}
             className={`category-chip ${activeCategory === cat.id ? "active" : ""}`}
           >
-            <span className="mr-1.5">{cat.icon}</span>
-            {cat.name}
+            {cat.label}
           </motion.button>
         ))}
       </div>
