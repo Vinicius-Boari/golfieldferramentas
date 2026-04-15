@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { CartProvider } from "@/context/CartContext";
 import { products } from "@/data/products";
-import { Sparkles, TrendingUp, Star, Search } from "lucide-react";
+import { Sparkles, TrendingUp, Star, Search, Calendar, Target, Globe, Lightbulb } from "lucide-react";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -242,6 +242,91 @@ const IndexContent = () => {
               Falar com Vendedor
             </motion.a>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Sobre Nós */}
+      <section id="sobre" className="py-24 bg-secondary/30">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="text-center mb-16"
+          >
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+              Sobre Nós
+            </span>
+            <h2 className="font-display text-4xl md:text-6xl font-bold mb-6">
+              Nossa <span className="text-primary">Missão</span>
+            </h2>
+            <p className="text-xl text-primary font-semibold mb-4">Inovação global, confiança local</p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="max-w-4xl mx-auto mb-20"
+          >
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="p-8 rounded-2xl bg-background border border-border">
+                <Globe className="text-primary mb-4" size={32} />
+                <p className="text-muted-foreground leading-relaxed">
+                  Escolher a Golfield é ter a certeza de que você está utilizando ferramentas que são referência nos mercados mais exigentes do mundo. Somos o elo de confiança entre a inovação global e a necessidade local de eficiência e robustez.
+                </p>
+              </div>
+              <div className="p-8 rounded-2xl bg-background border border-border">
+                <Lightbulb className="text-primary mb-4" size={32} />
+                <p className="text-muted-foreground leading-relaxed">
+                  Nosso compromisso é entregar para você e sua empresa os melhores equipamentos do mercado, unindo tecnologia de ponta e design. Trabalhamos com ferramentas manuais, elétricas, sistemas de fixação, materiais abrasivos e produtos para construção e manutenção industrial.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Trajetória */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="text-center mb-12"
+          >
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium tracking-widest mb-4">
+              NOSSA TRAJETÓRIA
+            </span>
+            <h3 className="font-display text-3xl md:text-5xl font-bold mb-2">
+              Uma História de Crescimento
+            </h3>
+            <div className="w-16 h-1 bg-primary mx-auto mt-4 rounded-full" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            {[
+              { year: "2004", title: "FUNDAÇÃO", desc: "Início das operações em São Paulo, com foco em importação de ferramentas de qualidade." },
+              { year: "2010", title: "EXPANSÃO NACIONAL", desc: "Consolidação da marca GolField e expansão para atendimento em todo o Brasil." },
+              { year: "2023", title: "LINHA GOL-HOME", desc: "Lançamento da marca Gol-Home para o segmento de hidráulica e utilidades domésticas." },
+              { year: "2026", title: "FEICON", desc: "Participação na maior feira da construção civil da América Latina, apresentando inovações." },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.15 }}
+                whileHover={{ y: -5, borderColor: "hsl(0, 85%, 50%)" }}
+                className="p-8 rounded-2xl bg-background border border-border transition-all duration-300"
+              >
+                <Calendar className="text-primary mb-3" size={24} />
+                <h4 className="font-display text-4xl font-bold text-primary mb-1">{item.year}</h4>
+                <p className="font-bold text-sm tracking-wide mb-3">{item.title}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
