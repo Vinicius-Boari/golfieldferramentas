@@ -84,11 +84,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <h1 className="font-display text-3xl md:text-4xl font-bold tracking-wider">
-                <span className="text-primary">GOL</span>
-                <span className="text-foreground">FIELD</span>
-              </h1>
-              <p className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">Ferramentas Premium</p>
+              <img src="/images/golfield-logo.jpeg" alt="Golfield" className="h-12 md:h-14 rounded" />
             </motion.a>
 
             {/* Search */}
