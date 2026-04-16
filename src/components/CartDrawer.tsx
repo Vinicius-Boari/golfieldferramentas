@@ -7,6 +7,8 @@ import { toast } from "sonner";
 
 const CartDrawer = () => {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const generateWhatsAppMessage = () => {
     let msg = "Olá! Gostaria de fazer um orçamento:\n\n";
