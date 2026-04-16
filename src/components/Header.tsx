@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingCart, Menu, X, Mail, ChevronRight } from "lucide-react";
+import { Search, ShoppingCart, Menu, X, Mail, ChevronRight, UserCircle2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 
 const InstagramIcon = ({ size = 20, className }: { size?: number; className?: string }) => (
