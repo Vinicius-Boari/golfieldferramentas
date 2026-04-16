@@ -108,6 +108,8 @@ const HeroVideoPanel = ({ value, onChange }: Props) => {
         </h2>
         <p className="text-sm text-muted-foreground">
           Faça upload de um vídeo .mp4 ou .webm (máx. 100MB) para usar como fundo animado da seção principal.
+          <br />
+          <span className="text-foreground font-medium">Tamanho recomendado: 1920×1080 px</span> (Full HD, proporção 16:9) para cobrir toda a tela do hero sem perda de qualidade. Para telas maiores (4K), use <span className="text-foreground font-medium">3840×2160 px</span>.
         </p>
       </div>
 
