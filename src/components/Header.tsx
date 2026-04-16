@@ -202,8 +202,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             )}
           </AnimatePresence>
         </div>
-      </motion.header>
-    </>
+      </header>
+    </div>
   );
 };
 
