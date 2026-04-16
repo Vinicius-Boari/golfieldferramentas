@@ -120,8 +120,8 @@ const Footer = () => {
           variants={itemVariants}
           className="border-t border-border/50 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground"
         >
-          <p>© {new Date().getFullYear()} Golfield. Todos os direitos reservados.</p>
-          <p>Os valores são exclusivos para compras por atacado.</p>
+          <p className="text-primary-foreground">© {new Date().getFullYear()} Golfield. Todos os direitos reservados.</p>
+          <p className="text-primary-foreground">Os valores são exclusivos para compras por atacado.</p>
         </motion.div>
       </motion.div>
     </footer>
