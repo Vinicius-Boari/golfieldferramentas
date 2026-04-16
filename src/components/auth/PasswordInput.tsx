@@ -17,7 +17,7 @@ const PasswordInput = ({ id, label, value, onChange, error, placeholder = "â€¢â€
   return (
     <div>
       <label htmlFor={id} className="block text-sm font-medium text-foreground mb-1.5">{label}</label>
-      <div className="relative">
+      <div className="relative rounded-xl snake-border-focus">
         <input
           id={id}
           type={show ? "text" : "password"}

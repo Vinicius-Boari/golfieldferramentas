@@ -72,9 +72,9 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        className={`sticky top-0 z-50 transition-all duration-500 ${
+        className={`sticky top-0 z-50 transition-all duration-500 snake-border snake-border-slow ${
           scrolled
-            ? "glass shadow-2xl shadow-background/80 border-b border-border/30"
+            ? "glass shadow-2xl shadow-background/80"
             : "bg-background/95 backdrop-blur-sm"
         }`}
       >
@@ -95,8 +95,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             </motion.a>
 
             {/* Search */}
-            <div className="hidden md:flex flex-1 max-w-lg relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+            <div className="hidden md:flex flex-1 max-w-lg relative rounded-xl snake-border-focus">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground z-10" size={16} />
               <input
                 type="text"
                 placeholder="Buscar ferramentas..."
