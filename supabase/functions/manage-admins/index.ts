@@ -185,6 +185,53 @@ Deno.serve(async (req) => {
       });
     }
 
+    if (action === "update") {
+      if (!userId) {
+        return new Response(JSON.stringify({ error: "ID do usuário é obrigatório" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Cannot edit owner
+      const { data: targetRole } = await adminClient
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .single();
+
+      if (targetRole?.role === "owner") {
+        return new Response(JSON.stringify({ error: "Não é possível editar o dono do sistema" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const updateData: Record<string, string> = {};
+      if (email) updateData.email = email;
+      if (password) updateData.password = password;
+
+      if (Object.keys(updateData).length === 0) {
+        return new Response(JSON.stringify({ error: "Nenhum dado para atualizar" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const { error: updateError } = await adminClient.auth.admin.updateUserById(userId, updateData);
+
+      if (updateError) {
+        return new Response(JSON.stringify({ error: updateError.message }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     return new Response(JSON.stringify({ error: "Ação inválida" }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
