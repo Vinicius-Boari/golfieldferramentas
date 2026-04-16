@@ -229,3 +229,96 @@ html {
   background: hsl(0, 78%, 52%, 0.3);
   color: hsl(0, 0%, 100%);
 }
+
+/* ===== SNAKE BORDER SYSTEM ===== */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes snake-spin {
+  to { --angle: 360deg; }
+}
+
+/* Base snake border — normal speed 2.5s */
+.snake-border,
+.btn-golfield,
+.btn-outline-golfield,
+.glass-card,
+.section-badge,
+.category-chip.active {
+  position: relative;
+}
+
+.snake-border::before,
+.btn-golfield::before,
+.btn-outline-golfield::before,
+.glass-card::before,
+.section-badge::before,
+.category-chip.active::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from var(--angle), transparent 70%, #7f1f1f 80%, #e24b4a 90%, #7f1f1f 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: snake-spin 2.5s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Fast 1.5s — CTAs, auth forms, submit buttons */
+.snake-border-fast::before,
+.btn-golfield::before,
+.glass-card::before {
+  animation-duration: 1.5s;
+}
+
+/* Slow 4.5s — nav, footer, panels */
+.snake-border-slow::before {
+  animation-duration: 4.5s;
+}
+
+/* stat-card uses ::before for hover overlay, so snake uses ::after */
+.stat-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from var(--angle), transparent 70%, #7f1f1f 80%, #e24b4a 90%, #7f1f1f 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: snake-spin 2.5s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Focus-only snake border for input wrappers */
+.snake-border-focus {
+  position: relative;
+}
+.snake-border-focus::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from var(--angle), transparent 70%, #7f1f1f 80%, #e24b4a 90%, #7f1f1f 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: snake-spin 2s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.snake-border-focus:focus-within::before {
+  opacity: 1;
+}

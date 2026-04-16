@@ -44,7 +44,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
       style={{ rotateX: springRotateX, rotateY: springRotateY, transformPerspective: 800 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="group relative rounded-2xl border border-border/60 bg-card overflow-hidden transition-all duration-500 hover:border-primary/30 hover:shadow-[0_25px_60px_-15px_hsl(0,78%,52%,0.12)]"
+      className="group relative rounded-2xl bg-card overflow-hidden transition-all duration-500 hover:shadow-[0_25px_60px_-15px_hsl(0,78%,52%,0.12)] snake-border"
     >
       {/* Animated gradient overlay on hover */}
       <motion.div
