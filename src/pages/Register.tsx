@@ -14,7 +14,7 @@ const SEGMENTS = [
 
 const Register = () => {
   const [form, setForm] = useState({
-    cnpj: "", razaoSocial: "", nomeFantasia: "", segmento: "",
+    cnpj: "", inscricaoEstadual: "", razaoSocial: "", nomeFantasia: "", segmento: "",
     nomeResponsavel: "", cargo: "", email: "", telefone: "",
     senha: "", confirmarSenha: "", termos: false,
   });
