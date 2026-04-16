@@ -20,85 +20,55 @@ import toolDrillbit from "@/assets/tool-drillbit.png";
 export const FloatingToolVisual = ({ scrollScale }: { scrollScale?: any }) => {
   const tools = [
     // Center cluster
-    { src: toolWrench, alt: "Chave inglesa", size: "w-44 h-44 md:w-56 md:h-56", pos: "relative z-10", float: { y: [0, -18, 0] }, rotate3d: { rotateY: [0, 25, -18, 0], rotateX: [-8, 10, -8] }, dur: 12, floatDur: 5 },
-    { src: toolHammer, alt: "Martelo", size: "w-28 h-28 md:w-36 md:h-36", pos: "absolute -top-2 right-2 z-[5]", float: { y: [0, -20, 0], x: [0, 10, 0], rotate: [-8, 8, -8] }, rotate3d: { rotateY: [-12, 22, -12], rotateX: [6, -8, 6] }, dur: 14, floatDur: 7, delay: 1 },
-    { src: toolScrewdriver, alt: "Chave de fenda", size: "w-24 h-32 md:w-32 md:h-40", pos: "absolute bottom-0 -left-2 z-[5]", float: { y: [0, 16, 0], x: [0, -8, 0], rotate: [12, -6, 12] }, rotate3d: { rotateY: [15, -25, 15], rotateX: [-6, 10, -6] }, dur: 13, floatDur: 8, delay: 2 },
-    { src: toolPliers, alt: "Alicate", size: "w-28 h-28 md:w-36 md:h-36", pos: "absolute top-6 -left-4 z-[5]", float: { y: [0, -14, 0], x: [0, -10, 0], rotate: [-12, 4, -12] }, rotate3d: { rotateY: [-18, 15, -18], rotateX: [10, -10, 10] }, dur: 15, floatDur: 7.5, delay: 3 },
-    { src: toolTape, alt: "Trena", size: "w-24 h-24 md:w-32 md:h-32", pos: "absolute bottom-4 right-0 z-[5]", float: { y: [0, 18, 0], x: [0, 8, 0], rotate: [6, -10, 6] }, rotate3d: { rotateY: [10, -20, 10], rotateX: [-8, 8, -8] }, dur: 11, floatDur: 6.5, delay: 1.5 },
-    { src: toolDrillbit, alt: "Broca", size: "w-16 h-32 md:w-20 md:h-40", pos: "absolute top-1/2 -translate-y-1/2 -right-6 z-[4]", float: { y: [0, -12, 0], rotate: [20, 35, 20] }, rotate3d: { rotateY: [-8, 18, -8], rotateX: [5, -12, 5] }, dur: 16, floatDur: 9, delay: 4 },
+    { src: toolWrench, alt: "Chave inglesa", size: "w-44 h-44 md:w-56 md:h-56", pos: "relative z-10", float: { y: [0, -18, 0], rotate: [0, 8, -6, 0] }, dur: 9, delay: 0 },
+    { src: toolHammer, alt: "Martelo", size: "w-28 h-28 md:w-36 md:h-36", pos: "absolute -top-2 right-2 z-[5]", float: { y: [0, -20, 0], x: [0, 10, 0], rotate: [-8, 8, -8] }, dur: 11, delay: 1 },
+    { src: toolScrewdriver, alt: "Chave de fenda", size: "w-24 h-32 md:w-32 md:h-40", pos: "absolute bottom-0 -left-2 z-[5]", float: { y: [0, 16, 0], x: [0, -8, 0], rotate: [12, -6, 12] }, dur: 12, delay: 2 },
+    { src: toolPliers, alt: "Alicate", size: "w-28 h-28 md:w-36 md:h-36", pos: "absolute top-6 -left-4 z-[5]", float: { y: [0, -14, 0], x: [0, -10, 0], rotate: [-12, 4, -12] }, dur: 10, delay: 3 },
+    { src: toolTape, alt: "Trena", size: "w-24 h-24 md:w-32 md:h-32", pos: "absolute bottom-4 right-0 z-[5]", float: { y: [0, 18, 0], x: [0, 8, 0], rotate: [6, -10, 6] }, dur: 11, delay: 1.5 },
+    { src: toolDrillbit, alt: "Broca", size: "w-16 h-32 md:w-20 md:h-40", pos: "absolute top-1/2 -translate-y-1/2 -right-6 z-[4]", float: { y: [0, -12, 0], rotate: [20, 32, 20] }, dur: 13, delay: 4 },
     // Extra spread tools
-    { src: toolWrench, alt: "Chave inglesa 2", size: "w-20 h-20 md:w-28 md:h-28", pos: "absolute -top-16 left-[15%] z-[3]", float: { y: [0, -22, 0], x: [0, 6, 0], rotate: [10, -15, 10] }, rotate3d: { rotateY: [8, -20, 8], rotateX: [-5, 12, -5] }, dur: 17, floatDur: 8, delay: 0.5 },
-    { src: toolHammer, alt: "Martelo 2", size: "w-20 h-20 md:w-28 md:h-28", pos: "absolute -bottom-12 right-[18%] z-[3]", float: { y: [0, 14, 0], x: [0, -7, 0], rotate: [-6, 12, -6] }, rotate3d: { rotateY: [14, -18, 14], rotateX: [8, -6, 8] }, dur: 13, floatDur: 6, delay: 2.5 },
-    { src: toolPliers, alt: "Alicate 2", size: "w-16 h-16 md:w-24 md:h-24", pos: "absolute top-[10%] right-[25%] z-[3]", float: { y: [0, -16, 0], x: [0, 12, 0] }, rotate3d: { rotateY: [-15, 20, -15], rotateX: [4, -10, 4] }, dur: 18, floatDur: 9.5, delay: 1.8 },
-    { src: toolScrewdriver, alt: "Chave de fenda 2", size: "w-14 h-20 md:w-20 md:h-28", pos: "absolute bottom-[15%] left-[20%] z-[3]", float: { y: [0, 20, 0], rotate: [-15, 5, -15] }, rotate3d: { rotateY: [10, -22, 10], rotateX: [-7, 9, -7] }, dur: 14, floatDur: 7, delay: 3.5 },
-    { src: toolTape, alt: "Trena 2", size: "w-16 h-16 md:w-24 md:h-24", pos: "absolute -top-8 right-[5%] z-[3]", float: { y: [0, -14, 0], x: [0, -10, 0], rotate: [8, -8, 8] }, rotate3d: { rotateY: [-10, 16, -10], rotateX: [6, -8, 6] }, dur: 15, floatDur: 8.5, delay: 0.8 },
-    { src: toolDrillbit, alt: "Broca 2", size: "w-12 h-24 md:w-16 md:h-32", pos: "absolute bottom-[5%] right-[35%] z-[3]", float: { y: [0, -10, 0], rotate: [15, 30, 15] }, rotate3d: { rotateY: [-6, 14, -6], rotateX: [3, -10, 3] }, dur: 19, floatDur: 10, delay: 4.5 },
+    { src: toolWrench, alt: "Chave inglesa 2", size: "w-20 h-20 md:w-28 md:h-28", pos: "absolute -top-16 left-[15%] z-[3]", float: { y: [0, -22, 0], x: [0, 6, 0], rotate: [10, -15, 10] }, dur: 14, delay: 0.5 },
+    { src: toolHammer, alt: "Martelo 2", size: "w-20 h-20 md:w-28 md:h-28", pos: "absolute -bottom-12 right-[18%] z-[3]", float: { y: [0, 14, 0], x: [0, -7, 0], rotate: [-6, 12, -6] }, dur: 12, delay: 2.5 },
+    { src: toolPliers, alt: "Alicate 2", size: "w-16 h-16 md:w-24 md:h-24", pos: "absolute top-[10%] right-[25%] z-[3]", float: { y: [0, -16, 0], x: [0, 12, 0], rotate: [-8, 8, -8] }, dur: 13, delay: 1.8 },
+    { src: toolScrewdriver, alt: "Chave de fenda 2", size: "w-14 h-20 md:w-20 md:h-28", pos: "absolute bottom-[15%] left-[20%] z-[3]", float: { y: [0, 20, 0], rotate: [-15, 5, -15] }, dur: 12, delay: 3.5 },
+    { src: toolTape, alt: "Trena 2", size: "w-16 h-16 md:w-24 md:h-24", pos: "absolute -top-8 right-[5%] z-[3]", float: { y: [0, -14, 0], x: [0, -10, 0], rotate: [8, -8, 8] }, dur: 13, delay: 0.8 },
+    { src: toolDrillbit, alt: "Broca 2", size: "w-12 h-24 md:w-16 md:h-32", pos: "absolute bottom-[5%] right-[35%] z-[3]", float: { y: [0, -10, 0], rotate: [15, 28, 15] }, dur: 15, delay: 4.5 },
   ];
 
   return (
-    <motion.div style={{ scale: scrollScale }} className="relative w-full h-full flex items-center justify-center min-h-[500px]">
-      <motion.div
-        animate={{ scale: [1, 1.25, 1], opacity: [0.06, 0.16, 0.06] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute w-96 h-96 bg-primary rounded-full blur-[140px]"
-      />
-      <motion.div
-        animate={{ scale: [1.2, 0.85, 1.2], opacity: [0.03, 0.1, 0.03] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute w-72 h-72 bg-gold rounded-full blur-[120px] translate-x-16 translate-y-12"
-      />
+    <motion.div style={{ scale: scrollScale }} className="relative w-full h-full flex items-center justify-center min-h-[500px]" >
+      {/* Static gradient blobs (no per-frame blur recompute) */}
+      <div className="absolute w-96 h-96 bg-primary/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute w-72 h-72 bg-gold/[0.06] rounded-full blur-[120px] translate-x-16 translate-y-12 pointer-events-none" />
 
-      <motion.div animate={{ rotate: 360 }} transition={{ duration: 50, repeat: Infinity, ease: "linear" }} className="absolute w-[420px] h-[420px]">
-        <div className="absolute inset-0 rounded-full border border-border/8" />
+      {/* Decorative rings — single rotation, GPU-friendly */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+        className="absolute w-[420px] h-[420px] pointer-events-none will-change-transform"
+        style={{ transform: "translateZ(0)" }}
+      >
+        <div className="absolute inset-0 rounded-full border border-border/10" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-primary/25" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gold/20" />
-      </motion.div>
-      <motion.div animate={{ rotate: -360 }} transition={{ duration: 35, repeat: Infinity, ease: "linear" }} className="absolute w-[300px] h-[300px]">
-        <div className="absolute inset-0 rounded-full border border-primary/[0.05]" />
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-primary/20 blur-[1px]" />
       </motion.div>
 
       {tools.map((tool, i) => (
         <motion.div
           key={tool.alt}
-          animate={tool.rotate3d}
+          animate={tool.float}
           transition={{ duration: tool.dur, repeat: Infinity, ease: "easeInOut", delay: tool.delay || 0 }}
-          style={{ perspective: 1200, transformStyle: "preserve-3d" }}
-          className={tool.pos}
+          className={`${tool.pos} will-change-transform`}
+          style={{ transform: "translateZ(0)" }}
         >
-          <motion.div
-            animate={tool.float}
-            transition={{ duration: tool.floatDur, repeat: Infinity, ease: "easeInOut", delay: (tool.delay || 0) * 0.5 }}
-          >
-            <img
-              src={tool.src}
-              alt={tool.alt}
-              className={`${tool.size} object-contain drop-shadow-[0_10px_40px_rgba(0,0,0,0.6)]`}
-              width={512}
-              height={512}
-              {...(i === 0 ? { fetchPriority: "high" as const } : { loading: "lazy" as const, decoding: "async" as const })}
-            />
-          </motion.div>
+          <img
+            src={tool.src}
+            alt={tool.alt}
+            className={`${tool.size} object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.5)]`}
+            width={512}
+            height={512}
+            {...(i === 0 ? { fetchPriority: "high" as const } : { loading: "lazy" as const, decoding: "async" as const })}
+          />
         </motion.div>
-      ))}
-
-      {[...Array(6)].map((_, i) => (
-        <motion.div
-          key={`p${i}`}
-          animate={{
-            y: [0, -30 - i * 10, 0],
-            x: [0, (i % 2 === 0 ? 15 : -15), 0],
-            opacity: [0, 0.4, 0],
-          }}
-          transition={{ duration: 4 + i, repeat: Infinity, ease: "easeInOut", delay: i * 0.8 }}
-          className="absolute rounded-full bg-primary/30"
-          style={{
-            width: 3 + (i % 3),
-            height: 3 + (i % 3),
-            top: `${20 + i * 12}%`,
-            left: `${15 + i * 13}%`,
-          }}
-        />
       ))}
     </motion.div>
   );
