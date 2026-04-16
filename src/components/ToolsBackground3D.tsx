@@ -88,11 +88,11 @@ function FloatingTool({ position, rotation, speed, type, scale }: FloatingToolPr
   return (
     <mesh ref={ref} position={position} scale={scale} geometry={geometry}>
       <meshStandardMaterial
-        color="#ffffff"
+        color="#ff3333"
         transparent
-        opacity={0.04}
-        roughness={0.8}
-        metalness={0.2}
+        opacity={0.12}
+        roughness={0.5}
+        metalness={0.5}
       />
     </mesh>
   );
