@@ -18,7 +18,7 @@ const CartDrawer = () => {
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const validateCoupon = useValidateCoupon();
-  const [profile, setProfile] = useStateReact<{ nome_responsavel?: string; telefone?: string; email?: string } | null>(null);
+  const [profile, setProfile] = useState<{ nome_responsavel?: string; telefone?: string; email?: string } | null>(null);
 
   // Load profile data for template variables when authenticated
   useEffect(() => {
