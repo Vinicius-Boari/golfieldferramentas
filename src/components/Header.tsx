@@ -35,7 +35,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50">
+    <>
       {/* Minimal top bar */}
       <motion.div
         initial={{ y: -40, opacity: 0 }}
@@ -60,7 +60,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             <span className="text-border">|</span>
             <a href="https://www.instagram.com/golfield.ferramentas/" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-foreground transition-colors">
-              <InstagramIcon size={12} className="text-primary-foreground bg-secondary" />
+              <InstagramIcon size={12} className="bg-primary-foreground text-primary-foreground" />
               <span className="text-primary-foreground">@golfield.ferramentas</span>
             </a>
           </div>
@@ -68,10 +68,13 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
       </motion.div>
 
       {/* Main header */}
-      <header
-        className={`transition-all duration-500 snake-border snake-border-slow ${
+      <motion.header
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        className={`sticky top-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "glass shadow-2xl shadow-background/80"
+            ? "glass shadow-2xl shadow-background/80 border-b border-border/30"
             : "bg-background/95 backdrop-blur-sm"
         }`}
       >
@@ -92,8 +95,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             </motion.a>
 
             {/* Search */}
-            <div className="hidden md:flex flex-1 max-w-lg relative rounded-xl snake-border-focus">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground z-10" size={16} />
+            <div className="hidden md:flex flex-1 max-w-lg relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
               <input
                 type="text"
                 placeholder="Buscar ferramentas..."
@@ -124,7 +127,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 whileTap={{ scale: 0.9 }}
                 className="hidden sm:flex p-2.5 rounded-xl text-muted-foreground hover:text-[hsl(142,70%,45%)] hover:bg-[hsl(142,70%,45%,0.08)] transition-all duration-300"
               >
-                <WhatsAppIcon size={18} className="text-primary-foreground" />
+                <WhatsAppIcon size={18} />
               </motion.a>
 
               <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
@@ -202,8 +205,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             )}
           </AnimatePresence>
         </div>
-      </header>
-    </div>
+      </motion.header>
+    </>
   );
 };
 

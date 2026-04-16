@@ -52,20 +52,18 @@ const Login = () => {
         {/* CNPJ */}
         <div>
           <label htmlFor="cnpj" className="block text-sm font-medium text-foreground mb-1.5">CNPJ</label>
-          <div className="rounded-xl snake-border-focus">
-            <input
-              id="cnpj"
-              type="text"
-              inputMode="numeric"
-              value={cnpj}
-              onChange={(e) => setCnpj(formatCNPJ(e.target.value))}
-              onBlur={() => { if (cnpj && !validateCNPJ(cnpj)) setErrors(prev => ({ ...prev, cnpj: "CNPJ inválido" })); else setErrors(prev => { const { cnpj: _, ...rest } = prev; return rest; }); }}
-              placeholder="XX.XXX.XXX/XXXX-XX"
-              className={`w-full px-4 py-3 rounded-xl bg-secondary/60 border text-foreground placeholder:text-muted-foreground text-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/40 ${
-                errors.cnpj ? "border-destructive" : "border-border/50 focus:border-primary/60"
-              }`}
-            />
-          </div>
+          <input
+            id="cnpj"
+            type="text"
+            inputMode="numeric"
+            value={cnpj}
+            onChange={(e) => setCnpj(formatCNPJ(e.target.value))}
+            onBlur={() => { if (cnpj && !validateCNPJ(cnpj)) setErrors(prev => ({ ...prev, cnpj: "CNPJ inválido" })); else setErrors(prev => { const { cnpj: _, ...rest } = prev; return rest; }); }}
+            placeholder="XX.XXX.XXX/XXXX-XX"
+            className={`w-full px-4 py-3 rounded-xl bg-secondary/60 border text-foreground placeholder:text-muted-foreground text-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/40 ${
+              errors.cnpj ? "border-destructive" : "border-border/50 focus:border-primary/60"
+            }`}
+          />
           {errors.cnpj && <p className="text-destructive text-xs mt-1">{errors.cnpj}</p>}
         </div>
 

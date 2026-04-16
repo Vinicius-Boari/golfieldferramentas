@@ -135,7 +135,7 @@ const Hero = () => {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
               className="mb-12"
             >
-              <div className="relative group w-fit snake-border">
+              <div className="relative group w-fit">
                 <motion.div
                   animate={{ opacity: [0.08, 0.18, 0.08], scale: [1, 1.05, 1] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
