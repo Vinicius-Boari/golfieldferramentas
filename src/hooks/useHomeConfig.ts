@@ -193,6 +193,19 @@ export const defaultHomeConfig: HomeConfig = {
     whatsappUrl: "https://wa.me/5511959409051",
     categories: ["Alicates", "Brocas", "Discos", "Chaves", "Trenas", "Torneiras", "Martelos", "Serras"],
   },
+  systemSettings: {
+    whatsappMessage: {
+      enabled: false,
+      template: DEFAULT_WHATSAPP_TEMPLATE,
+    },
+    maintenance: {
+      enabled: false,
+      title: "Estamos em manutenção",
+      description: "Estamos fazendo melhorias no sistema. Voltaremos em breve!",
+      imageUrl: "",
+      allowAdminAccess: true,
+    },
+  },
 };
 
 export const useHomeConfig = () => {
@@ -219,6 +232,16 @@ export const useHomeConfig = () => {
         ctaSection: { ...defaultHomeConfig.ctaSection, ...(saved.ctaSection ?? {}) },
         aboutSection: { ...defaultHomeConfig.aboutSection, ...(saved.aboutSection ?? {}) },
         footer: { ...defaultHomeConfig.footer, ...(saved.footer ?? {}) },
+        systemSettings: {
+          whatsappMessage: {
+            ...defaultHomeConfig.systemSettings.whatsappMessage,
+            ...(saved.systemSettings?.whatsappMessage ?? {}),
+          },
+          maintenance: {
+            ...defaultHomeConfig.systemSettings.maintenance,
+            ...(saved.systemSettings?.maintenance ?? {}),
+          },
+        },
       };
     },
     staleTime: 1000 * 60 * 5,
