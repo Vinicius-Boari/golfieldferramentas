@@ -49,6 +49,9 @@ const Footer = ({ config }: FooterProps) => {
   const waUrl = config?.whatsappUrl || "https://wa.me/5511959409051";
   const cats = config?.categories || ["Alicates", "Brocas", "Discos", "Chaves", "Trenas", "Torneiras", "Martelos", "Serras"];
   const waPhone = waUrl.includes("wa.me") ? waUrl : "https://wa.me/5511959409051";
+
+  return (
+    <footer id="contato" className="relative border-t border-border/50 bg-card/30">
       {/* Top accent line */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
