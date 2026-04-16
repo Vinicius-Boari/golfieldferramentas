@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
+import Hero, { FloatingToolVisual } from "@/components/Hero";
 import CategoryNav from "@/components/CategoryNav";
 import ProductCard from "@/components/ProductCard";
 import CartDrawer from "@/components/CartDrawer";
@@ -185,6 +185,18 @@ const IndexContent = () => {
               className="absolute top-20 left-[15%] w-16 h-16 border border-primary-foreground/10 rounded-xl hidden sm:block" />
             <motion.div animate={{ y: [0, 20, 0], rotate: [0, -60, 0] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 3 }}
               className="absolute bottom-20 right-[20%] w-10 h-10 border border-primary-foreground/10 rounded-full hidden sm:block" />
+
+            {/* Floating tools — decorative */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+              className="hidden md:block absolute inset-0 pointer-events-none opacity-90 mix-blend-screen"
+              aria-hidden="true"
+            >
+              <FloatingToolVisual />
+            </motion.div>
             <div className="container mx-auto px-4 relative z-10 text-center">
               <motion.div initial={{ opacity: 0, y: 40, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}>
