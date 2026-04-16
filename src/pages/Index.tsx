@@ -52,6 +52,7 @@ const IndexContent = () => {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+      <div className="h-[68px] md:h-[80px]" />
       <Hero />
 
       {/* Trust bar */}
