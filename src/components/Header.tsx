@@ -214,7 +214,28 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                       onChange={e => onSearchChange(e.target.value)}
                     />
                   </div>
-                  <div className="flex flex-col gap-1 text-sm">
+                   <div className="flex flex-col gap-1 text-sm">
+                    {[
+                      { label: "Sobre Nós", target: "sobre" },
+                      { label: "Contato", target: "contato" },
+                    ].map((item) => (
+                      <button
+                        key={item.target}
+                        onClick={() => {
+                          const el = document.getElementById(item.target);
+                          if (el) {
+                            const offset = 80;
+                            const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                            window.scrollTo({ top, behavior: "smooth" });
+                          }
+                          setMobileMenuOpen(false);
+                        }}
+                        className="flex items-center justify-between text-muted-foreground hover:text-foreground transition-colors p-3 rounded-xl hover:bg-secondary"
+                      >
+                        <span>{item.label}</span>
+                        <ChevronRight size={14} />
+                      </button>
+                    ))}
                     <a href="mailto:paula.profield@hotmail.com" className="flex items-center justify-between text-muted-foreground hover:text-foreground transition-colors p-3 rounded-xl hover:bg-secondary">
                       <span className="flex items-center gap-2"><Mail size={14} /> paula.profield@hotmail.com</span>
                       <ChevronRight size={14} />
