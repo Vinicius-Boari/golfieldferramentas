@@ -60,7 +60,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             <span className="text-border">|</span>
             <a href="https://www.instagram.com/golfield.ferramentas/" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-foreground transition-colors">
-              <InstagramIcon size={12} className="bg-primary-foreground text-primary-foreground" />
+              <InstagramIcon size={12} className="text-primary-foreground bg-secondary" />
               <span className="text-primary-foreground">@golfield.ferramentas</span>
             </a>
           </div>
