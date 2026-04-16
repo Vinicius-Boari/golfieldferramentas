@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, Clock, ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const InstagramIcon = ({ size = 20, className }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -121,6 +122,9 @@ const Footer = () => {
           className="border-t border-border/50 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground"
         >
           <p className="text-primary-foreground">© {new Date().getFullYear()} Golfield. Todos os direitos reservados.</p>
+          <Link to="/admin/login" className="text-muted-foreground/40 hover:text-muted-foreground transition-colors cursor-pointer text-[10px]">
+            Painel
+          </Link>
           <p className="text-primary-foreground">Os valores são exclusivos para compras por atacado.</p>
         </motion.div>
       </motion.div>
