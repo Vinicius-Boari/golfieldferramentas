@@ -49,7 +49,7 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const fields = ["cnpj", "razaoSocial", "nomeResponsavel", "cargo", "email", "telefone", "senha", "confirmarSenha", "termos"];
+    const fields = ["cnpj", "inscricaoEstadual", "razaoSocial", "nomeResponsavel", "cargo", "email", "telefone", "senha", "confirmarSenha", "termos"];
     const newErrors: Record<string, string> = {};
     fields.forEach((f) => { const err = validateField(f); if (err) newErrors[f] = err; });
     setErrors(newErrors);
