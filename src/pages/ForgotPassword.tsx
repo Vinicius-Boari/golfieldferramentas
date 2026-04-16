@@ -257,13 +257,13 @@ const ForgotPassword = () => {
               s === step
                 ? "bg-primary text-primary-foreground"
                 : s < step
-                ? "bg-green-500 text-white"
+                ? "bg-primary/80 text-primary-foreground"
                 : "bg-secondary text-muted-foreground"
             }`}
           >
             {s < step ? "✓" : s}
           </div>
-          {s < 3 && <div className={`w-8 h-0.5 ${s < step ? "bg-green-500" : "bg-border"}`} />}
+          {s < 3 && <div className={`w-8 h-0.5 ${s < step ? "bg-primary/80" : "bg-border"}`} />}
         </div>
       ))}
     </div>
@@ -285,8 +285,8 @@ const ForgotPassword = () => {
           animate={{ opacity: 1, scale: 1 }}
           className="text-center space-y-5"
         >
-          <div className="mx-auto w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center">
-            <CheckCircle2 className="text-green-500" size={36} />
+          <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+            <CheckCircle2 className="text-primary" size={36} />
           </div>
           <p className="text-muted-foreground text-sm">
             Sua senha foi redefinida com sucesso. Você será redirecionado para o login em instantes...

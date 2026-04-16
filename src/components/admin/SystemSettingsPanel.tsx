@@ -113,15 +113,17 @@ const SystemSettingsPanel = ({ value, onChange, userId }: Props) => {
     setResetLoading(true);
     setResetStatus(null);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/esqueci-senha`,
+      // Uses the same OTP flow as /esqueci-senha — sends a 6-digit code by email
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { shouldCreateUser: false },
       });
       if (error) throw error;
-      setResetStatus({ type: "success", message: `Email de reset enviado para ${email} (se cadastrado).` });
-      toast.success("Email de teste enviado");
+      setResetStatus({ type: "success", message: `Código de verificação enviado para ${email} (se cadastrado).` });
+      toast.success("Código de teste enviado");
     } catch (err: any) {
-      setResetStatus({ type: "error", message: err.message || "Erro ao enviar email" });
-      toast.error(err.message || "Erro ao enviar email");
+      setResetStatus({ type: "error", message: err.message || "Erro ao enviar código" });
+      toast.error(err.message || "Erro ao enviar código");
     } finally {
       setResetLoading(false);
     }
