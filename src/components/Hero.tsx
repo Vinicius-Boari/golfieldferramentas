@@ -182,9 +182,7 @@ const Hero = ({ config, videoConfig }: HeroProps) => {
       />
 
       <motion.div style={{ y: parallaxY }} className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-1 gap-10 items-center">
-          <div className="max-w-3xl">
-          <div>
+        <div className="max-w-3xl mx-auto lg:mx-0">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -243,7 +241,6 @@ const Hero = ({ config, videoConfig }: HeroProps) => {
                 <WhatsAppIcon size={18} /> {config?.secondaryButtonText || "Falar com Vendedor"}
               </motion.a>
             </motion.div>
-          </div>
         </div>
 
         <motion.div
