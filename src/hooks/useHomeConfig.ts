@@ -87,10 +87,16 @@ export interface QuoteAccessConfig {
   requireLoginForWhatsApp: boolean;
 }
 
+export interface MobileExperienceConfig {
+  /** When true, animations and videos are shown on mobile/tablet. When false, they are disabled on mobile/tablet only (desktop unaffected). */
+  enableAnimationsAndVideos: boolean;
+}
+
 export interface SystemSettingsConfig {
   whatsappMessage: WhatsAppMessageConfig;
   maintenance: MaintenanceConfig;
   quoteAccess: QuoteAccessConfig;
+  mobileExperience: MobileExperienceConfig;
 }
 
 export interface HomeConfig {
@@ -213,6 +219,9 @@ export const defaultHomeConfig: HomeConfig = {
     quoteAccess: {
       requireLoginForWhatsApp: true,
     },
+    mobileExperience: {
+      enableAnimationsAndVideos: true,
+    },
   },
 };
 
@@ -252,6 +261,10 @@ export const useHomeConfig = () => {
           quoteAccess: {
             ...defaultHomeConfig.systemSettings.quoteAccess,
             ...(saved.systemSettings?.quoteAccess ?? {}),
+          },
+          mobileExperience: {
+            ...defaultHomeConfig.systemSettings.mobileExperience,
+            ...(saved.systemSettings?.mobileExperience ?? {}),
           },
         },
       };

@@ -233,6 +233,30 @@
     .gradient-border-animated::before { animation: none; }
   }
 
+  /* =========================================================
+     Mobile motion kill-switch
+     Controlled from Admin > Sistema > "Ativar animações e vídeos no mobile".
+     When `html.no-mobile-motion` is set, neutralize ALL CSS animations,
+     transitions and transforms — but ONLY on mobile/tablet (<768px).
+     Desktop is never affected.
+     ========================================================= */
+  @media (max-width: 767px) {
+    html.no-mobile-motion *,
+    html.no-mobile-motion *::before,
+    html.no-mobile-motion *::after {
+      animation-duration: 0.001ms !important;
+      animation-delay: 0ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      transition-delay: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+    /* Hide decorative videos on mobile when motion is disabled */
+    html.no-mobile-motion video[data-decorative="true"] {
+      display: none !important;
+    }
+  }
+
   .stat-card {
     @apply relative p-6 rounded-2xl overflow-hidden transition-all duration-500;
     background: linear-gradient(145deg, hsl(220, 18%, 9%), hsl(220, 18%, 6%));

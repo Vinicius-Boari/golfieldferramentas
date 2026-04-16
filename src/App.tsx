@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import MaintenanceGate from "@/components/MaintenanceGate";
+import { useApplyMobileMotionClass } from "@/hooks/useMobileMotion";
 import Index from "./pages/Index.tsx";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
@@ -17,30 +18,38 @@ import AdminCoupons from "./pages/AdminCoupons.tsx";
 
 const queryClient = new QueryClient();
 
+const AppShell = () => {
+  useApplyMobileMotionClass();
+  return (
+    <BrowserRouter>
+      <MaintenanceGate>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Register />} />
+          <Route path="/esqueci-senha" element={<ForgotPassword />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/produtos" element={<AdminProducts />} />
+          <Route path="/admin/home" element={<AdminHome />} />
+          <Route path="/admin/usuarios" element={<AdminUsers />} />
+          <Route path="/admin/cupons" element={<AdminCoupons />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </MaintenanceGate>
+    </BrowserRouter>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <MaintenanceGate>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/cadastro" element={<Register />} />
-            <Route path="/esqueci-senha" element={<ForgotPassword />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/produtos" element={<AdminProducts />} />
-            <Route path="/admin/home" element={<AdminHome />} />
-            <Route path="/admin/usuarios" element={<AdminUsers />} />
-            <Route path="/admin/cupons" element={<AdminCoupons />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </MaintenanceGate>
-      </BrowserRouter>
+      <AppShell />
     </TooltipProvider>
   </QueryClientProvider>
 );
 
 export default App;
+
