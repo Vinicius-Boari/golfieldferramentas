@@ -29,6 +29,7 @@ const Register = () => {
     const v = form[field as keyof typeof form];
     switch (field) {
       case "cnpj": return !v ? "Informe o CNPJ" : !validateCNPJ(v as string) ? "CNPJ inválido" : "";
+      case "inscricaoEstadual": return !v ? "Informe a Inscrição Estadual (IE)" : "";
       case "razaoSocial": return !v ? "Informe a Razão Social" : "";
       case "nomeResponsavel": return !v ? "Informe o nome do responsável" : "";
       case "cargo": return !v ? "Informe o cargo" : "";
