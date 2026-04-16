@@ -176,7 +176,27 @@ const SystemSettingsPanel = ({ value, onChange, userId }: Props) => {
         </div>
       </SectionCard>
 
-      {/* WhatsApp Message Customization */}
+      {/* Mobile Animations & Videos */}
+      <SectionCard
+        title="Experiência Mobile"
+        icon={Smartphone}
+        action={
+          <Toggle
+            checked={mx.enableAnimationsAndVideos}
+            onChange={v => onChange({ ...value, mobileExperience: { ...mx, enableAnimationsAndVideos: v } })}
+            label={mx.enableAnimationsAndVideos ? "Animações ativas" : "Desativadas no mobile"}
+          />
+        }
+      >
+        <p className="text-xs text-muted-foreground -mt-1">
+          <strong>Ativar animações e vídeos no mobile.</strong> Controla animações decorativas, transições, gradientes animados, vídeos de fundo e efeitos visuais em celulares e tablets (telas com menos de 768px). O desktop nunca é afetado.
+        </p>
+        <div className={`rounded-xl border px-3 py-2.5 text-xs ${mx.enableAnimationsAndVideos ? "border-primary/30 bg-primary/5 text-foreground/80" : "border-border bg-card text-muted-foreground"}`}>
+          {mx.enableAnimationsAndVideos
+            ? "📱 Mobile e tablet exibem todas as animações e vídeos normalmente."
+            : "🪶 Mobile e tablet ficam mais leves: animações neutralizadas e vídeos decorativos ocultos. Desktop permanece inalterado."}
+        </div>
+      </SectionCard>
       <SectionCard
         title="Mensagem WhatsApp (orçamento)"
         icon={MessageCircle}
