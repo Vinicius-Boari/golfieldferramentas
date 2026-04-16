@@ -26,9 +26,29 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } }
 };
 
-const Footer = () => {
-  return (
-    <footer id="contato" className="relative border-t border-border/50 bg-card/30">
+interface FooterProps {
+  config?: {
+    description?: string;
+    phone?: string;
+    email?: string;
+    location?: string;
+    hours?: string;
+    instagramUrl?: string;
+    whatsappUrl?: string;
+    categories?: string[];
+  };
+}
+
+const Footer = ({ config }: FooterProps) => {
+  const desc = config?.description || "Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado.";
+  const phone = config?.phone || "(11) 95940-9051";
+  const email = config?.email || "paula.profield@hotmail.com";
+  const location = config?.location || "São Paulo - SP, Brasil";
+  const hours = config?.hours || "Seg a Sex: 7h às 18h";
+  const igUrl = config?.instagramUrl || "https://www.instagram.com/golfield.ferramentas/";
+  const waUrl = config?.whatsappUrl || "https://wa.me/5511959409051";
+  const cats = config?.categories || ["Alicates", "Brocas", "Discos", "Chaves", "Trenas", "Torneiras", "Martelos", "Serras"];
+  const waPhone = waUrl.includes("wa.me") ? waUrl : "https://wa.me/5511959409051";
       {/* Top accent line */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
