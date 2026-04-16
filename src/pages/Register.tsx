@@ -90,7 +90,12 @@ const Register = () => {
           {errors.cnpj && <p className="text-destructive text-xs mt-1">{errors.cnpj}</p>}
         </div>
 
-        {/* Razão Social + Nome Fantasia */}
+        {/* Inscrição Estadual */}
+        <div>
+          <label htmlFor="inscricaoEstadual" className="block text-sm font-medium text-foreground mb-1.5">Inscrição Estadual (IE) *</label>
+          <input id="inscricaoEstadual" value={form.inscricaoEstadual} onChange={(e) => set("inscricaoEstadual", e.target.value)} onBlur={() => handleBlur("inscricaoEstadual")} placeholder="Ex: 123.456.789.012" className={inputClass("inscricaoEstadual")} />
+          {errors.inscricaoEstadual && <p className="text-destructive text-xs mt-1">{errors.inscricaoEstadual}</p>}
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="razaoSocial" className="block text-sm font-medium text-foreground mb-1.5">Razão Social *</label>
