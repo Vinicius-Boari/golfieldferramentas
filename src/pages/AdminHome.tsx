@@ -492,6 +492,10 @@ const AdminHome = () => {
                       <button onClick={() => updateConfig(c => ({ ...c, footer: { ...c.footer, categories: [...c.footer.categories, ""] } }))}
                         className="flex items-center gap-2 text-xs text-primary hover:underline"><Plus size={12} /> Adicionar categoria</button>
                     </div>
+                  </div>
+                </div>
+              )}
+
               {/* SYSTEM SETTINGS TAB */}
               {activeTab === "system" && (
                 <SystemSettingsPanel
@@ -499,9 +503,6 @@ const AdminHome = () => {
                   onChange={next => updateConfig(c => ({ ...c, systemSettings: next }))}
                   userId={user?.id}
                 />
-              )}
-            </div>
-          </div>
               )}
             </div>
           </div>

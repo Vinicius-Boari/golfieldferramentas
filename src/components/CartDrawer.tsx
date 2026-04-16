@@ -4,12 +4,11 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useValidateCoupon } from "@/hooks/useCoupons";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { renderWhatsAppTemplate } from "@/components/admin/SystemSettingsPanel";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState as useStateReact } from "react";
 
 const CartDrawer = () => {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart, appliedCoupon, setAppliedCoupon, finalPrice } = useCart();
