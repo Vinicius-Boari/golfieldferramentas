@@ -1,9 +1,22 @@
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus } from "lucide-react";
+import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus, Building2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { formatCNPJ, formatPhone } from "@/lib/cnpj";
 
 const CartDrawer = () => {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart } = useCart();
+
+  const [customerInfo, setCustomerInfo] = useState({
+    cnpj: "",
+    inscricaoEstadual: "",
+    razaoSocial: "",
+    telefone: "",
+    email: "",
+  });
+
+  const setField = (field: string, value: string) =>
+    setCustomerInfo((prev) => ({ ...prev, [field]: value }));
 
   const generateWhatsAppMessage = () => {
     let msg = "Olá! Gostaria de fazer um orçamento:\n\n";
@@ -11,6 +24,15 @@ const CartDrawer = () => {
       msg += `• ${item.product.name} — ${item.quantity}un x R$${item.product.price.toFixed(2).replace('.', ',')} = R$${(item.product.price * item.quantity).toFixed(2).replace('.', ',')}\n`;
     });
     msg += `\n*Total: R$ ${totalPrice.toFixed(2).replace('.', ',')}*`;
+
+    msg += "\n\n———————————————\n";
+    msg += "*Dados Cadastrais:*\n\n";
+    msg += `📋 *CNPJ:* ${customerInfo.cnpj || "Não informado"}\n`;
+    msg += `📋 *Inscrição Estadual:* ${customerInfo.inscricaoEstadual || "Não informado"}\n`;
+    msg += `🏢 *Razão Social:* ${customerInfo.razaoSocial || "Não informado"}\n`;
+    msg += `📞 *Telefone:* ${customerInfo.telefone || "Não informado"}\n`;
+    msg += `📧 *E-mail:* ${customerInfo.email || "Não informado"}`;
+
     return encodeURIComponent(msg);
   };
 
