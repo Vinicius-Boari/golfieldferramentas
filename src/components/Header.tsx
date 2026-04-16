@@ -46,7 +46,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
         <div className="container mx-auto px-4 flex items-center justify-between text-muted-foreground text-xs">
           <div className="flex items-center gap-4">
             <a href="https://wa.me/5511959409051" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-foreground transition-colors">
-              <WhatsAppIcon size={12} />
+              <WhatsAppIcon size={12} className="text-primary-foreground" />
               <span className="text-primary-foreground">(11) 95940-9051</span>
             </a>
             <span className="hidden sm:inline text-border">|</span>
@@ -60,7 +60,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             <span className="text-border">|</span>
             <a href="https://www.instagram.com/golfield.ferramentas/" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-foreground transition-colors">
-              <InstagramIcon size={12} className="text-primary-foreground" />
+              <InstagramIcon size={12} className="bg-primary-foreground text-primary-foreground" />
               <span className="text-primary-foreground">@golfield.ferramentas</span>
             </a>
           </div>
@@ -116,7 +116,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 whileTap={{ scale: 0.9 }}
                 className="hidden sm:flex p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
               >
-                <InstagramIcon size={18} />
+                <InstagramIcon size={18} className="bg-primary-foreground text-primary-foreground" />
               </motion.a>
 
               <motion.a
