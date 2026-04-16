@@ -60,7 +60,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             <span className="text-border">|</span>
             <a href="https://www.instagram.com/golfield.ferramentas/" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-foreground transition-colors">
-              <InstagramIcon size={12} className="bg-primary-foreground text-primary-foreground" />
+              <InstagramIcon size={12} className="text-primary-foreground bg-secondary" />
               <span className="text-primary-foreground">@golfield.ferramentas</span>
             </a>
           </div>
@@ -127,7 +127,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 whileTap={{ scale: 0.9 }}
                 className="hidden sm:flex p-2.5 rounded-xl text-muted-foreground hover:text-[hsl(142,70%,45%)] hover:bg-[hsl(142,70%,45%,0.08)] transition-all duration-300"
               >
-                <WhatsAppIcon size={18} />
+                <WhatsAppIcon size={18} className="text-primary-foreground" />
               </motion.a>
 
               <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
