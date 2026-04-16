@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Loader2, MessageCircle, Power, Mail, Send, Eye, RotateCcw, Image as ImageIcon, Upload, Link2 } from "lucide-react";
+import { useMemo, useState, type ComponentType } from "react";
+import { Loader2, MessageCircle, Power, Mail, Send, Eye, RotateCcw, Upload, Link2, type LucideProps } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -30,14 +30,15 @@ export const renderWhatsAppTemplate = (
 ): string => {
   let out = template;
   Object.entries(data).forEach(([key, val]) => {
-    out = out.replaceAll(`{${key}}`, val ?? "");
+    const safe = (val ?? "").toString();
+    out = out.split(`{${key}}`).join(safe);
   });
   return out;
 };
 
 const SectionCard = ({ title, icon: Icon, children, action }: {
   title: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: ComponentType<LucideProps>;
   children: React.ReactNode;
   action?: React.ReactNode;
 }) => (
