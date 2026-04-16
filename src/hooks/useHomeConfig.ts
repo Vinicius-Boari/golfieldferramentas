@@ -83,9 +83,14 @@ export interface MaintenanceConfig {
   allowAdminAccess: boolean;
 }
 
+export interface QuoteAccessConfig {
+  requireLoginForWhatsApp: boolean;
+}
+
 export interface SystemSettingsConfig {
   whatsappMessage: WhatsAppMessageConfig;
   maintenance: MaintenanceConfig;
+  quoteAccess: QuoteAccessConfig;
 }
 
 export interface HomeConfig {
@@ -205,6 +210,9 @@ export const defaultHomeConfig: HomeConfig = {
       imageUrl: "",
       allowAdminAccess: true,
     },
+    quoteAccess: {
+      requireLoginForWhatsApp: true,
+    },
   },
 };
 
@@ -240,6 +248,10 @@ export const useHomeConfig = () => {
           maintenance: {
             ...defaultHomeConfig.systemSettings.maintenance,
             ...(saved.systemSettings?.maintenance ?? {}),
+          },
+          quoteAccess: {
+            ...defaultHomeConfig.systemSettings.quoteAccess,
+            ...(saved.systemSettings?.quoteAccess ?? {}),
           },
         },
       };
