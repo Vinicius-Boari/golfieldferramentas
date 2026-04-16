@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingCart, Menu, X, Mail, ChevronRight } from "lucide-react";
+import { Search, ShoppingCart, Menu, X, Mail, ChevronRight, UserCircle2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 
 const InstagramIcon = ({ size = 20, className }: { size?: number; className?: string }) => (
@@ -128,6 +129,15 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               >
                 <WhatsAppIcon size={18} />
               </motion.a>
+
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <Link
+                  to="/login"
+                  className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300 inline-flex"
+                >
+                  <UserCircle2 size={20} className="text-primary-foreground" />
+                </Link>
+              </motion.div>
 
               <motion.button
                 onClick={() => setIsOpen(true)}
