@@ -96,7 +96,24 @@ const FloatingToolVisual = ({ scrollScale }: { scrollScale: any }) => {
   );
 };
 
-const Hero = () => {
+interface HeroProps {
+  config?: {
+    logoImage?: string;
+    badgeText?: string;
+    titleLine1?: string;
+    titleLine2?: string;
+    titleLine3?: string;
+    description?: string;
+    minOrderText?: string;
+    ctaButtonText?: string;
+    ctaButtonLink?: string;
+    secondaryButtonText?: string;
+    secondaryButtonLink?: string;
+    stats?: { label: string; desc: string }[];
+  };
+}
+
+const Hero = ({ config }: HeroProps) => {
   const { scrollY } = useScroll();
   const isMobile = useIsMobile();
   const parallaxY = useTransform(scrollY, [0, 600], [0, isMobile ? 40 : 120]);
