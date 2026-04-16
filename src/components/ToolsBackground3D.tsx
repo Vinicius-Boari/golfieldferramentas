@@ -124,8 +124,8 @@ function Scene() {
 
   return (
     <>
-      <ambientLight intensity={0.3} />
-      <directionalLight position={[5, 5, 5]} intensity={0.2} />
+      <ambientLight intensity={0.8} />
+      <directionalLight position={[5, 5, 5]} intensity={0.6} />
       {tools.map((tool, i) => (
         <FloatingTool key={i} {...tool} />
       ))}
