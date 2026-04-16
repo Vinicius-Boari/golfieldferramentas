@@ -1,25 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus, AlertCircle, LogIn } from "lucide-react";
+import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { useAuth } from "@/context/AuthContext";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import { toast } from "sonner";
 
 const CartDrawer = () => {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart } = useCart();
-  const { user, profile } = useAuth();
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-
-  const validateProfileForQuote = (): string[] => {
-    if (!profile) return ["Perfil não encontrado. Faça login novamente."];
-    const missing: string[] = [];
-    if (!profile.cnpj) missing.push("CNPJ");
-    if (!profile.razao_social) missing.push("Razão Social");
-    if (!profile.telefone) missing.push("Telefone");
-    if (!profile.email) missing.push("E-mail");
-    return missing;
-  };
 
   const generateWhatsAppMessage = () => {
     let msg = "Olá! Gostaria de fazer um orçamento:\n\n";
@@ -27,33 +11,7 @@ const CartDrawer = () => {
       msg += `• ${item.product.name} — ${item.quantity}un x R$${item.product.price.toFixed(2).replace('.', ',')} = R$${(item.product.price * item.quantity).toFixed(2).replace('.', ',')}\n`;
     });
     msg += `\n*Total: R$ ${totalPrice.toFixed(2).replace('.', ',')}*`;
-
-    if (profile) {
-      msg += `\n\n--- Dados da Empresa ---`;
-      msg += `\n*CNPJ:* ${profile.cnpj}`;
-      if (profile.inscricao_estadual) msg += `\n*Inscrição Estadual:* ${profile.inscricao_estadual}`;
-      msg += `\n*Razão Social:* ${profile.razao_social}`;
-      msg += `\n*Telefone:* ${profile.telefone}`;
-      msg += `\n*E-mail:* ${profile.email}`;
-    }
-
     return encodeURIComponent(msg);
-  };
-
-  const handleSendQuote = () => {
-    if (!user) {
-      setShowLoginPrompt(true);
-      return;
-    }
-
-    const missingFields = validateProfileForQuote();
-    if (missingFields.length > 0) {
-      toast.error(`Dados cadastrais incompletos: ${missingFields.join(", ")}. Atualize seu perfil antes de enviar.`);
-      return;
-    }
-
-    const url = `https://wa.me/5511959409051?text=${generateWhatsAppMessage()}`;
-    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const progressPercent = Math.min((totalPrice / 2000) * 100, 100);
@@ -153,32 +111,6 @@ const CartDrawer = () => {
             {/* Footer */}
             {items.length > 0 && (
               <div className="p-5 border-t border-border space-y-4">
-                {/* Login prompt */}
-                <AnimatePresence>
-                  {showLoginPrompt && !user && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-sm"
-                    >
-                      <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
-                      <div className="flex-1">
-                        <p className="font-medium">Login necessário</p>
-                        <p className="text-xs mt-1 opacity-80">Faça login para enviar o orçamento com seus dados cadastrais.</p>
-                        <Link
-                          to="/login"
-                          onClick={() => setIsOpen(false)}
-                          className="inline-flex items-center gap-1.5 mt-2 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
-                        >
-                          <LogIn size={14} />
-                          Ir para o Login
-                        </Link>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
                 {/* Progress bar */}
                 {totalPrice < 2000 && (
                   <div className="space-y-2">
@@ -208,15 +140,17 @@ const CartDrawer = () => {
                 </div>
 
                 {totalPrice >= 2000 ? (
-                  <motion.button
-                    onClick={handleSendQuote}
+                  <motion.a
+                    href={`https://wa.me/5511959409051?text=${generateWhatsAppMessage()}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="btn-golfield w-full text-center"
                   >
                     <MessageCircle size={18} />
                     Enviar Orçamento via WhatsApp
-                  </motion.button>
+                  </motion.a>
                 ) : (
                   <button
                     disabled

@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AlertCircle } from "lucide-react";
 import AuthLayout from "@/components/auth/AuthLayout";
 import PasswordInput from "@/components/auth/PasswordInput";
 import { formatCNPJ, validateCNPJ } from "@/lib/cnpj";
-import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
-  const navigate = useNavigate();
   const [cnpj, setCnpj] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -30,22 +28,11 @@ const Login = () => {
     setBanner("");
     if (!validate()) return;
     setLoading(true);
-
-    // We use the CNPJ digits as a unique email-like identifier
-    const cnpjDigits = cnpj.replace(/\D/g, "");
-    const email = `${cnpjDigits}@golfield.cnpj`;
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    setLoading(false);
-    if (error) {
+    // Simulate auth
+    setTimeout(() => {
+      setLoading(false);
       setBanner("CNPJ ou senha incorretos. Verifique seus dados e tente novamente.");
-    } else {
-      navigate("/");
-    }
+    }, 1500);
   };
 
   return (
@@ -62,6 +49,7 @@ const Login = () => {
           </motion.div>
         )}
 
+        {/* CNPJ */}
         <div>
           <label htmlFor="cnpj" className="block text-sm font-medium text-foreground mb-1.5">CNPJ</label>
           <input
@@ -79,6 +67,7 @@ const Login = () => {
           {errors.cnpj && <p className="text-destructive text-xs mt-1">{errors.cnpj}</p>}
         </div>
 
+        {/* Password */}
         <PasswordInput
           id="password"
           label="Senha"
@@ -88,6 +77,7 @@ const Login = () => {
           onBlur={() => { if (!password) setErrors(prev => ({ ...prev, password: "Informe a senha" })); else setErrors(prev => { const { password: _, ...rest } = prev; return rest; }); }}
         />
 
+        {/* Remember + Forgot */}
         <div className="flex items-center justify-between text-sm">
           <label className="flex items-center gap-2 cursor-pointer text-muted-foreground hover:text-foreground transition-colors">
             <input
@@ -103,6 +93,7 @@ const Login = () => {
           </Link>
         </div>
 
+        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
@@ -116,6 +107,7 @@ const Login = () => {
           ) : "Entrar"}
         </button>
 
+        {/* Register link */}
         <p className="text-center text-sm text-muted-foreground pt-2">
           Ainda não tem cadastro?{" "}
           <Link to="/cadastro" className="text-primary hover:text-primary/80 transition-colors font-medium">
