@@ -51,7 +51,8 @@ const IndexContent = () => {
   const displayProducts = isHomepage ? filteredProducts.slice(0, 20) : filteredProducts;
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden relative">
+      <ToolsBackground3D />
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       <Hero />
 
