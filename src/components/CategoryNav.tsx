@@ -40,7 +40,7 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
 
       <div
         ref={scrollRef}
-        className="flex gap-2 overflow-x-auto px-2 md:px-12 py-2"
+        className="flex gap-2 overflow-x-auto px-0 sm:px-2 md:px-12 py-2 snap-x snap-mandatory"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {categories.map((cat) => (
@@ -49,7 +49,7 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.03 }}
             onClick={() => onCategoryChange(String(cat.id))}
-            className={`category-chip ${activeCategory === cat.id ? "active" : ""}`}
+            className={`category-chip shrink-0 snap-start ${activeCategory === cat.id ? "active" : ""}`}
           >
             {cat.label}
           </motion.button>

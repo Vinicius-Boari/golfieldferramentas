@@ -17,7 +17,7 @@ const WhatsAppFloat = () => {
       transition={{ delay: 2, type: "spring", stiffness: 260, damping: 20 }}
       whileHover={{ scale: 1.12 }}
       whileTap={{ scale: 0.9 }}
-      className="fixed bottom-6 right-6 z-40 p-4 rounded-2xl bg-[hsl(142,70%,45%)] text-primary-foreground shadow-xl transition-shadow duration-300 hover:shadow-2xl hover:shadow-[hsl(142,70%,45%,0.3)]"
+      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-40 p-3.5 md:p-4 rounded-2xl bg-[hsl(142,70%,45%)] text-primary-foreground shadow-xl transition-shadow duration-300 hover:shadow-2xl hover:shadow-[hsl(142,70%,45%,0.3)]"
       aria-label="WhatsApp"
     >
       <WhatsAppIcon />
