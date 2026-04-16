@@ -111,7 +111,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                     }
                   }}
                   whileHover={{ y: -1 }}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-300"
+                  className="text-sm font-medium transition-colors duration-300 text-primary-foreground"
                 >
                   {item.label}
                 </motion.button>
