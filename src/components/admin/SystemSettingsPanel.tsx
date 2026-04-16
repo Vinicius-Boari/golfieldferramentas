@@ -1,5 +1,5 @@
 import { useMemo, useState, type ComponentType } from "react";
-import { Loader2, MessageCircle, Power, Mail, Send, Eye, RotateCcw, Upload, Link2, type LucideProps } from "lucide-react";
+import { Loader2, MessageCircle, Power, Mail, Send, Eye, RotateCcw, Upload, Link2, Lock, type LucideProps } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -76,6 +76,7 @@ const SystemSettingsPanel = ({ value, onChange, userId }: Props) => {
 
   const wa = value.whatsappMessage;
   const mt = value.maintenance;
+  const qa = value.quoteAccess;
 
   const previewMessage = useMemo(() => {
     const sampleData: Record<string, string> = {};
