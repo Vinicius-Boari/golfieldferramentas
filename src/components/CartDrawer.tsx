@@ -292,33 +292,46 @@ const CartDrawer = () => {
                 </div>
 
                 {totalPrice >= 2000 ? (
-                  isAuthenticated ? (
-                    <motion.a
-                      href={`https://wa.me/5511959409051?text=${generateWhatsAppMessage()}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="gradient-border-animated btn-golfield w-full text-center justify-center"
-                    >
-                      <MessageCircle size={18} />
-                      Enviar Orçamento via WhatsApp
-                    </motion.a>
-                  ) : (
-                    <motion.button
-                      onClick={() => {
-                        toast.error("Você precisa estar logado para enviar um orçamento.");
-                        setIsOpen(false);
-                        navigate("/login");
-                      }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-primary text-primary-foreground text-sm font-semibold"
-                    >
-                      <LogIn size={18} />
-                      Faça login para enviar orçamento
-                    </motion.button>
-                  )
+                  (() => {
+                    const requireLogin = homeConfig?.systemSettings?.quoteAccess?.requireLoginForWhatsApp ?? true;
+                    const canSend = !requireLogin || isAuthenticated;
+                    if (canSend) {
+                      return (
+                        <motion.a
+                          href={`https://wa.me/5511959409051?text=${generateWhatsAppMessage()}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="gradient-border-animated btn-golfield w-full text-center justify-center"
+                        >
+                          <MessageCircle size={18} />
+                          Enviar Orçamento via WhatsApp
+                        </motion.a>
+                      );
+                    }
+                    return (
+                      <div className="space-y-2">
+                        <div className="rounded-xl border border-primary/30 bg-primary/5 px-3 py-2.5 text-xs text-foreground/80 flex items-start gap-2">
+                          <LogIn size={14} className="text-primary shrink-0 mt-0.5" />
+                          <span>Para enviar o orçamento via WhatsApp, é necessário estar logado.</span>
+                        </div>
+                        <motion.button
+                          onClick={() => {
+                            toast.error("Você precisa estar logado para enviar um orçamento.");
+                            setIsOpen(false);
+                            navigate("/login");
+                          }}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-primary text-primary-foreground text-sm font-semibold"
+                        >
+                          <LogIn size={18} />
+                          Faça login para enviar orçamento
+                        </motion.button>
+                      </div>
+                    );
+                  })()
                 ) : (
                   <button
                     disabled
