@@ -29,7 +29,7 @@ const sanitizeFileName = (fileName: string) =>
 
 const AdminProducts = () => {
   const navigate = useNavigate();
-  const { isAdmin, loading: adminLoading, user } = useAdmin();
+  const { isAdmin, isOwner, loading: adminLoading, user } = useAdmin();
   const { data: products, isLoading } = useAllProducts();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
