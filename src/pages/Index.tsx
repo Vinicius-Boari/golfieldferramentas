@@ -192,7 +192,7 @@ const IndexContent = () => {
                   className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary-foreground tracking-tight mb-6">{cta?.title}</motion.h2>
                 <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.7 }}
                   className="text-primary-foreground/80 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10 px-2">{cta?.description}</motion.p>
-                <motion.a href={cta?.buttonLink} whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.96 }}
+                <motion.a href={cta?.buttonLink} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.96 }}
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-foreground px-6 sm:px-8 py-3.5 text-sm sm:text-base font-semibold text-primary shadow-2xl shadow-background/25">
                   {cta?.buttonText}<ArrowRight size={18} />
                 </motion.a>
