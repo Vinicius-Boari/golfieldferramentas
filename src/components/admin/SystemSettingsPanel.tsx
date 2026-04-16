@@ -76,7 +76,7 @@ const SystemSettingsPanel = ({ value, onChange, userId }: Props) => {
 
   const wa = value.whatsappMessage;
   const mt = value.maintenance;
-  const qa = value.quoteAccess;
+  const qa = value.quoteAccess ?? { requireLoginForWhatsApp: true };
 
   const previewMessage = useMemo(() => {
     const sampleData: Record<string, string> = {};
