@@ -70,6 +70,24 @@ export interface FooterConfig {
   categories: string[];
 }
 
+export interface WhatsAppMessageConfig {
+  enabled: boolean;
+  template: string;
+}
+
+export interface MaintenanceConfig {
+  enabled: boolean;
+  title: string;
+  description: string;
+  imageUrl: string;
+  allowAdminAccess: boolean;
+}
+
+export interface SystemSettingsConfig {
+  whatsappMessage: WhatsAppMessageConfig;
+  maintenance: MaintenanceConfig;
+}
+
 export interface HomeConfig {
   sections: HomeSection[];
   hero: HeroConfig;
@@ -79,7 +97,23 @@ export interface HomeConfig {
   ctaSection: CtaSectionConfig;
   aboutSection: AboutSectionConfig;
   footer: FooterConfig;
+  systemSettings: SystemSettingsConfig;
 }
+
+export const DEFAULT_WHATSAPP_TEMPLATE = `Olá! Meu nome é {name}.
+
+Gostaria de fazer um orçamento dos seguintes produtos:
+
+{products}
+
+*Subtotal: {subtotal}*
+*Total: {total}*
+
+Meus dados de contato:
+• Telefone: {phone}
+• Email: {email}
+
+Data: {date}`;
 
 export const defaultHomeConfig: HomeConfig = {
   sections: [
