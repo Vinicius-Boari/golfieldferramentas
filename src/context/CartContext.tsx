@@ -9,8 +9,8 @@ interface CartItem {
 interface CartContextType {
   items: CartItem[];
   addItem: (product: Product, qty: number) => void;
-  removeItem: (productId: number) => void;
-  updateQuantity: (productId: number, qty: number) => void;
+  removeItem: (productId: number | string) => void;
+  updateQuantity: (productId: number | string, qty: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -35,11 +35,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsOpen(true);
   }, []);
 
-  const removeItem = useCallback((productId: number) => {
+  const removeItem = useCallback((productId: number | string) => {
     setItems(prev => prev.filter(i => i.product.id !== productId));
   }, []);
 
-  const updateQuantity = useCallback((productId: number, qty: number) => {
+  const updateQuantity = useCallback((productId: number | string, qty: number) => {
     setItems(prev => {
       const item = prev.find(i => i.product.id === productId);
       if (!item || qty < item.product.minQty) {
