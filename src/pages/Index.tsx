@@ -8,7 +8,7 @@ import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { CartProvider } from "@/context/CartContext";
-import { products } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
 import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
 
 const staggerContainer = {
