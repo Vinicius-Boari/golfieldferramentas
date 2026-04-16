@@ -26,7 +26,30 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } }
 };
 
-const Footer = () => {
+interface FooterProps {
+  config?: {
+    description?: string;
+    phone?: string;
+    email?: string;
+    location?: string;
+    hours?: string;
+    instagramUrl?: string;
+    whatsappUrl?: string;
+    categories?: string[];
+  };
+}
+
+const Footer = ({ config }: FooterProps) => {
+  const desc = config?.description || "Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado.";
+  const phone = config?.phone || "(11) 95940-9051";
+  const email = config?.email || "paula.profield@hotmail.com";
+  const location = config?.location || "São Paulo - SP, Brasil";
+  const hours = config?.hours || "Seg a Sex: 7h às 18h";
+  const igUrl = config?.instagramUrl || "https://www.instagram.com/golfield.ferramentas/";
+  const waUrl = config?.whatsappUrl || "https://wa.me/5511959409051";
+  const cats = config?.categories || ["Alicates", "Brocas", "Discos", "Chaves", "Trenas", "Torneiras", "Martelos", "Serras"];
+  const waPhone = waUrl.includes("wa.me") ? waUrl : "https://wa.me/5511959409051";
+
   return (
     <footer id="contato" className="relative border-t border-border/50 bg-card/30">
       {/* Top accent line */}
@@ -48,11 +71,11 @@ const Footer = () => {
               className="h-14 rounded-xl object-contain mb-5"
             />
             <p className="text-sm leading-relaxed max-w-sm mb-6 text-primary-foreground">
-              Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado.
+              {desc}
             </p>
             <div className="flex gap-2">
               <motion.a
-                href="https://www.instagram.com/golfield.ferramentas/"
+                href={igUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
@@ -62,7 +85,7 @@ const Footer = () => {
                 <InstagramIcon size={18} />
               </motion.a>
               <motion.a
-                href="https://wa.me/5511959409051"
+                href={waPhone}
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
@@ -79,24 +102,24 @@ const Footer = () => {
             <h3 className="text-sm font-semibold tracking-wider uppercase mb-5 text-primary-foreground">Contato</h3>
             <ul className="space-y-3.5 text-sm">
               <li>
-                <a href="https://wa.me/5511959409051" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 transition-colors group text-primary-foreground">
+                <a href={waPhone} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 transition-colors group text-primary-foreground">
                   <Phone size={14} className="text-primary/60 group-hover:text-primary transition-colors" />
-                  (11) 95940-9051
+                  {phone}
                 </a>
               </li>
               <li>
-                <a href="mailto:paula.profield@hotmail.com" className="flex items-center gap-3 transition-colors group text-primary-foreground">
+                <a href={`mailto:${email}`} className="flex items-center gap-3 transition-colors group text-primary-foreground">
                   <Mail size={14} className="text-primary/60 group-hover:text-primary transition-colors" />
-                  paula.profield@hotmail.com
+                  {email}
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin size={14} className="text-primary/60 flex-shrink-0 mt-0.5" />
-                <span className="text-primary-foreground">São Paulo - SP, Brasil</span>
+                <span className="text-primary-foreground">{location}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Clock size={14} className="text-primary/60 flex-shrink-0" />
-                <span className="text-primary-foreground">Seg a Sex: 7h às 18h</span>
+                <span className="text-primary-foreground">{hours}</span>
               </li>
             </ul>
           </motion.div>
@@ -105,7 +128,7 @@ const Footer = () => {
           <motion.div variants={itemVariants} className="md:col-span-3">
             <h3 className="text-sm font-semibold tracking-wider uppercase mb-5 text-primary-foreground">Categorias</h3>
             <ul className="space-y-2.5 text-sm">
-              {["Alicates", "Brocas", "Discos", "Chaves", "Trenas", "Torneiras", "Martelos", "Serras"].map((cat) => (
+              {cats.map((cat) => (
                 <li key={cat}>
                   <a href="#produtos" className="flex items-center gap-1.5 transition-colors group text-primary-foreground">
                     <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-primary" />

@@ -96,7 +96,24 @@ const FloatingToolVisual = ({ scrollScale }: { scrollScale: any }) => {
   );
 };
 
-const Hero = () => {
+interface HeroProps {
+  config?: {
+    logoImage?: string;
+    badgeText?: string;
+    titleLine1?: string;
+    titleLine2?: string;
+    titleLine3?: string;
+    description?: string;
+    minOrderText?: string;
+    ctaButtonText?: string;
+    ctaButtonLink?: string;
+    secondaryButtonText?: string;
+    secondaryButtonLink?: string;
+    stats?: { label: string; desc: string }[];
+  };
+}
+
+const Hero = ({ config }: HeroProps) => {
   const { scrollY } = useScroll();
   const isMobile = useIsMobile();
   const parallaxY = useTransform(scrollY, [0, 600], [0, isMobile ? 40 : 120]);
@@ -138,14 +155,14 @@ const Hero = () => {
                   className="absolute -inset-5 md:-inset-8 bg-gradient-to-br from-primary/15 via-gold/10 to-primary/15 rounded-[2rem] blur-[40px]"
                 />
                 <div className="absolute -inset-[2px] bg-gradient-to-br from-primary/20 via-transparent to-gold/15 rounded-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
-                <img src="/images/bb415772-a3bf-433b-bd51-77e20e6dbf5f.png" alt="Golfield" className="relative h-28 sm:h-32 md:h-52 lg:h-64 w-auto max-w-full rounded-2xl object-contain shadow-2xl shadow-primary/10 bg-card/40 p-3 sm:p-4 md:p-6 backdrop-blur-sm transition-transform duration-500 group-hover:scale-[1.03]" />
+                <img src={config?.logoImage || "/images/bb415772-a3bf-433b-bd51-77e20e6dbf5f.png"} alt="Golfield" className="relative h-28 sm:h-32 md:h-52 lg:h-64 w-auto max-w-full rounded-2xl object-contain shadow-2xl shadow-primary/10 bg-card/40 p-3 sm:p-4 md:p-6 backdrop-blur-sm transition-transform duration-500 group-hover:scale-[1.03]" />
               </div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="mb-6 md:mb-8">
               <span className="section-badge max-w-full">
                 <motion.span animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 3, repeat: Infinity }}><Wrench size={12} /></motion.span>
-                Orçamentos por Atacado
+                {config?.badgeText || "Orçamentos por Atacado"}
               </span>
             </motion.div>
 
@@ -155,14 +172,14 @@ const Hero = () => {
               transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
               className="text-4xl sm:text-5xl md:text-7xl lg:text-7xl xl:text-8xl font-bold leading-[0.92] mb-6 md:mb-8 tracking-tight"
             >
-              <motion.span initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.3 }} className="block text-foreground">Ferramentas</motion.span>
-              <motion.span initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.45 }} className="block text-gradient-gold mt-1">Premium</motion.span>
-              <motion.span initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.6 }} className="block text-muted-foreground text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl mt-3 font-medium">para Profissionais</motion.span>
+              <motion.span initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.3 }} className="block text-foreground">{config?.titleLine1 || "Ferramentas"}</motion.span>
+              <motion.span initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.45 }} className="block text-gradient-gold mt-1">{config?.titleLine2 || "Premium"}</motion.span>
+              <motion.span initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.6 }} className="block text-muted-foreground text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl mt-3 font-medium">{config?.titleLine3 || "para Profissionais"}</motion.span>
             </motion.h1>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }} className="space-y-4 mb-8 md:mb-10">
               <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-lg leading-relaxed">
-                Centenas de produtos com preços exclusivos de atacado. Monte seu orçamento online e receba atendimento personalizado.
+                {config?.description || "Centenas de produtos com preços exclusivos de atacado. Monte seu orçamento online e receba atendimento personalizado."}
               </p>
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -171,16 +188,16 @@ const Hero = () => {
                 className="inline-flex max-w-full items-center gap-2 px-4 py-2.5 rounded-xl glass-card text-sm font-medium text-primary"
               >
                 <motion.span animate={{ scale: [1, 1.4, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                <span className="truncate sm:text-wrap">Pedido mínimo para orçamento: R$ 2.000,00</span>
+                <span className="truncate sm:text-wrap">{config?.minOrderText || "Pedido mínimo para orçamento: R$ 2.000,00"}</span>
               </motion.div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.65 }} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <motion.a href="#produtos" className="btn-golfield text-base justify-center" whileHover={{ scale: 1.06, y: -2 }} whileTap={{ scale: 0.97 }}>
-                <Zap size={18} /> Ver Produtos <ArrowRight size={18} />
+              <motion.a href={config?.ctaButtonLink || "#produtos"} className="btn-golfield text-base justify-center" whileHover={{ scale: 1.06, y: -2 }} whileTap={{ scale: 0.97 }}>
+                <Zap size={18} /> {config?.ctaButtonText || "Ver Produtos"} <ArrowRight size={18} />
               </motion.a>
-              <motion.a href="https://wa.me/5511959409051" target="_blank" rel="noopener noreferrer" className="btn-outline-golfield text-base justify-center" whileHover={{ scale: 1.06, y: -2 }} whileTap={{ scale: 0.97 }}>
-                <WhatsAppIcon size={18} /> Falar com Vendedor
+              <motion.a href={config?.secondaryButtonLink || "https://wa.me/5511959409051"} target="_blank" rel="noopener noreferrer" className="btn-outline-golfield text-base justify-center" whileHover={{ scale: 1.06, y: -2 }} whileTap={{ scale: 0.97 }}>
+                <WhatsAppIcon size={18} /> {config?.secondaryButtonText || "Falar com Vendedor"}
               </motion.a>
             </motion.div>
           </div>
@@ -201,11 +218,11 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.85 }}
           className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12 sm:mt-16 md:mt-20 max-w-2xl"
         >
-          {[
-            { icon: Shield, label: "Qualidade Garantida", desc: "Produtos certificados" },
-            { icon: Truck, label: "Envio Nacional", desc: "Para todo o Brasil" },
-            { icon: Package, label: `${products.length} Produtos`, desc: "Catálogo completo" },
-          ].map((item, i) => (
+          {(config?.stats ?? [
+            { label: "Qualidade Garantida", desc: "Produtos certificados" },
+            { label: "Envio Nacional", desc: "Para todo o Brasil" },
+            { label: `${products.length} Produtos`, desc: "Catálogo completo" },
+          ]).map((item, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
@@ -215,7 +232,7 @@ const Hero = () => {
               className="stat-card flex items-center gap-4"
             >
               <motion.div whileHover={{ rotate: 360, scale: 1.1 }} transition={{ duration: 0.6 }} className="p-2.5 rounded-xl bg-primary/10">
-                <item.icon size={18} className="text-primary" />
+                {[Shield, Truck, Package][i % 3] && (() => { const Icon = [Shield, Truck, Package][i % 3]; return <Icon size={18} className="text-primary" />; })()}
               </motion.div>
               <div>
                 <p className="font-semibold text-sm">{item.label}</p>

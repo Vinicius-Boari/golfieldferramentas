@@ -10,6 +10,7 @@ import ForgotPassword from "./pages/ForgotPassword.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import AdminProducts from "./pages/AdminProducts.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
+import AdminHome from "./pages/AdminHome.tsx";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/esqueci-senha" element={<ForgotPassword />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/produtos" element={<AdminProducts />} />
+          <Route path="/admin/home" element={<AdminHome />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
