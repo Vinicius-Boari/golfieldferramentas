@@ -266,7 +266,7 @@ html {
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: snake-spin 3.5s linear infinite;
+  animation: snake-spin 4.5s linear infinite;
   pointer-events: none;
   z-index: 1;
 }
@@ -294,7 +294,7 @@ html {
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: snake-spin 3.5s linear infinite;
+  animation: snake-spin 4.5s linear infinite;
   pointer-events: none;
   z-index: 1;
 }
@@ -313,7 +313,7 @@ html {
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: snake-spin 3.5s linear infinite;
+  animation: snake-spin 4.5s linear infinite;
   pointer-events: none;
   z-index: 1;
   opacity: 0;
