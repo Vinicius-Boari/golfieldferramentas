@@ -9,6 +9,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useHomeConfig, useSaveHomeConfig, defaultHomeConfig, type HomeConfig } from "@/hooks/useHomeConfig";
+import HeroVideoPanel from "@/components/admin/HeroVideoPanel";
 import { toast } from "sonner";
 
 const sectionLabels: Record<string, string> = {
