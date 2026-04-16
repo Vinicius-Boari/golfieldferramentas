@@ -145,17 +145,33 @@ const CartDrawer = () => {
                 </div>
 
                 {totalPrice >= 2000 ? (
-                  <motion.a
-                    href={`https://wa.me/5511959409051?text=${generateWhatsAppMessage()}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="btn-golfield w-full text-center"
-                  >
-                    <MessageCircle size={18} />
-                    Enviar Orçamento via WhatsApp
-                  </motion.a>
+                  isAuthenticated ? (
+                    <motion.a
+                      href={`https://wa.me/5511959409051?text=${generateWhatsAppMessage()}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="btn-golfield w-full text-center"
+                    >
+                      <MessageCircle size={18} />
+                      Enviar Orçamento via WhatsApp
+                    </motion.a>
+                  ) : (
+                    <motion.button
+                      onClick={() => {
+                        toast.error("Você precisa estar logado para enviar um orçamento.");
+                        setIsOpen(false);
+                        navigate("/login");
+                      }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-primary text-primary-foreground text-sm font-semibold"
+                    >
+                      <LogIn size={18} />
+                      Faça login para enviar orçamento
+                    </motion.button>
+                  )
                 ) : (
                   <button
                     disabled
