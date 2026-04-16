@@ -212,10 +212,10 @@ const Hero = ({ config, videoConfig }: HeroProps) => {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.65 }} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <motion.a href={config?.ctaButtonLink || "#produtos"} className="btn-golfield text-base justify-center" whileHover={{ scale: 1.06, y: -2 }} whileTap={{ scale: 0.97 }}>
+              <motion.a href={config?.ctaButtonLink || "#produtos"} className="gradient-border-animated btn-golfield text-base justify-center" whileHover={{ scale: 1.06, y: -2 }} whileTap={{ scale: 0.97 }}>
                 <Zap size={18} /> {config?.ctaButtonText || "Ver Produtos"} <ArrowRight size={18} />
               </motion.a>
-              <motion.a href={config?.secondaryButtonLink || "https://wa.me/5511959409051"} target="_blank" rel="noopener noreferrer" className="btn-outline-golfield text-base justify-center" whileHover={{ scale: 1.06, y: -2 }} whileTap={{ scale: 0.97 }}>
+              <motion.a href={config?.secondaryButtonLink || "https://wa.me/5511959409051"} target="_blank" rel="noopener noreferrer" className="gradient-border-animated gradient-border-thin btn-outline-golfield text-base justify-center" whileHover={{ scale: 1.06, y: -2 }} whileTap={{ scale: 0.97 }}>
                 <WhatsAppIcon size={18} /> {config?.secondaryButtonText || "Falar com Vendedor"}
               </motion.a>
             </motion.div>

@@ -261,7 +261,7 @@ const CartDrawer = () => {
                       rel="noopener noreferrer"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="btn-golfield w-full text-center justify-center"
+                      className="gradient-border-animated btn-golfield w-full text-center justify-center"
                     >
                       <MessageCircle size={18} />
                       Enviar Orçamento via WhatsApp

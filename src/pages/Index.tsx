@@ -160,7 +160,7 @@ const IndexContent = () => {
 
                 {isHomepage && filteredProducts.length > 20 && (
                   <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mt-12 sm:mt-14">
-                    <motion.button onClick={() => setShowAll(true)} whileHover={{ scale: 1.06, y: -3, boxShadow: "0 15px 40px -10px hsl(0,78%,52%,0.3)" }} whileTap={{ scale: 0.97 }} className="btn-outline-golfield">
+                    <motion.button onClick={() => setShowAll(true)} whileHover={{ scale: 1.06, y: -3, boxShadow: "0 15px 40px -10px hsl(0,78%,52%,0.3)" }} whileTap={{ scale: 0.97 }} className="gradient-border-animated gradient-border-thin btn-outline-golfield">
                       {pc?.showAllButtonText || "Ver todos os"} {filteredProducts.length} produtos
                       <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity }}><ArrowRight size={16} /></motion.span>
                     </motion.button>
