@@ -17,7 +17,7 @@ import toolPliers from "@/assets/tool-pliers.png";
 import toolTape from "@/assets/tool-tape.png";
 import toolDrillbit from "@/assets/tool-drillbit.png";
 
-const FloatingToolVisual = ({ scrollScale }: { scrollScale: any }) => {
+export const FloatingToolVisual = ({ scrollScale }: { scrollScale?: any }) => {
   const tools = [
     { src: toolWrench, alt: "Chave inglesa", size: "w-44 h-44 md:w-56 md:h-56", pos: "relative z-10", float: { y: [0, -18, 0] }, rotate3d: { rotateY: [0, 25, -18, 0], rotateX: [-8, 10, -8] }, dur: 12, floatDur: 5 },
     { src: toolHammer, alt: "Martelo", size: "w-28 h-28 md:w-36 md:h-36", pos: "absolute -top-2 right-2 z-[5]", float: { y: [0, -20, 0], x: [0, 10, 0], rotate: [-8, 8, -8] }, rotate3d: { rotateY: [-12, 22, -12], rotateX: [6, -8, 6] }, dur: 14, floatDur: 7, delay: 1 },
@@ -182,8 +182,7 @@ const Hero = ({ config, videoConfig }: HeroProps) => {
       />
 
       <motion.div style={{ y: parallaxY }} className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-4 items-center">
-          <div>
+        <div className="max-w-3xl mx-auto lg:mx-0">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -242,16 +241,6 @@ const Hero = ({ config, videoConfig }: HeroProps) => {
                 <WhatsAppIcon size={18} /> {config?.secondaryButtonText || "Falar com Vendedor"}
               </motion.a>
             </motion.div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.7, rotateY: -20 }}
-            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-            transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-            className="hidden lg:flex items-center justify-center min-h-[500px]"
-          >
-            <FloatingToolVisual scrollScale={toolScale} />
-          </motion.div>
         </div>
 
         <motion.div
