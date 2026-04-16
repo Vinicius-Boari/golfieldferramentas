@@ -14,6 +14,125 @@ export type Database = {
   }
   public: {
     Tables: {
+      coupon_usage: {
+        Row: {
+          coupon_id: string
+          created_at: string
+          discount_amount: number
+          id: string
+          order_total: number
+          user_id: string
+        }
+        Insert: {
+          coupon_id: string
+          created_at?: string
+          discount_amount?: number
+          id?: string
+          order_total?: number
+          user_id: string
+        }
+        Update: {
+          coupon_id?: string
+          created_at?: string
+          discount_amount?: number
+          id?: string
+          order_total?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_usage_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupons: {
+        Row: {
+          active: boolean
+          applies_to: string
+          category_ids: string[] | null
+          code: string
+          created_at: string
+          cumulative: boolean
+          description: string | null
+          discount_type: string
+          discount_value: number
+          exclude_category_ids: string[] | null
+          exclude_product_ids: string[] | null
+          expires_at: string | null
+          first_purchase_only: boolean
+          id: string
+          logged_in_only: boolean
+          max_discount: number | null
+          min_order_value: number
+          name: string
+          notes: string | null
+          per_user_limit: number | null
+          product_ids: string[] | null
+          starts_at: string | null
+          times_used: number
+          updated_at: string
+          usage_limit: number | null
+        }
+        Insert: {
+          active?: boolean
+          applies_to?: string
+          category_ids?: string[] | null
+          code: string
+          created_at?: string
+          cumulative?: boolean
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          exclude_category_ids?: string[] | null
+          exclude_product_ids?: string[] | null
+          expires_at?: string | null
+          first_purchase_only?: boolean
+          id?: string
+          logged_in_only?: boolean
+          max_discount?: number | null
+          min_order_value?: number
+          name?: string
+          notes?: string | null
+          per_user_limit?: number | null
+          product_ids?: string[] | null
+          starts_at?: string | null
+          times_used?: number
+          updated_at?: string
+          usage_limit?: number | null
+        }
+        Update: {
+          active?: boolean
+          applies_to?: string
+          category_ids?: string[] | null
+          code?: string
+          created_at?: string
+          cumulative?: boolean
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          exclude_category_ids?: string[] | null
+          exclude_product_ids?: string[] | null
+          expires_at?: string | null
+          first_purchase_only?: boolean
+          id?: string
+          logged_in_only?: boolean
+          max_discount?: number | null
+          min_order_value?: number
+          name?: string
+          notes?: string | null
+          per_user_limit?: number | null
+          product_ids?: string[] | null
+          starts_at?: string | null
+          times_used?: number
+          updated_at?: string
+          usage_limit?: number | null
+        }
+        Relationships: []
+      }
       home_config: {
         Row: {
           config: Json
