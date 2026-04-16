@@ -127,7 +127,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 whileTap={{ scale: 0.9 }}
                 className="hidden sm:flex p-2.5 rounded-xl text-muted-foreground hover:text-[hsl(142,70%,45%)] hover:bg-[hsl(142,70%,45%,0.08)] transition-all duration-300"
               >
-                <WhatsAppIcon size={18} />
+                <WhatsAppIcon size={18} className="text-primary-foreground" />
               </motion.a>
 
               <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
