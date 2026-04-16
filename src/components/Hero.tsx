@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Wrench, Shield, Truck, Zap, Package } from "lucide-react";
 import { products } from "@/data/products";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useMobileMotionEnabled } from "@/hooks/useMobileMotion";
 
 const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -101,11 +102,13 @@ interface HeroProps {
 const Hero = ({ config, videoConfig }: HeroProps) => {
   const { scrollY } = useScroll();
   const isMobile = useIsMobile();
+  const motionEnabled = useMobileMotionEnabled();
   const parallaxY = useTransform(scrollY, [0, 600], [0, isMobile ? 40 : 120]);
   const toolScale = useTransform(scrollY, [0, 300, 600], [1, 1.18, 0.82]);
   const [videoFailed, setVideoFailed] = React.useState(false);
 
-  const showVideo = !!(videoConfig?.enabled && videoConfig?.url && !videoFailed);
+  // On mobile with motion disabled, never render the decorative hero video.
+  const showVideo = !!(videoConfig?.enabled && videoConfig?.url && !videoFailed && motionEnabled);
   const overlay = Math.min(0.8, Math.max(0, videoConfig?.overlayOpacity ?? 0.55));
 
   return (
@@ -129,6 +132,7 @@ const Hero = ({ config, videoConfig }: HeroProps) => {
             playsInline
             preload="metadata"
             poster={config?.logoImage}
+            data-decorative="true"
             onError={() => setVideoFailed(true)}
             className="absolute inset-0 w-full h-full object-cover"
             animate={{ scale: [1, 1.06, 1] }}
