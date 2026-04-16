@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { CartProvider } from "@/context/CartContext";
 import { products } from "@/data/products";
+import ToolsBackground3D from "@/components/ToolsBackground3D";
 import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
 
 const staggerContainer = {
@@ -50,7 +51,8 @@ const IndexContent = () => {
   const displayProducts = isHomepage ? filteredProducts.slice(0, 20) : filteredProducts;
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden relative">
+      <ToolsBackground3D />
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       <Hero />
 
