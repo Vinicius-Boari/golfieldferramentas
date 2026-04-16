@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingCart, Menu, X, Mail, ChevronRight, UserCircle2 } from "lucide-react";
+import { Search, ShoppingCart, Menu, X, Mail, ChevronRight, UserCircle2, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 const InstagramIcon = ({ size = 20, className }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -25,6 +26,7 @@ interface HeaderProps {
 
 const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   const { totalItems, setIsOpen } = useCart();
+  const { user, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -130,14 +132,26 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 <WhatsAppIcon size={18} className="text-primary-foreground" />
               </motion.a>
 
-              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                <Link
-                  to="/login"
-                  className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300 inline-flex"
+              {user ? (
+                <motion.button
+                  onClick={signOut}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
+                  title="Sair"
                 >
-                  <UserCircle2 size={20} className="text-primary-foreground" />
-                </Link>
-              </motion.div>
+                  <LogOut size={20} className="text-primary-foreground" />
+                </motion.button>
+              ) : (
+                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                  <Link
+                    to="/login"
+                    className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300 inline-flex"
+                  >
+                    <UserCircle2 size={20} className="text-primary-foreground" />
+                  </Link>
+                </motion.div>
+              )}
 
               <motion.button
                 onClick={() => setIsOpen(true)}

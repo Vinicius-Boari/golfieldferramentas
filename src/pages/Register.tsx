@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import AuthLayout from "@/components/auth/AuthLayout";
 import PasswordInput from "@/components/auth/PasswordInput";
 import PasswordStrength from "@/components/auth/PasswordStrength";
 import { formatCNPJ, validateCNPJ, formatPhone } from "@/lib/cnpj";
+import { supabase } from "@/integrations/supabase/client";
 
 const SEGMENTS = [
   "Construção Civil", "Indústria", "Comércio de Ferragens", "Manutenção Industrial",
@@ -14,13 +15,14 @@ const SEGMENTS = [
 
 const Register = () => {
   const [form, setForm] = useState({
-    cnpj: "", razaoSocial: "", nomeFantasia: "", segmento: "",
+    cnpj: "", inscricaoEstadual: "", razaoSocial: "", nomeFantasia: "", segmento: "",
     nomeResponsavel: "", cargo: "", email: "", telefone: "",
     senha: "", confirmarSenha: "", termos: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [banner, setBanner] = useState("");
 
   const set = (field: string, value: string | boolean) =>
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -46,8 +48,9 @@ const Register = () => {
     setErrors((prev) => err ? { ...prev, [field]: err } : (() => { const { [field]: _, ...rest } = prev; return rest; })());
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setBanner("");
     const fields = ["cnpj", "razaoSocial", "nomeResponsavel", "cargo", "email", "telefone", "senha", "confirmarSenha", "termos"];
     const newErrors: Record<string, string> = {};
     fields.forEach((f) => { const err = validateField(f); if (err) newErrors[f] = err; });
@@ -55,7 +58,36 @@ const Register = () => {
     if (Object.keys(newErrors).length > 0) return;
 
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSuccess(true); }, 2000);
+
+    const cnpjDigits = form.cnpj.replace(/\D/g, "");
+    const email = `${cnpjDigits}@golfield.cnpj`;
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password: form.senha,
+      options: {
+        data: {
+          cnpj: form.cnpj,
+          inscricao_estadual: form.inscricaoEstadual,
+          razao_social: form.razaoSocial,
+          nome_fantasia: form.nomeFantasia,
+          segmento: form.segmento,
+          nome_responsavel: form.nomeResponsavel,
+          cargo: form.cargo,
+          email: form.email,
+          telefone: form.telefone,
+        },
+      },
+    });
+
+    setLoading(false);
+    if (error) {
+      setBanner(error.message === "User already registered"
+        ? "Este CNPJ já está cadastrado. Faça login."
+        : `Erro ao cadastrar: ${error.message}`);
+    } else {
+      setSuccess(true);
+    }
   };
 
   const inputClass = (field: string) =>
@@ -80,13 +112,26 @@ const Register = () => {
   }
 
   return (
-    <AuthLayout title="Solicite seu acesso" subtitle="Preencha os dados da sua empresa para criar uma conta B2B">
+    <AuthLayout title="Realize seu cadastro" subtitle="Preencha os dados da sua empresa para criar uma conta B2B">
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+        {banner && (
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+            className="flex items-start gap-3 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+            <span>{banner}</span>
+          </motion.div>
+        )}
+
         {/* CNPJ */}
         <div>
           <label htmlFor="cnpj" className="block text-sm font-medium text-foreground mb-1.5">CNPJ *</label>
           <input id="cnpj" inputMode="numeric" value={form.cnpj} onChange={(e) => set("cnpj", formatCNPJ(e.target.value))} onBlur={() => handleBlur("cnpj")} placeholder="XX.XXX.XXX/XXXX-XX" className={inputClass("cnpj")} />
           {errors.cnpj && <p className="text-destructive text-xs mt-1">{errors.cnpj}</p>}
+        </div>
+
+        {/* Inscrição Estadual */}
+        <div>
+          <label htmlFor="inscricaoEstadual" className="block text-sm font-medium text-foreground mb-1.5">Inscrição Estadual (IE)</label>
+          <input id="inscricaoEstadual" value={form.inscricaoEstadual} onChange={(e) => set("inscricaoEstadual", e.target.value)} placeholder="Ex: 123.456.789.000" className={inputClass("inscricaoEstadual")} />
         </div>
 
         {/* Razão Social + Nome Fantasia */}
