@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff, Upload, Link2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useAllProducts, type DbProduct } from "@/hooks/useProducts";
@@ -19,6 +19,14 @@ const emptyProduct = {
   sort_order: 0,
 };
 
+const sanitizeFileName = (fileName: string) =>
+  fileName
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9.-]/g, "-")
+    .replace(/-+/g, "-")
+    .toLowerCase();
+
 const AdminProducts = () => {
   const navigate = useNavigate();
   const { isAdmin, loading: adminLoading, user } = useAdmin();
@@ -28,6 +36,8 @@ const AdminProducts = () => {
   const [editingProduct, setEditingProduct] = useState<Partial<DbProduct> | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [imageMode, setImageMode] = useState<"upload" | "url">("upload");
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -53,11 +63,62 @@ const AdminProducts = () => {
 
   const categories = [...new Set(products?.map(p => p.category) ?? [])].sort();
 
+  const openNewProductModal = () => {
+    setEditingProduct({ ...emptyProduct });
+    setIsNew(true);
+    setImageMode("upload");
+  };
+
+  const openEditProductModal = (product: DbProduct) => {
+    setEditingProduct({ ...product });
+    setIsNew(false);
+    setImageMode(product.image ? "url" : "upload");
+  };
+
+  const handleImageUpload = async (file: File | null) => {
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Selecione um arquivo de imagem válido");
+      return;
+    }
+
+    if (!user) {
+      toast.error("Sessão inválida. Faça login novamente.");
+      return;
+    }
+
+    setUploadingImage(true);
+
+    try {
+      const extension = file.name.split(".").pop() || "png";
+      const safeName = sanitizeFileName(file.name.replace(/\.[^.]+$/, ""));
+      const filePath = `${user.id}/${Date.now()}-${safeName}.${extension.toLowerCase()}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("product-images")
+        .upload(filePath, file, { upsert: false });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from("product-images").getPublicUrl(filePath);
+
+      setEditingProduct((current) => current ? { ...current, image: data.publicUrl } : current);
+      setImageMode("upload");
+      toast.success("Imagem enviada com sucesso!");
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao enviar imagem");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleSave = async () => {
     if (!editingProduct?.name?.trim()) {
       toast.error("Nome do produto é obrigatório");
       return;
     }
+
     setSaving(true);
     try {
       if (isNew) {
@@ -132,7 +193,6 @@ const AdminProducts = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <div className="sticky top-0 z-40 bg-card/95 backdrop-blur-xl border-b border-border">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -153,7 +213,7 @@ const AdminProducts = () => {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => { setEditingProduct({ ...emptyProduct }); setIsNew(true); }}
+              onClick={openNewProductModal}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold"
             >
               <Plus size={16} />
@@ -167,7 +227,6 @@ const AdminProducts = () => {
       </div>
 
       <div className="container mx-auto px-4 py-6">
-        {/* Search */}
         <div className="relative mb-6 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
           <input
@@ -179,7 +238,6 @@ const AdminProducts = () => {
           />
         </div>
 
-        {/* Products Table */}
         <div className="rounded-xl border border-border overflow-hidden bg-card">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -219,11 +277,11 @@ const AdminProducts = () => {
                     <td className="p-3 text-center">
                       <button onClick={() => handleToggleActive(product)} className="inline-flex items-center gap-1">
                         {product.active ? (
-                          <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-md bg-green-500/10 text-green-400">
+                          <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-md bg-secondary text-foreground">
                             <Eye size={12} /> Ativo
                           </span>
                         ) : (
-                          <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-md bg-red-500/10 text-red-400">
+                          <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground">
                             <EyeOff size={12} /> Inativo
                           </span>
                         )}
@@ -232,7 +290,7 @@ const AdminProducts = () => {
                     <td className="p-3 pr-4 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <button
-                          onClick={() => { setEditingProduct({ ...product }); setIsNew(false); }}
+                          onClick={() => openEditProductModal(product)}
                           className="p-2 rounded-lg hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
                         >
                           <Pencil size={14} />
@@ -259,7 +317,6 @@ const AdminProducts = () => {
         </div>
       </div>
 
-      {/* Edit Modal */}
       <AnimatePresence>
         {editingProduct && (
           <>
@@ -336,20 +393,78 @@ const AdminProducts = () => {
                     {categories.map(c => <option key={c} value={c} />)}
                   </datalist>
                 </div>
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">URL da Imagem</label>
-                  <input
-                    type="text"
-                    value={editingProduct.image || ""}
-                    onChange={e => setEditingProduct({ ...editingProduct, image: e.target.value })}
-                    className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50"
-                  />
-                  {editingProduct.image && (
-                    <div className="mt-2 w-20 h-20 rounded-lg bg-secondary/50 overflow-hidden">
-                      <img src={editingProduct.image} alt="" className="w-full h-full object-contain" />
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <label className="text-xs font-medium text-muted-foreground block">Imagem do Produto</label>
+                    <div className="flex items-center gap-2 rounded-lg bg-secondary/60 p-1">
+                      <button
+                        type="button"
+                        onClick={() => setImageMode("upload")}
+                        className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${imageMode === "upload" ? "bg-background text-foreground" : "text-muted-foreground"}`}
+                      >
+                        <Upload size={12} /> Upload
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setImageMode("url")}
+                        className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${imageMode === "url" ? "bg-background text-foreground" : "text-muted-foreground"}`}
+                      >
+                        <Link2 size={12} /> URL
+                      </button>
+                    </div>
+                  </div>
+
+                  {imageMode === "upload" ? (
+                    <div className="rounded-xl border border-dashed border-border bg-secondary/30 p-4 space-y-3">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={uploadingImage}
+                        onChange={e => void handleImageUpload(e.target.files?.[0] ?? null)}
+                        className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:opacity-90"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Envie uma imagem do seu computador. Após o upload, ela será preenchida automaticamente no produto.
+                      </p>
+                      {uploadingImage && (
+                        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+                          <Loader2 size={14} className="animate-spin" /> Enviando imagem...
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground mb-1 block">URL da Imagem</label>
+                      <input
+                        type="text"
+                        value={editingProduct.image || ""}
+                        onChange={e => setEditingProduct({ ...editingProduct, image: e.target.value })}
+                        placeholder="https://..."
+                        className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50"
+                      />
+                    </div>
+                  )}
+
+                  {!!editingProduct.image && (
+                    <div className="rounded-xl border border-border bg-secondary/20 p-3 space-y-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-xs font-medium text-muted-foreground">Pré-visualização</span>
+                        <button
+                          type="button"
+                          onClick={() => setEditingProduct({ ...editingProduct, image: "" })}
+                          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          Remover imagem
+                        </button>
+                      </div>
+                      <div className="w-24 h-24 rounded-lg bg-secondary/50 overflow-hidden">
+                        <img src={editingProduct.image} alt="Prévia da imagem do produto" className="w-full h-full object-contain" />
+                      </div>
                     </div>
                   )}
                 </div>
+
                 <div>
                   <label className="text-xs font-medium text-muted-foreground mb-1 block">Ordem de Exibição</label>
                   <input
@@ -364,7 +479,7 @@ const AdminProducts = () => {
                     onClick={() => setEditingProduct({ ...editingProduct, active: !editingProduct.active })}
                     className={`relative w-10 h-6 rounded-full transition-colors ${editingProduct.active ? "bg-primary" : "bg-secondary"}`}
                   >
-                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${editingProduct.active ? "left-5" : "left-1"}`} />
+                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-primary-foreground transition-transform ${editingProduct.active ? "left-5" : "left-1"}`} />
                   </button>
                   <span className="text-sm">{editingProduct.active ? "Produto ativo" : "Produto inativo"}</span>
                 </div>
@@ -381,7 +496,7 @@ const AdminProducts = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSave}
-                  disabled={saving}
+                  disabled={saving || uploadingImage}
                   className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50"
                 >
                   <Save size={16} />
