@@ -19,12 +19,20 @@ import toolDrillbit from "@/assets/tool-drillbit.png";
 
 export const FloatingToolVisual = ({ scrollScale }: { scrollScale?: any }) => {
   const tools = [
+    // Center cluster
     { src: toolWrench, alt: "Chave inglesa", size: "w-44 h-44 md:w-56 md:h-56", pos: "relative z-10", float: { y: [0, -18, 0] }, rotate3d: { rotateY: [0, 25, -18, 0], rotateX: [-8, 10, -8] }, dur: 12, floatDur: 5 },
     { src: toolHammer, alt: "Martelo", size: "w-28 h-28 md:w-36 md:h-36", pos: "absolute -top-2 right-2 z-[5]", float: { y: [0, -20, 0], x: [0, 10, 0], rotate: [-8, 8, -8] }, rotate3d: { rotateY: [-12, 22, -12], rotateX: [6, -8, 6] }, dur: 14, floatDur: 7, delay: 1 },
     { src: toolScrewdriver, alt: "Chave de fenda", size: "w-24 h-32 md:w-32 md:h-40", pos: "absolute bottom-0 -left-2 z-[5]", float: { y: [0, 16, 0], x: [0, -8, 0], rotate: [12, -6, 12] }, rotate3d: { rotateY: [15, -25, 15], rotateX: [-6, 10, -6] }, dur: 13, floatDur: 8, delay: 2 },
     { src: toolPliers, alt: "Alicate", size: "w-28 h-28 md:w-36 md:h-36", pos: "absolute top-6 -left-4 z-[5]", float: { y: [0, -14, 0], x: [0, -10, 0], rotate: [-12, 4, -12] }, rotate3d: { rotateY: [-18, 15, -18], rotateX: [10, -10, 10] }, dur: 15, floatDur: 7.5, delay: 3 },
     { src: toolTape, alt: "Trena", size: "w-24 h-24 md:w-32 md:h-32", pos: "absolute bottom-4 right-0 z-[5]", float: { y: [0, 18, 0], x: [0, 8, 0], rotate: [6, -10, 6] }, rotate3d: { rotateY: [10, -20, 10], rotateX: [-8, 8, -8] }, dur: 11, floatDur: 6.5, delay: 1.5 },
     { src: toolDrillbit, alt: "Broca", size: "w-16 h-32 md:w-20 md:h-40", pos: "absolute top-1/2 -translate-y-1/2 -right-6 z-[4]", float: { y: [0, -12, 0], rotate: [20, 35, 20] }, rotate3d: { rotateY: [-8, 18, -8], rotateX: [5, -12, 5] }, dur: 16, floatDur: 9, delay: 4 },
+    // Extra spread tools
+    { src: toolWrench, alt: "Chave inglesa 2", size: "w-20 h-20 md:w-28 md:h-28", pos: "absolute -top-16 left-[15%] z-[3]", float: { y: [0, -22, 0], x: [0, 6, 0], rotate: [10, -15, 10] }, rotate3d: { rotateY: [8, -20, 8], rotateX: [-5, 12, -5] }, dur: 17, floatDur: 8, delay: 0.5 },
+    { src: toolHammer, alt: "Martelo 2", size: "w-20 h-20 md:w-28 md:h-28", pos: "absolute -bottom-12 right-[18%] z-[3]", float: { y: [0, 14, 0], x: [0, -7, 0], rotate: [-6, 12, -6] }, rotate3d: { rotateY: [14, -18, 14], rotateX: [8, -6, 8] }, dur: 13, floatDur: 6, delay: 2.5 },
+    { src: toolPliers, alt: "Alicate 2", size: "w-16 h-16 md:w-24 md:h-24", pos: "absolute top-[10%] right-[25%] z-[3]", float: { y: [0, -16, 0], x: [0, 12, 0] }, rotate3d: { rotateY: [-15, 20, -15], rotateX: [4, -10, 4] }, dur: 18, floatDur: 9.5, delay: 1.8 },
+    { src: toolScrewdriver, alt: "Chave de fenda 2", size: "w-14 h-20 md:w-20 md:h-28", pos: "absolute bottom-[15%] left-[20%] z-[3]", float: { y: [0, 20, 0], rotate: [-15, 5, -15] }, rotate3d: { rotateY: [10, -22, 10], rotateX: [-7, 9, -7] }, dur: 14, floatDur: 7, delay: 3.5 },
+    { src: toolTape, alt: "Trena 2", size: "w-16 h-16 md:w-24 md:h-24", pos: "absolute -top-8 right-[5%] z-[3]", float: { y: [0, -14, 0], x: [0, -10, 0], rotate: [8, -8, 8] }, rotate3d: { rotateY: [-10, 16, -10], rotateX: [6, -8, 6] }, dur: 15, floatDur: 8.5, delay: 0.8 },
+    { src: toolDrillbit, alt: "Broca 2", size: "w-12 h-24 md:w-16 md:h-32", pos: "absolute bottom-[5%] right-[35%] z-[3]", float: { y: [0, -10, 0], rotate: [15, 30, 15] }, rotate3d: { rotateY: [-6, 14, -6], rotateX: [3, -10, 3] }, dur: 19, floatDur: 10, delay: 4.5 },
   ];
 
   return (
