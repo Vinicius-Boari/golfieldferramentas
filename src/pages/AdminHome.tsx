@@ -350,7 +350,7 @@ const AdminHome = () => {
               {/* HERO VIDEO TAB */}
               {activeTab === "heroVideo" && (
                 <HeroVideoPanel
-                  value={config.heroVideo}
+                  value={config.heroVideo ?? defaultHomeConfig.heroVideo}
                   onChange={next => updateConfig(c => ({ ...c, heroVideo: next }))}
                 />
               )}
