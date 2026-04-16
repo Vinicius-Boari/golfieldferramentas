@@ -116,7 +116,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 whileTap={{ scale: 0.9 }}
                 className="hidden sm:flex p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
               >
-                <InstagramIcon size={18} className="bg-primary-foreground text-primary-foreground" />
+                <InstagramIcon size={18} className="text-primary-foreground bg-secondary" />
               </motion.a>
 
               <motion.a
