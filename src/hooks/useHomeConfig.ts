@@ -176,16 +176,17 @@ export const useSaveHomeConfig = () => {
         .limit(1)
         .maybeSingle();
 
+      const jsonConfig = JSON.parse(JSON.stringify(config));
       if (existing) {
         const { error } = await supabase
           .from("home_config")
-          .update({ config: config as unknown as Record<string, unknown> })
+          .update({ config: jsonConfig })
           .eq("id", existing.id);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from("home_config")
-          .insert({ config: config as unknown as Record<string, unknown> });
+          .insert([{ config: jsonConfig }]);
         if (error) throw error;
       }
     },
