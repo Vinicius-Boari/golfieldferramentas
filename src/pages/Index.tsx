@@ -8,7 +8,7 @@ import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { CartProvider } from "@/context/CartContext";
-import { products } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
 import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
 
 const staggerContainer = {
@@ -37,6 +37,16 @@ const IndexContent = () => {
   const [showAll, setShowAll] = useState(false);
   const { scrollYProgress } = useScroll();
   const bgParallax = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const { data: dbProducts = [], isLoading } = useProducts();
+
+  const products = useMemo(() => dbProducts.map(p => ({
+    id: p.id,
+    name: p.name,
+    price: Number(p.price),
+    image: p.image,
+    category: p.category,
+    minQty: p.min_qty,
+  })), [dbProducts]);
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
@@ -44,7 +54,7 @@ const IndexContent = () => {
       const matchesCategory = activeCategory === "todos" || p.category.toLowerCase().replace(/ /g, '-').replace(/ã/g, 'a').replace(/á/g, 'a').replace(/ê/g, 'e').replace(/í/g, 'i').replace(/â/g, 'a').replace(/ú/g, 'u').replace(/ó/g, 'o') === activeCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, activeCategory]);
+  }, [searchQuery, activeCategory, products]);
 
   const isHomepage = activeCategory === "todos" && searchQuery === "" && !showAll;
   const displayProducts = isHomepage ? filteredProducts.slice(0, 20) : filteredProducts;

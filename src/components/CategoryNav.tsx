@@ -1,7 +1,7 @@
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { categories } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
 
 interface CategoryNavProps {
   activeCategory: string;
@@ -10,6 +10,18 @@ interface CategoryNavProps {
 
 const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { data: products = [] } = useProducts();
+
+  const categories = useMemo(() => {
+    const cats = [...new Set(products.map(p => p.category))].sort();
+    return [
+      { id: "todos", label: "Todos" },
+      ...cats.map(c => ({
+        id: c.toLowerCase().replace(/ /g, '-').replace(/ã/g, 'a').replace(/á/g, 'a').replace(/ê/g, 'e').replace(/í/g, 'i').replace(/â/g, 'a').replace(/ú/g, 'u').replace(/ó/g, 'o'),
+        label: c,
+      })),
+    ];
+  }, [products]);
 
   const scroll = (dir: "left" | "right") => {
     if (scrollRef.current) {
