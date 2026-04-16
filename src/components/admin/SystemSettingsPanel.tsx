@@ -1,5 +1,5 @@
 import { useMemo, useState, type ComponentType } from "react";
-import { Loader2, MessageCircle, Power, Mail, Send, Eye, RotateCcw, Upload, Link2, type LucideProps } from "lucide-react";
+import { Loader2, MessageCircle, Power, Mail, Send, Eye, RotateCcw, Upload, Link2, Lock, type LucideProps } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -76,6 +76,7 @@ const SystemSettingsPanel = ({ value, onChange, userId }: Props) => {
 
   const wa = value.whatsappMessage;
   const mt = value.maintenance;
+  const qa = value.quoteAccess;
 
   const previewMessage = useMemo(() => {
     const sampleData: Record<string, string> = {};
@@ -151,6 +152,28 @@ const SystemSettingsPanel = ({ value, onChange, userId }: Props) => {
         <h2 className="text-lg font-bold mb-1">Configurações do Sistema</h2>
         <p className="text-sm text-muted-foreground">Mensagem do WhatsApp, modo de manutenção e teste de email de reset de senha.</p>
       </div>
+
+      {/* Quote Access Rule */}
+      <SectionCard
+        title="Acesso ao Envio de Orçamento"
+        icon={Lock}
+        action={
+          <Toggle
+            checked={qa.requireLoginForWhatsApp}
+            onChange={v => onChange({ ...value, quoteAccess: { ...qa, requireLoginForWhatsApp: v } })}
+            label={qa.requireLoginForWhatsApp ? "Exigindo login" : "Liberado"}
+          />
+        }
+      >
+        <p className="text-xs text-muted-foreground -mt-1">
+          <strong>Exigir login para enviar orçamento via WhatsApp.</strong> Quando ativo, somente usuários autenticados conseguem enviar o orçamento. Visitantes serão convidados a fazer login.
+        </p>
+        <div className={`rounded-xl border px-3 py-2.5 text-xs ${qa.requireLoginForWhatsApp ? "border-primary/30 bg-primary/5 text-foreground/80" : "border-border bg-card text-muted-foreground"}`}>
+          {qa.requireLoginForWhatsApp
+            ? "🔒 Apenas usuários logados podem enviar orçamentos pelo WhatsApp."
+            : "🌐 Qualquer visitante pode enviar orçamentos pelo WhatsApp, mesmo sem conta."}
+        </div>
+      </SectionCard>
 
       {/* WhatsApp Message Customization */}
       <SectionCard
