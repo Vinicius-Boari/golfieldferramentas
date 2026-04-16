@@ -1,22 +1,75 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus, LogIn } from "lucide-react";
+import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus, LogIn, Tag, Loader2, Check, AlertCircle } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useState } from "react";
+import { useValidateCoupon } from "@/hooks/useCoupons";
 
 const CartDrawer = () => {
-  const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart } = useCart();
+  const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart, appliedCoupon, setAppliedCoupon, finalPrice } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [couponCode, setCouponCode] = useState("");
+  const [couponError, setCouponError] = useState("");
+  const validateCoupon = useValidateCoupon();
 
   const generateWhatsAppMessage = () => {
     let msg = "Olá! Gostaria de fazer um orçamento:\n\n";
     items.forEach(item => {
       msg += `• ${item.product.name} — ${item.quantity}un x R$${item.product.price.toFixed(2).replace('.', ',')} = R$${(item.product.price * item.quantity).toFixed(2).replace('.', ',')}\n`;
     });
-    msg += `\n*Total: R$ ${totalPrice.toFixed(2).replace('.', ',')}*`;
+    msg += `\n*Subtotal: R$ ${totalPrice.toFixed(2).replace('.', ',')}*`;
+    if (appliedCoupon) {
+      msg += `\n*Cupom: ${appliedCoupon.code} (-R$ ${appliedCoupon.discount_amount.toFixed(2).replace('.', ',')})*`;
+      msg += `\n*Total: R$ ${finalPrice.toFixed(2).replace('.', ',')}*`;
+    }
     return encodeURIComponent(msg);
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponError("");
+
+    const cartItems = items.map(i => ({
+      product_id: String(i.product.id),
+      category: (i.product as any).category || "",
+      price: i.product.price,
+      quantity: i.quantity,
+    }));
+
+    try {
+      const result = await validateCoupon.mutateAsync({
+        code: couponCode.trim(),
+        cart_items: cartItems,
+        order_total: totalPrice,
+      });
+
+      if (result.valid && result.coupon && result.discount_amount !== undefined) {
+        setAppliedCoupon({
+          id: result.coupon.id,
+          code: result.coupon.code,
+          name: result.coupon.name,
+          discount_type: result.coupon.discount_type,
+          discount_value: result.coupon.discount_value,
+          discount_amount: result.discount_amount,
+        });
+        setCouponCode("");
+        setCouponError("");
+        toast.success("Cupom aplicado com sucesso!");
+      } else {
+        setCouponError(result.reason || "Cupom inválido");
+      }
+    } catch {
+      setCouponError("Erro ao validar cupom");
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponError("");
+    toast.info("Cupom removido");
   };
 
   const progressPercent = Math.min((totalPrice / 2000) * 100, 100);
@@ -114,7 +167,53 @@ const CartDrawer = () => {
             </div>
 
             {items.length > 0 && (
-              <div className="p-4 sm:p-5 border-t border-border space-y-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+              <div className="p-4 sm:p-5 border-t border-border space-y-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
+                {/* Coupon Section */}
+                <div className="space-y-2">
+                  {appliedCoupon ? (
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-primary/5 border border-primary/20">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Check size={16} className="text-primary shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-primary truncate">Cupom {appliedCoupon.code}</p>
+                          <p className="text-xs text-muted-foreground">-R$ {appliedCoupon.discount_amount.toFixed(2).replace(".", ",")}</p>
+                        </div>
+                      </div>
+                      <button onClick={handleRemoveCoupon} className="text-xs text-muted-foreground hover:text-destructive transition-colors shrink-0 ml-2">
+                        Remover
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <div className="flex-1 relative">
+                        <Tag size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <input
+                          type="text"
+                          placeholder="Código do cupom"
+                          value={couponCode}
+                          onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponError(""); }}
+                          onKeyDown={e => e.key === "Enter" && handleApplyCoupon()}
+                          className="w-full pl-9 pr-3 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50 transition-colors font-mono uppercase"
+                        />
+                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handleApplyCoupon}
+                        disabled={validateCoupon.isPending || !couponCode.trim()}
+                        className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold disabled:opacity-50 shrink-0"
+                      >
+                        {validateCoupon.isPending ? <Loader2 size={14} className="animate-spin" /> : "Aplicar"}
+                      </motion.button>
+                    </div>
+                  )}
+                  {couponError && (
+                    <p className="text-xs text-destructive flex items-center gap-1">
+                      <AlertCircle size={12} /> {couponError}
+                    </p>
+                  )}
+                </div>
+
                 {totalPrice < 2000 && (
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs gap-3">
@@ -135,11 +234,23 @@ const CartDrawer = () => {
                   </div>
                 )}
 
-                <div className="flex justify-between items-center py-2 gap-4">
-                  <span className="text-sm text-muted-foreground">Total estimado</span>
-                  <span className="text-xl sm:text-2xl font-bold text-primary tracking-tight text-right">
-                    R$ {totalPrice.toFixed(2).replace('.', ',')}
-                  </span>
+                <div className="space-y-1 py-2">
+                  <div className="flex justify-between items-center gap-4">
+                    <span className="text-xs text-muted-foreground">Subtotal</span>
+                    <span className="text-sm font-medium">R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
+                  </div>
+                  {appliedCoupon && (
+                    <div className="flex justify-between items-center gap-4">
+                      <span className="text-xs text-primary">Desconto</span>
+                      <span className="text-sm font-medium text-primary">-R$ {Math.min(appliedCoupon.discount_amount, totalPrice).toFixed(2).replace('.', ',')}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center gap-4 pt-1 border-t border-border/40">
+                    <span className="text-sm text-muted-foreground">Total</span>
+                    <span className="text-xl sm:text-2xl font-bold text-primary tracking-tight text-right">
+                      R$ {finalPrice.toFixed(2).replace('.', ',')}
+                    </span>
+                  </div>
                 </div>
 
                 {totalPrice >= 2000 ? (

@@ -1,9 +1,18 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import type { Product } from "@/data/products";
 
 interface CartItem {
   product: Product;
   quantity: number;
+}
+
+interface AppliedCoupon {
+  id: string;
+  code: string;
+  name: string;
+  discount_type: string;
+  discount_value: number;
+  discount_amount: number;
 }
 
 interface CartContextType {
@@ -16,6 +25,9 @@ interface CartContextType {
   totalPrice: number;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  appliedCoupon: AppliedCoupon | null;
+  setAppliedCoupon: (coupon: AppliedCoupon | null) => void;
+  finalPrice: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -23,6 +35,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
 
   const addItem = useCallback((product: Product, qty: number) => {
     setItems(prev => {
@@ -49,13 +62,26 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   }, []);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = useCallback(() => {
+    setItems([]);
+    setAppliedCoupon(null);
+  }, []);
 
   const totalItems = items.reduce((s, i) => s + i.quantity, 0);
   const totalPrice = items.reduce((s, i) => s + i.product.price * i.quantity, 0);
 
+  // Invalidate coupon when cart changes significantly
+  useEffect(() => {
+    if (appliedCoupon && items.length === 0) {
+      setAppliedCoupon(null);
+    }
+  }, [items, appliedCoupon]);
+
+  const discountAmount = appliedCoupon ? Math.min(appliedCoupon.discount_amount, totalPrice) : 0;
+  const finalPrice = Math.max(0, Math.round((totalPrice - discountAmount) * 100) / 100);
+
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice, isOpen, setIsOpen }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice, isOpen, setIsOpen, appliedCoupon, setAppliedCoupon, finalPrice }}>
       {children}
     </CartContext.Provider>
   );
