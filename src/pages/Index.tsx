@@ -64,20 +64,19 @@ const IndexContent = () => {
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       <Hero />
 
-      {/* Trust bar */}
       <motion.section
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="py-10 border-b border-border/30 relative overflow-hidden"
+        className="py-8 sm:py-10 border-b border-border/30 relative overflow-hidden"
       >
         <motion.div
           style={{ y: bgParallax, backgroundImage: `radial-gradient(circle, hsl(0,78%,52%) 1px, transparent 1px)`, backgroundSize: '40px 40px' }}
           className="absolute inset-0 opacity-[0.015]"
         />
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap items-center justify-center gap-12 text-sm">
+          <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-8 lg:gap-12 text-sm">
             {[
               { icon: Star, text: "Avaliação 5 estrelas" },
               { icon: TrendingUp, text: "+1000 clientes atendidos" },
@@ -96,16 +95,14 @@ const IndexContent = () => {
                 >
                   <item.icon size={16} className="text-primary/70 group-hover:text-primary transition-colors" />
                 </motion.div>
-                <span className="group-hover:text-foreground transition-colors">{item.text}</span>
+                <span className="group-hover:text-foreground transition-colors text-center sm:text-left">{item.text}</span>
               </motion.div>
             ))}
           </div>
         </div>
       </motion.section>
 
-      {/* Products Section */}
-      <section id="produtos" className="py-28 relative">
-        {/* Background decorative elements */}
+      <section id="produtos" className="py-16 sm:py-20 lg:py-28 relative">
         <motion.div
           animate={{ scale: [1, 1.1, 1], opacity: [0.02, 0.05, 0.02] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
@@ -118,19 +115,18 @@ const IndexContent = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12 sm:mb-16"
           >
             <motion.span variants={scaleIn} className="section-badge mb-6 inline-flex">Catálogo Completo</motion.span>
-            <motion.h2 variants={fadeSlideUp} className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
+            <motion.h2 variants={fadeSlideUp} className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-4">
               Nossos{" "}
               <span className="text-gradient-gold">Produtos</span>
             </motion.h2>
-            <motion.p variants={fadeSlideUp} className="text-muted-foreground max-w-md mx-auto text-base">
+            <motion.p variants={fadeSlideUp} className="text-muted-foreground max-w-md mx-auto text-base px-2">
               Selecione uma categoria ou busque pelo nome do produto
             </motion.p>
           </motion.div>
 
-          {/* Search bar */}
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -162,7 +158,7 @@ const IndexContent = () => {
             <CategoryNav activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
           </motion.div>
 
-          <div className="mt-12">
+          <div className="mt-10 sm:mt-12">
             <AnimatePresence mode="wait">
               {displayProducts.length === 0 ? (
                 <motion.div
@@ -170,7 +166,7 @@ const IndexContent = () => {
                   initial={{ opacity: 0, scale: 0.9, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                  className="text-center py-24 text-muted-foreground"
+                  className="text-center py-20 sm:py-24 text-muted-foreground"
                 >
                   <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity }}>
                     <Search size={48} className="mx-auto mb-4 opacity-20" />
@@ -185,7 +181,7 @@ const IndexContent = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5"
                 >
                   {displayProducts.map((product, i) => (
                     <ProductCard key={product.id} product={product} index={i} />
@@ -199,7 +195,7 @@ const IndexContent = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-center mt-14"
+                className="text-center mt-12 sm:mt-14"
               >
                 <motion.button
                   onClick={() => setShowAll(true)}
@@ -221,15 +217,14 @@ const IndexContent = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="text-center text-xs text-muted-foreground mt-16"
+            className="text-center text-xs text-muted-foreground mt-12 sm:mt-16"
           >
             Os valores são exclusivos para compras por atacado. Entre em contato para mais informações.
           </motion.p>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-32 relative overflow-hidden">
+      <section className="py-20 sm:py-24 lg:py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-primary/70" />
         <div className="absolute inset-0 opacity-5"
           style={{ backgroundImage: `radial-gradient(circle at 2px 2px, hsl(0,0%,100%) 1px, transparent 0)`, backgroundSize: '24px 24px' }}
@@ -240,12 +235,11 @@ const IndexContent = () => {
           className="absolute inset-0 opacity-10"
           style={{ backgroundImage: "linear-gradient(45deg, transparent 30%, hsl(0,0%,100%,0.15) 50%, transparent 70%)", backgroundSize: "200% 200%" }}
         />
-        {/* Animated floating shapes */}
         <motion.div animate={{ y: [0, -30, 0], rotate: [0, 90, 0] }} transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 left-[15%] w-16 h-16 border border-primary-foreground/10 rounded-xl"
+          className="absolute top-20 left-[15%] w-16 h-16 border border-primary-foreground/10 rounded-xl hidden sm:block"
         />
         <motion.div animate={{ y: [0, 20, 0], rotate: [0, -60, 0] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-          className="absolute bottom-20 right-[20%] w-10 h-10 border border-primary-foreground/10 rounded-full"
+          className="absolute bottom-20 right-[20%] w-10 h-10 border border-primary-foreground/10 rounded-full hidden sm:block"
         />
         <div className="container mx-auto px-4 relative z-10 text-center">
           <motion.div
@@ -258,134 +252,75 @@ const IndexContent = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-4xl md:text-6xl font-bold text-primary-foreground mb-5 tracking-tight"
+              transition={{ delay: 0.1, duration: 0.7 }}
+              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary-foreground tracking-tight mb-6"
             >
-              Precisa de um Orçamento?
+              Pronto para comprar no atacado?
             </motion.h2>
             <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-primary-foreground/70 max-w-lg mx-auto mb-10 text-lg"
+              transition={{ delay: 0.2, duration: 0.7 }}
+              className="text-primary-foreground/80 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10 px-2"
             >
-              Monte seu pedido online ou fale diretamente com nossos vendedores pelo WhatsApp
+              Monte seu orçamento com os melhores produtos da Golfield e fale com nosso time para receber atendimento personalizado.
             </motion.p>
             <motion.a
-              href="https://wa.me/5511959409051"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.08, y: -4, boxShadow: "0 25px 60px -15px hsl(0,0%,0%,0.5)" }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-10 py-5 bg-background text-foreground rounded-2xl font-bold text-lg shadow-2xl transition-all"
+              href="#produtos"
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.96 }}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-foreground px-6 sm:px-8 py-3.5 text-sm sm:text-base font-semibold text-primary shadow-2xl shadow-background/25"
             >
-              <svg width={22} height={22} viewBox="0 0 24 24" fill="hsl(142,70%,45%)">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
-              Falar com Vendedor
+              Explorar catálogo
+              <ArrowRight size={18} />
             </motion.a>
           </motion.div>
         </div>
       </section>
 
-      {/* Sobre Nós */}
-      <section id="sobre" className="py-32 bg-card/20 relative overflow-hidden">
-        {/* Decorative bg glow */}
-        <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.02, 0.06, 0.02] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-primary rounded-full blur-[200px]"
-        />
-
+      <section id="sobre" className="py-16 sm:py-20 md:py-24 relative">
         <div className="container mx-auto px-4">
           <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="text-center mb-20"
+            className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-start"
           >
-            <motion.span variants={scaleIn} className="section-badge mb-6 inline-flex">Sobre Nós</motion.span>
-            <motion.h2 variants={fadeSlideUp} className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
-              Nossa <span className="text-gradient-gold">Missão</span>
-            </motion.h2>
-            <motion.p variants={fadeSlideUp} className="text-lg text-primary font-medium">Inovação global, confiança local</motion.p>
-          </motion.div>
+            <motion.div variants={fadeSlideRight}>
+              <span className="section-badge mb-6 inline-flex">Sobre a Golfield</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-6">
+                Soluções em ferramentas com foco em <span className="text-gradient-gold">atacado profissional</span>
+              </h2>
+              <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-6">
+                A Golfield atende clientes de todo o Brasil com uma linha completa de ferramentas e acessórios para profissionais, lojistas e empresas que buscam qualidade, preço competitivo e atendimento ágil.
+              </p>
+              <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-8">
+                Trabalhamos com um catálogo variado e condições especiais para compras em volume, sempre com suporte dedicado para ajudar na composição do melhor orçamento para seu negócio.
+              </p>
+            </motion.div>
 
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="max-w-4xl mx-auto mb-28"
-          >
-            <div className="grid md:grid-cols-2 gap-6">
+            <motion.div variants={fadeSlideUp} className="grid sm:grid-cols-2 gap-4">
               {[
-                { icon: Globe, text: "Escolher a Golfield é ter a certeza de que você está utilizando ferramentas que são referência nos mercados mais exigentes do mundo. Somos o elo de confiança entre a inovação global e a necessidade local de eficiência e robustez." },
-                { icon: Lightbulb, text: "Nosso compromisso é entregar para você e sua empresa os melhores equipamentos do mercado, unindo tecnologia de ponta e design. Trabalhamos com ferramentas manuais, elétricas, sistemas de fixação, materiais abrasivos e produtos para construção e manutenção industrial." },
+                { icon: Calendar, title: "Experiência", desc: "Atendimento consultivo para vendas B2B" },
+                { icon: Globe, title: "Cobertura Nacional", desc: "Distribuição para clientes em todo o Brasil" },
+                { icon: Lightbulb, title: "Curadoria", desc: "Seleção de produtos com foco em giro e qualidade" },
+                { icon: Sparkles, title: "Parceria", desc: "Relação próxima para gerar recorrência e confiança" },
               ].map((item, i) => (
                 <motion.div
                   key={i}
-                  variants={fadeSlideRight}
-                  whileHover={{ y: -6, borderColor: "hsl(0,78%,52%,0.3)", boxShadow: "0 20px 50px -15px hsl(0,0%,0%,0.3)" }}
-                  className="stat-card p-8 transition-all duration-500"
+                  whileHover={{ y: -6 }}
+                  className="stat-card"
                 >
-                  <motion.div whileHover={{ rotate: 360, scale: 1.15 }} transition={{ duration: 0.6 }} className="p-3 rounded-xl bg-primary/10 inline-flex mb-6">
-                    <item.icon className="text-primary" size={26} />
-                  </motion.div>
-                  <p className="text-muted-foreground leading-relaxed text-sm">{item.text}</p>
+                  <div className="p-2.5 rounded-xl bg-primary/10 w-fit mb-4">
+                    <item.icon size={18} className="text-primary" />
+                  </div>
+                  <h3 className="font-semibold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                 </motion.div>
               ))}
-            </div>
-          </motion.div>
-
-          {/* Trajetória */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <motion.span variants={scaleIn} className="section-badge mb-6 inline-flex">Nossa Trajetória</motion.span>
-            <motion.h3 variants={fadeSlideUp} className="text-3xl md:text-5xl font-bold tracking-tight">
-              Uma História de Crescimento
-            </motion.h3>
-          </motion.div>
-
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto"
-          >
-            {[
-              { year: "2004", title: "FUNDAÇÃO", desc: "Início das operações em São Paulo, com foco em importação de ferramentas de qualidade." },
-              { year: "2010", title: "EXPANSÃO NACIONAL", desc: "Consolidação da marca GolField e expansão para atendimento em todo o Brasil." },
-              { year: "2023", title: "LINHA GOL-HOME", desc: "Lançamento da marca Gol-Home para o segmento de hidráulica e utilidades domésticas." },
-              { year: "2026", title: "FEICON", desc: "Participação na maior feira da construção civil da América Latina, apresentando inovações." },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                variants={fadeSlideUp}
-                whileHover={{ y: -8, borderColor: "hsl(0,78%,52%,0.4)", scale: 1.02 }}
-                className="stat-card p-7 group cursor-default transition-all duration-500"
-              >
-                <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
-                  <Calendar className="text-primary/40 group-hover:text-primary transition-colors mb-4" size={22} />
-                </motion.div>
-                <motion.h4
-                  className="text-4xl font-bold text-primary tracking-tight mb-1"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  {item.year}
-                </motion.h4>
-                <p className="font-semibold text-xs tracking-wider uppercase mb-3 text-foreground/80">{item.title}</p>
-                <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -397,10 +332,12 @@ const IndexContent = () => {
   );
 };
 
-const Index = () => (
-  <CartProvider>
-    <IndexContent />
-  </CartProvider>
-);
+const Index = () => {
+  return (
+    <CartProvider>
+      <IndexContent />
+    </CartProvider>
+  );
+};
 
 export default Index;

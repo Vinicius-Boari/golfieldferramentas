@@ -40,13 +40,12 @@ const CartDrawer = () => {
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className="fixed right-0 top-0 h-full w-full max-w-md bg-card border-l border-border z-50 flex flex-col"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-border">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="p-2 rounded-lg bg-primary/10 shrink-0">
                   <ShoppingCart size={18} className="text-primary" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h2 className="text-lg font-bold tracking-tight">Orçamento</h2>
                   <p className="text-xs text-muted-foreground">{totalItems} {totalItems === 1 ? 'item' : 'itens'}</p>
                 </div>
@@ -56,15 +55,14 @@ const CartDrawer = () => {
               </button>
             </div>
 
-            {/* Items */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-3">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                   <div className="p-6 rounded-2xl bg-secondary/30 mb-4">
                     <ShoppingCart size={40} className="opacity-20" />
                   </div>
-                  <p className="font-semibold text-base">Seu orçamento está vazio</p>
-                  <p className="text-sm mt-1 text-muted-foreground/70">Adicione produtos para começar</p>
+                  <p className="font-semibold text-base text-center">Seu orçamento está vazio</p>
+                  <p className="text-sm mt-1 text-muted-foreground/70 text-center">Adicione produtos para começar</p>
                 </div>
               ) : (
                 <AnimatePresence>
@@ -82,15 +80,17 @@ const CartDrawer = () => {
                           src={item.product.image}
                           alt={item.product.name}
                           className="w-full h-full object-contain"
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm truncate">{item.product.name}</h4>
+                        <h4 className="font-medium text-sm line-clamp-2">{item.product.name}</h4>
                         <p className="text-primary font-bold text-sm mt-0.5">
                           R$ {item.product.price.toFixed(2).replace('.', ',')} / un
                         </p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <div className="flex items-center bg-card rounded-lg overflow-hidden border border-border/50">
+                        <div className="flex flex-wrap items-center gap-2 mt-2">
+                          <div className="flex items-center bg-card rounded-lg overflow-hidden border border-border/50 shrink-0">
                             <button onClick={() => updateQuantity(item.product.id, Math.max(item.product.minQty, item.quantity - item.product.minQty))} className="p-1.5 hover:bg-secondary transition-colors">
                               <Minus size={11} />
                             </button>
@@ -104,7 +104,7 @@ const CartDrawer = () => {
                           </span>
                         </div>
                       </div>
-                      <button onClick={() => removeItem(item.product.id)} className="self-start p-1.5 rounded-lg opacity-0 group-hover/item:opacity-100 hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all">
+                      <button onClick={() => removeItem(item.product.id)} className="self-start p-1.5 rounded-lg opacity-100 sm:opacity-0 group-hover/item:opacity-100 hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all">
                         <Trash2 size={14} />
                       </button>
                     </motion.div>
@@ -113,15 +113,13 @@ const CartDrawer = () => {
               )}
             </div>
 
-            {/* Footer */}
             {items.length > 0 && (
-              <div className="p-5 border-t border-border space-y-4">
-                {/* Progress bar */}
+              <div className="p-4 sm:p-5 border-t border-border space-y-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 {totalPrice < 2000 && (
                   <div className="space-y-2">
-                    <div className="flex justify-between text-xs">
+                    <div className="flex justify-between text-xs gap-3">
                       <span className="text-muted-foreground">Progresso do pedido mínimo</span>
-                      <span className="text-primary font-medium">{progressPercent.toFixed(0)}%</span>
+                      <span className="text-primary font-medium shrink-0">{progressPercent.toFixed(0)}%</span>
                     </div>
                     <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
                       <motion.div
@@ -137,9 +135,9 @@ const CartDrawer = () => {
                   </div>
                 )}
 
-                <div className="flex justify-between items-center py-2">
+                <div className="flex justify-between items-center py-2 gap-4">
                   <span className="text-sm text-muted-foreground">Total estimado</span>
-                  <span className="text-2xl font-bold text-primary tracking-tight">
+                  <span className="text-xl sm:text-2xl font-bold text-primary tracking-tight text-right">
                     R$ {totalPrice.toFixed(2).replace('.', ',')}
                   </span>
                 </div>
@@ -152,7 +150,7 @@ const CartDrawer = () => {
                       rel="noopener noreferrer"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="btn-golfield w-full text-center"
+                      className="btn-golfield w-full text-center justify-center"
                     >
                       <MessageCircle size={18} />
                       Enviar Orçamento via WhatsApp

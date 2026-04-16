@@ -3,6 +3,7 @@ import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { ShoppingCart, Plus, Minus, Check } from "lucide-react";
 import type { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ProductCardProps {
   product: Product;
@@ -13,8 +14,8 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
   const [qty, setQty] = useState(product.minQty);
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
+  const isMobile = useIsMobile();
 
-  // 3D tilt effect
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-100, 100], [8, -8]);
@@ -23,6 +24,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
   const springRotateY = useSpring(rotateY, { stiffness: 300, damping: 30 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobile) return;
     const rect = e.currentTarget.getBoundingClientRect();
     x.set(e.clientX - rect.left - rect.width / 2);
     y.set(e.clientY - rect.top - rect.height / 2);
@@ -41,12 +43,11 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.6, delay: (index % 4) * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      style={{ rotateX: springRotateX, rotateY: springRotateY, transformPerspective: 800 }}
+      style={isMobile ? undefined : { rotateX: springRotateX, rotateY: springRotateY, transformPerspective: 800 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="group relative rounded-2xl border border-border/60 bg-card overflow-hidden transition-all duration-500 hover:border-primary/30 hover:shadow-[0_25px_60px_-15px_hsl(0,78%,52%,0.12)]"
     >
-      {/* Animated gradient overlay on hover */}
       <motion.div
         className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
         style={{
@@ -54,7 +55,6 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         }}
       />
 
-      {/* Image */}
       <div className="relative aspect-square bg-secondary/20 flex items-center justify-center overflow-hidden">
         {product.badge && (
           <motion.span
@@ -75,13 +75,13 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         <motion.img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-contain p-6"
+          className="w-full h-full object-contain p-4 sm:p-6"
           loading="lazy"
-          whileHover={{ scale: 1.12, rotate: 2 }}
+          decoding="async"
+          whileHover={isMobile ? undefined : { scale: 1.12, rotate: 2 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
 
-        {/* Hover shine sweep */}
         <motion.div
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
           style={{
@@ -94,11 +94,8 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
       </div>
 
-      {/* Info */}
-      <div className="relative z-10 p-5">
-        <motion.h3
-          className="text-sm font-semibold leading-tight mb-1.5 line-clamp-2 min-h-[2.5rem] text-foreground/90 group-hover:text-foreground transition-colors duration-300"
-        >
+      <div className="relative z-10 p-4 sm:p-5">
+        <motion.h3 className="text-sm font-semibold leading-tight mb-1.5 line-clamp-2 min-h-[2.5rem] text-foreground/90 group-hover:text-foreground transition-colors duration-300">
           {product.name}
         </motion.h3>
         <p className="text-xs text-muted-foreground mb-4">
@@ -108,7 +105,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         <div className="flex items-end justify-between mb-5">
           <div>
             <motion.p
-              className="text-2xl font-bold text-primary tracking-tight"
+              className="text-xl sm:text-2xl font-bold text-primary tracking-tight"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
@@ -118,12 +115,11 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
           </div>
         </div>
 
-        {/* Qty + Add */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center bg-secondary/60 rounded-lg overflow-hidden border border-border/40">
+          <div className="flex items-center bg-secondary/60 rounded-lg overflow-hidden border border-border/40 shrink-0">
             <motion.button
               whileTap={{ scale: 0.75 }}
-              whileHover={{ backgroundColor: "hsl(220,15%,15%)" }}
+              whileHover={isMobile ? undefined : { backgroundColor: "hsl(220,15%,15%)" }}
               onClick={() => setQty(Math.max(product.minQty, qty - product.minQty))}
               className="p-2 hover:bg-secondary transition-colors"
             >
@@ -137,7 +133,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
             />
             <motion.button
               whileTap={{ scale: 0.75 }}
-              whileHover={{ backgroundColor: "hsl(220,15%,15%)" }}
+              whileHover={isMobile ? undefined : { backgroundColor: "hsl(220,15%,15%)" }}
               onClick={() => setQty(qty + product.minQty)}
               className="p-2 hover:bg-secondary transition-colors"
             >
@@ -148,7 +144,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
             onClick={handleAdd}
             whileHover={{ scale: 1.04, y: -1 }}
             whileTap={{ scale: 0.95 }}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-400 ${
+            className={`flex-1 min-w-0 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-400 ${
               added
                 ? "bg-[hsl(142,70%,45%)] text-primary-foreground shadow-lg shadow-[hsl(142,70%,45%,0.3)]"
                 : "bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/25"
@@ -159,12 +155,12 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
                 <motion.span initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300 }}>
                   <Check size={15} />
                 </motion.span>
-                Adicionado!
+                <span className="truncate">Adicionado!</span>
               </>
             ) : (
               <>
                 <ShoppingCart size={15} />
-                Adicionar
+                <span className="truncate">Adicionar</span>
               </>
             )}
           </motion.button>
