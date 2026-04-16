@@ -7,6 +7,14 @@ export interface HomeSection {
   order: number;
 }
 
+export interface HeroVideoConfig {
+  enabled: boolean;
+  url: string;
+  loop: boolean;
+  muted: boolean;
+  overlayOpacity: number; // 0..0.8
+}
+
 export interface HeroConfig {
   logoImage: string;
   badgeText: string;
@@ -65,6 +73,7 @@ export interface FooterConfig {
 export interface HomeConfig {
   sections: HomeSection[];
   hero: HeroConfig;
+  heroVideo: HeroVideoConfig;
   trustBadges: TrustBadgesConfig;
   productsSection: ProductsSectionConfig;
   ctaSection: CtaSectionConfig;
@@ -98,6 +107,13 @@ export const defaultHomeConfig: HomeConfig = {
       { label: "Envio Nacional", desc: "Para todo o Brasil" },
       { label: "Catálogo completo", desc: "Centenas de produtos" },
     ],
+  },
+  heroVideo: {
+    enabled: false,
+    url: "",
+    loop: true,
+    muted: true,
+    overlayOpacity: 0.55,
   },
   trustBadges: {
     items: [
