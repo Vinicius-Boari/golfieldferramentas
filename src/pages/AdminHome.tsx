@@ -346,6 +346,14 @@ const AdminHome = () => {
                 </div>
               )}
 
+              {/* HERO VIDEO TAB */}
+              {activeTab === "heroVideo" && (
+                <HeroVideoPanel
+                  value={config.heroVideo}
+                  onChange={next => updateConfig(c => ({ ...c, heroVideo: next }))}
+                />
+              )}
+
               {/* TRUST BADGES TAB */}
               {activeTab === "trust" && (
                 <div className="space-y-5">
