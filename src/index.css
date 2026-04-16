@@ -181,9 +181,8 @@
     border: 1px solid hsl(0, 78%, 52%, 0.15);
   }
 
-  /* Animated gradient border — premium subtle red flow.
-     Apply on a positioned element. Uses ::before for border layer
-     to preserve element's own background, padding, and border-radius. */
+  /* Animated gradient border — rotating red conic flow.
+     Uses @property to animate the gradient angle (true rotation around element). */
   .gradient-border-animated {
     position: relative;
     isolation: isolate;
@@ -194,25 +193,25 @@
     inset: 0;
     border-radius: inherit;
     padding: 2px; /* border thickness */
-    background: linear-gradient(
-      130deg,
+    background: conic-gradient(
+      from var(--gb-angle, 0deg),
       #8B0000,
       #DC143C,
       #FF4D4D,
       #DC143C,
       #8B0000,
       #DC143C,
-      #FF4D4D
+      #FF4D4D,
+      #8B0000
     );
-    background-size: 300% 300%;
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
             mask-composite: exclude;
     pointer-events: none;
-    animation: gradient-border-flow 6s linear infinite;
-    filter: drop-shadow(0 0 6px hsl(0, 78%, 52%, 0.25));
+    animation: gradient-border-spin 4s linear infinite;
+    filter: drop-shadow(0 0 6px hsl(0, 78%, 52%, 0.3));
     z-index: 1;
   }
   .gradient-border-animated > * {
@@ -222,10 +221,13 @@
   .gradient-border-thin::before {
     padding: 1px;
   }
-  @keyframes gradient-border-flow {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  @property --gb-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  @keyframes gradient-border-spin {
+    to { --gb-angle: 360deg; }
   }
   @media (prefers-reduced-motion: reduce) {
     .gradient-border-animated::before { animation: none; }
