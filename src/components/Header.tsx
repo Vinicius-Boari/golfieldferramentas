@@ -130,6 +130,15 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 <WhatsAppIcon size={18} />
               </motion.a>
 
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <Link
+                  to="/login"
+                  className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300 inline-flex"
+                >
+                  <UserCircle2 size={20} className="text-primary-foreground" />
+                </Link>
+              </motion.div>
+
               <motion.button
                 onClick={() => setIsOpen(true)}
                 whileHover={{ scale: 1.05 }}
