@@ -275,12 +275,12 @@ html {
 .snake-border-fast::before,
 .btn-golfield::before,
 .glass-card::before {
-  animation-duration: 3.5s;
+  animation-duration: 4.5s;
 }
 
 /* Slow 3.5s — uniform speed */
 .snake-border-slow::before {
-  animation-duration: 3.5s;
+  animation-duration: 4.5s;
 }
 
 /* stat-card uses ::before for hover overlay, so snake uses ::after */
