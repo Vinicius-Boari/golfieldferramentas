@@ -6,21 +6,60 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useValidateCoupon } from "@/hooks/useCoupons";
+import { useHomeConfig } from "@/hooks/useHomeConfig";
+import { renderWhatsAppTemplate } from "@/components/admin/SystemSettingsPanel";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState as useStateReact } from "react";
 
 const CartDrawer = () => {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart, appliedCoupon, setAppliedCoupon, finalPrice } = useCart();
   const { isAuthenticated } = useAuth();
+  const { data: homeConfig } = useHomeConfig();
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const validateCoupon = useValidateCoupon();
+  const [profile, setProfile] = useStateReact<{ nome_responsavel?: string; telefone?: string; email?: string } | null>(null);
+
+  // Load profile data for template variables when authenticated
+  useEffect(() => {
+    let cancelled = false;
+    if (!isAuthenticated) { setProfile(null); return; }
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from("profiles")
+        .select("nome_responsavel,telefone,email")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!cancelled) setProfile(data ?? { email: user.email ?? "" });
+    })();
+    return () => { cancelled = true; };
+  }, [isAuthenticated]);
 
   const generateWhatsAppMessage = () => {
-    let msg = "Olá! Gostaria de fazer um orçamento:\n\n";
-    items.forEach(item => {
-      msg += `• ${item.product.name} — ${item.quantity}un x R$${item.product.price.toFixed(2).replace('.', ',')} = R$${(item.product.price * item.quantity).toFixed(2).replace('.', ',')}\n`;
-    });
-    msg += `\n*Subtotal: R$ ${totalPrice.toFixed(2).replace('.', ',')}*`;
+    const productsText = items
+      .map(item => `• ${item.product.name} — ${item.quantity}un x R$${item.product.price.toFixed(2).replace('.', ',')} = R$${(item.product.price * item.quantity).toFixed(2).replace('.', ',')}`)
+      .join("\n");
+
+    const customCfg = homeConfig?.systemSettings?.whatsappMessage;
+    if (customCfg?.enabled && customCfg.template?.trim()) {
+      const data: Record<string, string> = {
+        name: profile?.nome_responsavel || "",
+        phone: profile?.telefone || "",
+        email: profile?.email || "",
+        products: productsText,
+        subtotal: `R$ ${totalPrice.toFixed(2).replace('.', ',')}`,
+        total: `R$ ${finalPrice.toFixed(2).replace('.', ',')}`,
+        coupon: appliedCoupon ? `${appliedCoupon.code} (-R$ ${appliedCoupon.discount_amount.toFixed(2).replace('.', ',')})` : "",
+        date: new Date().toLocaleDateString("pt-BR"),
+      };
+      return encodeURIComponent(renderWhatsAppTemplate(customCfg.template, data));
+    }
+
+    let msg = "Olá! Gostaria de fazer um orçamento:\n\n" + productsText;
+    msg += `\n\n*Subtotal: R$ ${totalPrice.toFixed(2).replace('.', ',')}*`;
     if (appliedCoupon) {
       msg += `\n*Cupom: ${appliedCoupon.code} (-R$ ${appliedCoupon.discount_amount.toFixed(2).replace('.', ',')})*`;
       msg += `\n*Total: R$ ${finalPrice.toFixed(2).replace('.', ',')}*`;
