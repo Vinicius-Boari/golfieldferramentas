@@ -5,12 +5,14 @@ import { useAuth } from "./useAuth";
 export const useAdmin = () => {
   const { user, loading: authLoading } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
       setIsAdmin(false);
+      setIsOwner(false);
       setLoading(false);
       return;
     }
@@ -20,15 +22,16 @@ export const useAdmin = () => {
         .from("user_roles")
         .select("role")
         .eq("user_id", user.id)
-        .eq("role", "admin")
         .maybeSingle();
 
-      setIsAdmin(!!data);
+      const role = data?.role;
+      setIsAdmin(role === "admin" || role === "owner");
+      setIsOwner(role === "owner");
       setLoading(false);
     };
 
     checkAdmin();
   }, [user, authLoading]);
 
-  return { isAdmin, loading: loading || authLoading, user };
+  return { isAdmin, isOwner, loading: loading || authLoading, user };
 };
