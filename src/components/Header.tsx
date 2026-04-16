@@ -35,7 +35,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   }, []);
 
   return (
-    <>
+    <div className="fixed top-0 left-0 right-0 z-50">
       {/* Minimal top bar */}
       <motion.div
         initial={{ y: -40, opacity: 0 }}
@@ -68,11 +68,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
       </motion.div>
 
       {/* Main header */}
-      <motion.header
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 snake-border snake-border-slow ${
+      <header
+        className={`transition-all duration-500 snake-border snake-border-slow ${
           scrolled
             ? "glass shadow-2xl shadow-background/80"
             : "bg-background/95 backdrop-blur-sm"
@@ -205,8 +202,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             )}
           </AnimatePresence>
         </div>
-      </motion.header>
-    </>
+      </header>
+    </div>
   );
 };
 
