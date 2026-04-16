@@ -111,18 +111,60 @@ interface HeroProps {
     secondaryButtonLink?: string;
     stats?: { label: string; desc: string }[];
   };
+  videoConfig?: {
+    enabled?: boolean;
+    url?: string;
+    loop?: boolean;
+    muted?: boolean;
+    overlayOpacity?: number;
+  };
 }
 
-const Hero = ({ config }: HeroProps) => {
+const Hero = ({ config, videoConfig }: HeroProps) => {
   const { scrollY } = useScroll();
   const isMobile = useIsMobile();
   const parallaxY = useTransform(scrollY, [0, 600], [0, isMobile ? 40 : 120]);
   const toolScale = useTransform(scrollY, [0, 300, 600], [1, 1.18, 0.82]);
+  const [videoFailed, setVideoFailed] = React.useState(false);
+
+  const showVideo = !!(videoConfig?.enabled && videoConfig?.url && !videoFailed);
+  const overlay = Math.min(0.8, Math.max(0, videoConfig?.overlayOpacity ?? 0.55));
 
   return (
     <section className="relative overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-20 md:py-32 lg:py-40">
       <div className="absolute inset-0 bg-background" />
-      <div className="absolute inset-0 opacity-[0.02]"
+
+      {showVideo && (
+        <motion.div
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0 overflow-hidden pointer-events-none"
+          aria-hidden="true"
+        >
+          <motion.video
+            key={videoConfig!.url}
+            src={videoConfig!.url}
+            autoPlay
+            muted={videoConfig?.muted !== false}
+            loop={videoConfig?.loop !== false}
+            playsInline
+            preload="metadata"
+            poster={config?.logoImage}
+            onError={() => setVideoFailed(true)}
+            className="absolute inset-0 w-full h-full object-cover"
+            animate={{ scale: [1, 1.06, 1] }}
+            transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <div
+            className="absolute inset-0 bg-background"
+            style={{ opacity: overlay }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background" />
+        </motion.div>
+      )}
+
+      <div className={`absolute inset-0 opacity-[0.02] ${showVideo ? "hidden" : ""}`}
         style={{
           backgroundImage: `linear-gradient(hsl(220,10%,50%) 1px, transparent 1px), linear-gradient(90deg, hsl(220,10%,50%) 1px, transparent 1px)`,
           backgroundSize: '60px 60px'
