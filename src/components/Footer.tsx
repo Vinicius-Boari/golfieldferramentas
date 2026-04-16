@@ -27,7 +27,7 @@ const itemVariants = {
 
 const Footer = () => {
   return (
-    <footer className="relative border-t border-border/50 bg-card/30">
+    <footer id="contato" className="relative border-t border-border/50 bg-card/30">
       {/* Top accent line */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
