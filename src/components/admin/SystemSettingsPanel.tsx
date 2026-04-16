@@ -359,10 +359,10 @@ const SystemSettingsPanel = ({ value, onChange, userId }: Props) => {
         </div>
       </SectionCard>
 
-      {/* Password Reset Test */}
-      <SectionCard title="Teste de Email de Reset de Senha" icon={Mail}>
+      {/* Password Reset OTP Test */}
+      <SectionCard title="Teste de Código de Redefinição de Senha" icon={Mail}>
         <p className="text-xs text-muted-foreground -mt-1">
-          Dispara um email real de redefinição de senha para o endereço informado, usando o mesmo sistema do fluxo "Esqueci minha senha".
+          Envia um código OTP de 6 dígitos por e-mail, usando o mesmo sistema do fluxo "Esqueci minha senha".
         </p>
         <div className="flex flex-col sm:flex-row gap-2">
           <input
