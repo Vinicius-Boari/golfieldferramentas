@@ -2,14 +2,15 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  ArrowLeft, Save, LogOut, Home, Type, Image, Palette, LayoutGrid, 
+  ArrowLeft, Save, LogOut, Home, Type, Image, Palette, LayoutGrid,
   ChevronUp, ChevronDown, Eye, EyeOff, Plus, Trash2, Upload, Link2, Loader2, GripVertical,
-  Film, Volume2, VolumeX, Repeat
+  Film, Volume2, VolumeX, Repeat, Settings
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useHomeConfig, useSaveHomeConfig, defaultHomeConfig, type HomeConfig } from "@/hooks/useHomeConfig";
 import HeroVideoPanel from "@/components/admin/HeroVideoPanel";
+import SystemSettingsPanel from "@/components/admin/SystemSettingsPanel";
 import { toast } from "sonner";
 
 const sectionLabels: Record<string, string> = {
@@ -30,6 +31,7 @@ const tabs = [
   { id: "cta", label: "CTA", icon: Type },
   { id: "about", label: "Sobre", icon: Type },
   { id: "footer", label: "Rodapé", icon: Type },
+  { id: "system", label: "Sistema", icon: Settings },
 ];
 
 const InputField = ({ label, value, onChange, type = "text", placeholder = "", rows }: {
