@@ -122,7 +122,7 @@ const Footer = () => {
           className="border-t border-border/50 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground"
         >
           <p className="text-primary-foreground">© {new Date().getFullYear()} Golfield. Todos os direitos reservados.</p>
-          <Link to="/admin/login" className="text-muted-foreground/40 hover:text-muted-foreground transition-colors cursor-pointer text-[10px]">
+          <Link to="/admin/login" className="transition-colors cursor-pointer text-[10px] text-primary-foreground">
             Painel
           </Link>
           <p className="text-primary-foreground">Os valores são exclusivos para compras por atacado.</p>
