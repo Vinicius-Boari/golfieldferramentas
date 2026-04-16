@@ -274,7 +274,7 @@ const AdminProducts = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg bg-card rounded-2xl border border-border z-50 flex flex-col max-h-[85vh] overflow-hidden"
+              className="fixed left-1/2 top-[8vh] -translate-x-1/2 w-[calc(100%-2rem)] max-w-lg bg-card rounded-2xl border border-border z-50 flex flex-col max-h-[84vh] overflow-hidden"
             >
               <div className="flex items-center justify-between p-5 border-b border-border">
                 <h3 className="font-bold text-lg">{isNew ? "Novo Produto" : "Editar Produto"}</h3>
