@@ -14,7 +14,7 @@ const SEGMENTS = [
 
 const Register = () => {
   const [form, setForm] = useState({
-    cnpj: "", razaoSocial: "", nomeFantasia: "", segmento: "",
+    cnpj: "", inscricaoEstadual: "", razaoSocial: "", nomeFantasia: "", segmento: "",
     nomeResponsavel: "", cargo: "", email: "", telefone: "",
     senha: "", confirmarSenha: "", termos: false,
   });
@@ -29,6 +29,7 @@ const Register = () => {
     const v = form[field as keyof typeof form];
     switch (field) {
       case "cnpj": return !v ? "Informe o CNPJ" : !validateCNPJ(v as string) ? "CNPJ inválido" : "";
+      case "inscricaoEstadual": return !v ? "Informe a Inscrição Estadual (IE)" : "";
       case "razaoSocial": return !v ? "Informe a Razão Social" : "";
       case "nomeResponsavel": return !v ? "Informe o nome do responsável" : "";
       case "cargo": return !v ? "Informe o cargo" : "";
@@ -48,7 +49,7 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const fields = ["cnpj", "razaoSocial", "nomeResponsavel", "cargo", "email", "telefone", "senha", "confirmarSenha", "termos"];
+    const fields = ["cnpj", "inscricaoEstadual", "razaoSocial", "nomeResponsavel", "cargo", "email", "telefone", "senha", "confirmarSenha", "termos"];
     const newErrors: Record<string, string> = {};
     fields.forEach((f) => { const err = validateField(f); if (err) newErrors[f] = err; });
     setErrors(newErrors);
@@ -89,7 +90,12 @@ const Register = () => {
           {errors.cnpj && <p className="text-destructive text-xs mt-1">{errors.cnpj}</p>}
         </div>
 
-        {/* Razão Social + Nome Fantasia */}
+        {/* Inscrição Estadual */}
+        <div>
+          <label htmlFor="inscricaoEstadual" className="block text-sm font-medium text-foreground mb-1.5">Inscrição Estadual (IE) *</label>
+          <input id="inscricaoEstadual" value={form.inscricaoEstadual} onChange={(e) => set("inscricaoEstadual", e.target.value)} onBlur={() => handleBlur("inscricaoEstadual")} placeholder="Ex: 123.456.789.012" className={inputClass("inscricaoEstadual")} />
+          {errors.inscricaoEstadual && <p className="text-destructive text-xs mt-1">{errors.inscricaoEstadual}</p>}
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="razaoSocial" className="block text-sm font-medium text-foreground mb-1.5">Razão Social *</label>
