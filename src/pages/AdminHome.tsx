@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, Save, LogOut, Home, Type, Image, Palette, LayoutGrid, 
-  ChevronUp, ChevronDown, Eye, EyeOff, Plus, Trash2, Upload, Link2, Loader2, GripVertical
+  ChevronUp, ChevronDown, Eye, EyeOff, Plus, Trash2, Upload, Link2, Loader2, GripVertical,
+  Film, Volume2, VolumeX, Repeat
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -22,6 +23,7 @@ const sectionLabels: Record<string, string> = {
 const tabs = [
   { id: "sections", label: "Seções", icon: LayoutGrid },
   { id: "hero", label: "Hero", icon: Home },
+  { id: "heroVideo", label: "Vídeo Hero", icon: Film },
   { id: "trust", label: "Selos", icon: Palette },
   { id: "products", label: "Produtos", icon: Type },
   { id: "cta", label: "CTA", icon: Type },
