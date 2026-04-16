@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { CartProvider } from "@/context/CartContext";
 import { products } from "@/data/products";
+import ToolsBackground3D from "@/components/ToolsBackground3D";
 import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
 
 const staggerContainer = {
