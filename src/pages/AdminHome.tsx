@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, Save, LogOut, Home, Type, Image, Palette, LayoutGrid, 
-  ChevronUp, ChevronDown, Eye, EyeOff, Plus, Trash2, Upload, Link2, Loader2, GripVertical
+  ChevronUp, ChevronDown, Eye, EyeOff, Plus, Trash2, Upload, Link2, Loader2, GripVertical,
+  Film, Volume2, VolumeX, Repeat
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useHomeConfig, useSaveHomeConfig, defaultHomeConfig, type HomeConfig } from "@/hooks/useHomeConfig";
+import HeroVideoPanel from "@/components/admin/HeroVideoPanel";
 import { toast } from "sonner";
 
 const sectionLabels: Record<string, string> = {
@@ -22,6 +24,7 @@ const sectionLabels: Record<string, string> = {
 const tabs = [
   { id: "sections", label: "Seções", icon: LayoutGrid },
   { id: "hero", label: "Hero", icon: Home },
+  { id: "heroVideo", label: "Vídeo Hero", icon: Film },
   { id: "trust", label: "Selos", icon: Palette },
   { id: "products", label: "Produtos", icon: Type },
   { id: "cta", label: "CTA", icon: Type },
@@ -342,6 +345,14 @@ const AdminHome = () => {
                     </div>
                   </div>
                 </div>
+              )}
+
+              {/* HERO VIDEO TAB */}
+              {activeTab === "heroVideo" && (
+                <HeroVideoPanel
+                  value={config.heroVideo}
+                  onChange={next => updateConfig(c => ({ ...c, heroVideo: next }))}
+                />
               )}
 
               {/* TRUST BADGES TAB */}

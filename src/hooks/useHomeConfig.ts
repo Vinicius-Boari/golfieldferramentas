@@ -7,6 +7,14 @@ export interface HomeSection {
   order: number;
 }
 
+export interface HeroVideoConfig {
+  enabled: boolean;
+  url: string;
+  loop: boolean;
+  muted: boolean;
+  overlayOpacity: number; // 0..0.8
+}
+
 export interface HeroConfig {
   logoImage: string;
   badgeText: string;
@@ -65,6 +73,7 @@ export interface FooterConfig {
 export interface HomeConfig {
   sections: HomeSection[];
   hero: HeroConfig;
+  heroVideo: HeroVideoConfig;
   trustBadges: TrustBadgesConfig;
   productsSection: ProductsSectionConfig;
   ctaSection: CtaSectionConfig;
@@ -98,6 +107,13 @@ export const defaultHomeConfig: HomeConfig = {
       { label: "Envio Nacional", desc: "Para todo o Brasil" },
       { label: "Catálogo completo", desc: "Centenas de produtos" },
     ],
+  },
+  heroVideo: {
+    enabled: false,
+    url: "",
+    loop: true,
+    muted: true,
+    overlayOpacity: 0.55,
   },
   trustBadges: {
     items: [
@@ -158,7 +174,18 @@ export const useHomeConfig = () => {
       if (error) throw error;
       if (!data) return defaultHomeConfig;
 
-      return { ...defaultHomeConfig, ...(data.config as unknown as Partial<HomeConfig>) };
+      const saved = (data.config as unknown as Partial<HomeConfig>) ?? {};
+      return {
+        ...defaultHomeConfig,
+        ...saved,
+        hero: { ...defaultHomeConfig.hero, ...(saved.hero ?? {}) },
+        heroVideo: { ...defaultHomeConfig.heroVideo, ...(saved.heroVideo ?? {}) },
+        trustBadges: { ...defaultHomeConfig.trustBadges, ...(saved.trustBadges ?? {}) },
+        productsSection: { ...defaultHomeConfig.productsSection, ...(saved.productsSection ?? {}) },
+        ctaSection: { ...defaultHomeConfig.ctaSection, ...(saved.ctaSection ?? {}) },
+        aboutSection: { ...defaultHomeConfig.aboutSection, ...(saved.aboutSection ?? {}) },
+        footer: { ...defaultHomeConfig.footer, ...(saved.footer ?? {}) },
+      };
     },
     staleTime: 1000 * 60 * 5,
   });

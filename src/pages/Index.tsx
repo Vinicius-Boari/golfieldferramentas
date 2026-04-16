@@ -76,7 +76,7 @@ const IndexContent = () => {
   const renderSection = (sectionId: string) => {
     switch (sectionId) {
       case "hero":
-        return isSectionEnabled("hero") ? <Hero config={config?.hero} /> : null;
+        return isSectionEnabled("hero") ? <Hero config={config?.hero} videoConfig={config?.heroVideo} /> : null;
 
       case "trustBadges":
         return isSectionEnabled("trustBadges") ? (
