@@ -70,6 +70,24 @@ export interface FooterConfig {
   categories: string[];
 }
 
+export interface WhatsAppMessageConfig {
+  enabled: boolean;
+  template: string;
+}
+
+export interface MaintenanceConfig {
+  enabled: boolean;
+  title: string;
+  description: string;
+  imageUrl: string;
+  allowAdminAccess: boolean;
+}
+
+export interface SystemSettingsConfig {
+  whatsappMessage: WhatsAppMessageConfig;
+  maintenance: MaintenanceConfig;
+}
+
 export interface HomeConfig {
   sections: HomeSection[];
   hero: HeroConfig;
@@ -79,7 +97,23 @@ export interface HomeConfig {
   ctaSection: CtaSectionConfig;
   aboutSection: AboutSectionConfig;
   footer: FooterConfig;
+  systemSettings: SystemSettingsConfig;
 }
+
+export const DEFAULT_WHATSAPP_TEMPLATE = `Olá! Meu nome é {name}.
+
+Gostaria de fazer um orçamento dos seguintes produtos:
+
+{products}
+
+*Subtotal: {subtotal}*
+*Total: {total}*
+
+Meus dados de contato:
+• Telefone: {phone}
+• Email: {email}
+
+Data: {date}`;
 
 export const defaultHomeConfig: HomeConfig = {
   sections: [
@@ -159,6 +193,19 @@ export const defaultHomeConfig: HomeConfig = {
     whatsappUrl: "https://wa.me/5511959409051",
     categories: ["Alicates", "Brocas", "Discos", "Chaves", "Trenas", "Torneiras", "Martelos", "Serras"],
   },
+  systemSettings: {
+    whatsappMessage: {
+      enabled: false,
+      template: DEFAULT_WHATSAPP_TEMPLATE,
+    },
+    maintenance: {
+      enabled: false,
+      title: "Estamos em manutenção",
+      description: "Estamos fazendo melhorias no sistema. Voltaremos em breve!",
+      imageUrl: "",
+      allowAdminAccess: true,
+    },
+  },
 };
 
 export const useHomeConfig = () => {
@@ -185,6 +232,16 @@ export const useHomeConfig = () => {
         ctaSection: { ...defaultHomeConfig.ctaSection, ...(saved.ctaSection ?? {}) },
         aboutSection: { ...defaultHomeConfig.aboutSection, ...(saved.aboutSection ?? {}) },
         footer: { ...defaultHomeConfig.footer, ...(saved.footer ?? {}) },
+        systemSettings: {
+          whatsappMessage: {
+            ...defaultHomeConfig.systemSettings.whatsappMessage,
+            ...(saved.systemSettings?.whatsappMessage ?? {}),
+          },
+          maintenance: {
+            ...defaultHomeConfig.systemSettings.maintenance,
+            ...(saved.systemSettings?.maintenance ?? {}),
+          },
+        },
       };
     },
     staleTime: 1000 * 60 * 5,
