@@ -95,8 +95,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             </motion.a>
 
             {/* Search */}
-            <div className="hidden md:flex flex-1 max-w-lg relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+            <div className="hidden md:flex flex-1 max-w-lg relative rounded-xl snake-border-focus">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground z-10" size={16} />
               <input
                 type="text"
                 placeholder="Buscar ferramentas..."
