@@ -147,6 +147,7 @@ const AdminVisual = () => {
     const snap = clone(history[idx]);
     setHistoryIdx(idx);
     setDraft(snap);
+    setLivePreview(null);
     setHasChanges(JSON.stringify(snap) !== JSON.stringify(savedOverrides ?? {}));
     postPreview(snap);
   };
@@ -157,6 +158,7 @@ const AdminVisual = () => {
     const snap = clone(history[idx]);
     setHistoryIdx(idx);
     setDraft(snap);
+    setLivePreview(null);
     setHasChanges(JSON.stringify(snap) !== JSON.stringify(savedOverrides ?? {}));
     postPreview(snap);
   };
@@ -213,8 +215,38 @@ const AdminVisual = () => {
     setHistory([baseline]);
     setHistoryIdx(0);
     setHasChanges(false);
+    setLivePreview(null);
     postPreview(baseline);
     setSelected(null);
+    setSelectedRect(null);
+  };
+
+  /* ---------- Drag/resize gesture wiring ----------
+   * The overlay receives a full ElementStyles object (with the active
+   * breakpoint already mutated). We translate that into a full OverrideMap
+   * and push as either a transient preview or a committed history entry.
+   */
+  const buildMapFromStyles = (next: ElementStyles): OverrideMap | null => {
+    if (!selected) return null;
+    const map = clone(draft);
+    const cleaned: ElementStyles = {};
+    (["desktop", "tablet", "mobile"] as Breakpoint[]).forEach((bp) => {
+      if (next[bp] && Object.keys(next[bp]!).length > 0) cleaned[bp] = next[bp];
+    });
+    if (Object.keys(cleaned).length === 0) {
+      delete map[selected.elementId];
+    } else {
+      map[selected.elementId] = cleaned;
+    }
+    return map;
+  };
+  const handleOverlayPreview = (next: ElementStyles) => {
+    const map = buildMapFromStyles(next);
+    if (map) previewLive(map);
+  };
+  const handleOverlayCommit = (next: ElementStyles) => {
+    const map = buildMapFromStyles(next);
+    if (map) commit(map);
   };
 
   /* ---------- Loading state ---------- */
