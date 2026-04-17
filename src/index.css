@@ -6,8 +6,8 @@
 
 @layer base {
   :root {
-    /* Premium light gray background — desktop #F5F5F5 */
-    --background: 0 0% 96%;
+    /* Base background — elegant dark gray (#1E1E1E ≈ hsl(0 0% 12%)) */
+    --background: 0 0% 12%;
     --foreground: 0 0% 100%;
 
     --card: 0 0% 14%;
@@ -52,13 +52,6 @@
     --gold-foreground: 0 0% 100%;
 
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-
-  /* Slightly softer gray on mobile (#F2F2F2) */
-  @media (max-width: 767px) {
-    :root {
-      --background: 0 0% 95%;
-    }
   }
 }
 
