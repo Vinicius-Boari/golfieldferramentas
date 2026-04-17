@@ -385,6 +385,26 @@ const AdminVisual = () => {
               })}
             </div>
 
+            {/* Zoom slider */}
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-secondary/60">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Zoom</span>
+              <input
+                type="range"
+                min={0.3} max={2} step={0.05}
+                value={zoom}
+                onChange={(e) => setZoom(parseFloat(e.target.value))}
+                className="w-24 h-1 accent-primary"
+              />
+              <span className="text-xs font-mono text-foreground w-10 text-right">{Math.round(stageScale * 100)}%</span>
+              <button
+                onClick={() => setZoom(1)}
+                className="text-[10px] font-semibold text-muted-foreground hover:text-foreground p-1"
+                title="Resetar zoom"
+              >
+                <RotateCcw size={12} />
+              </button>
+            </div>
+
             <button onClick={() => setPickMode((p) => !p)}
               title={pickMode ? "Desativar seleção" : "Ativar seleção"}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${pickMode ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"}`}>
