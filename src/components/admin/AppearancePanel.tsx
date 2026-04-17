@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { RotateCcw, Check, Copy, Palette } from "lucide-react";
+import { RotateCcw, Check, Copy, Palette, ArrowDownUp } from "lucide-react";
 import { toast } from "sonner";
 import {
   type AppearanceConfig,
+  type SectionTransitionConfig,
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_HERO_BACKGROUND_COLOR,
   DEFAULT_HEADER_BACKGROUND_COLOR,
+  DEFAULT_SECTION_TRANSITION,
 } from "@/hooks/useHomeConfig";
 
 interface Props {
