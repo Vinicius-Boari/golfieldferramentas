@@ -82,7 +82,14 @@ const AdminVisual = () => {
   useEffect(() => {
     const onMessage = (ev: MessageEvent) => {
       const data = ev.data as
-        | { __visualEditor?: boolean; type?: string; elementId?: string; tag?: string; text?: string }
+        | {
+            __visualEditor?: boolean;
+            type?: string;
+            elementId?: string;
+            tag?: string;
+            text?: string;
+            rect?: { x: number; y: number; width: number; height: number };
+          }
         | undefined;
       if (!data?.__visualEditor) return;
       if (data.type === "ready") {
@@ -94,13 +101,17 @@ const AdminVisual = () => {
           tag: data.tag ?? "div",
           text: data.text ?? "",
         });
+        if (data.rect) setSelectedRect(data.rect);
         // Echo back so the iframe marks the element as selected.
         iframeRef.current?.contentWindow?.postMessage(
           { __visualEditor: true, type: "highlight", elementId: data.elementId },
           "*",
         );
+      } else if (data.type === "rect" && data.rect) {
+        setSelectedRect(data.rect);
       } else if (data.type === "deselect") {
         setSelected(null);
+        setSelectedRect(null);
       }
     };
     window.addEventListener("message", onMessage);
