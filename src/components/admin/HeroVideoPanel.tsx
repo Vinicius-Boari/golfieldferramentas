@@ -1,9 +1,14 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Upload, Trash2, Loader2, Film, Volume2, VolumeX, Repeat, Eye } from "lucide-react";
+import { Upload, Trash2, Loader2, Film, Volume2, VolumeX, Repeat, Eye, Palette, RotateCcw, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { HeroVideoConfig } from "@/hooks/useHomeConfig";
+
+const DEFAULT_OVERLAY_COLOR = "#000000";
+const DEFAULT_OVERLAY_OPACITY = 0.55;
+const DEFAULT_OVERLAY_ENABLED = true;
+const HEX_REGEX = /^#([0-9A-Fa-f]{6})$/;
 
 const MAX_BYTES = 100 * 1024 * 1024;
 
