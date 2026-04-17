@@ -134,7 +134,17 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 placeholder="Buscar ferramentas..."
                 className="search-input pl-11 text-sm"
                 value={searchQuery}
-                onChange={e => onSearchChange(e.target.value)}
+                onChange={e => {
+                  onSearchChange(e.target.value);
+                  if (e.target.value.trim() !== "") {
+                    const el = document.getElementById("produtos");
+                    if (el) {
+                      const offset = 80;
+                      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                      window.scrollTo({ top, behavior: "smooth" });
+                    }
+                  }
+                }}
               />
             </div>
 
