@@ -7,7 +7,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import MaintenanceGate from "@/components/MaintenanceGate";
 import { useApplyMobileMotionClass } from "@/hooks/useMobileMotion";
 import { useApplyGlobalBackground } from "@/hooks/useGlobalBackground";
-import { useApplyVisualOverrides } from "@/hooks/useVisualOverrides";
 import Index from "./pages/Index.tsx";
 
 // Lazy-load secondary routes — they are not needed for the initial paint of "/".
@@ -21,7 +20,6 @@ const AdminLogin = lazy(() => import("./pages/AdminLogin.tsx"));
 const AdminHome = lazy(() => import("./pages/AdminHome.tsx"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers.tsx"));
 const AdminCoupons = lazy(() => import("./pages/AdminCoupons.tsx"));
-const AdminVisual = lazy(() => import("./pages/AdminVisual.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,7 +40,6 @@ const RouteFallback = () => <div className="min-h-screen bg-background" />;
 const AppShell = () => {
   useApplyMobileMotionClass();
   useApplyGlobalBackground();
-  useApplyVisualOverrides();
   return (
     <BrowserRouter>
       <MaintenanceGate>
@@ -57,7 +54,6 @@ const AppShell = () => {
             <Route path="/admin/home" element={<AdminHome />} />
             <Route path="/admin/usuarios" element={<AdminUsers />} />
             <Route path="/admin/cupons" element={<AdminCoupons />} />
-            <Route path="/admin/visual" element={<AdminVisual />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
