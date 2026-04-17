@@ -133,7 +133,7 @@ const IndexContent = () => {
 
       case "products":
         return isSectionEnabled("products") ? (
-          <section key="products" id="produtos" className="py-16 sm:py-20 lg:py-28 relative">
+          <section key="products" id="produtos" data-edit-id="products.section" className="py-16 sm:py-20 lg:py-28 relative">
             <motion.div
               animate={{ scale: [1, 1.1, 1], opacity: [0.02, 0.05, 0.02] }}
               transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
@@ -141,11 +141,11 @@ const IndexContent = () => {
             />
             <div className="container mx-auto px-4">
               <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12 sm:mb-16">
-                <motion.span variants={scaleIn} className="section-badge mb-6 inline-flex">{pc?.badge}</motion.span>
-                <motion.h2 variants={fadeSlideUp} className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-4">
+                <motion.span data-edit-id="products.badge" variants={scaleIn} className="section-badge mb-6 inline-flex">{pc?.badge}</motion.span>
+                <motion.h2 data-edit-id="products.title" variants={fadeSlideUp} className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-4">
                   {pc?.title}{" "}<span className="text-gradient-gold">{pc?.titleHighlight}</span>
                 </motion.h2>
-                <motion.p variants={fadeSlideUp} className="text-muted-foreground max-w-md mx-auto text-base px-2">{pc?.subtitle}</motion.p>
+                <motion.p data-edit-id="products.subtitle" variants={fadeSlideUp} className="text-muted-foreground max-w-md mx-auto text-base px-2">{pc?.subtitle}</motion.p>
               </motion.div>
 
               <motion.div initial={{ opacity: 0, y: 20, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }}
@@ -197,7 +197,7 @@ const IndexContent = () => {
                 )}
               </div>
 
-              <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}
+              <motion.p data-edit-id="products.disclaimer" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}
                 className="text-center text-xs text-muted-foreground mt-12 sm:mt-16">{pc?.disclaimerText}</motion.p>
             </div>
           </section>
@@ -205,7 +205,7 @@ const IndexContent = () => {
 
       case "cta":
         return isSectionEnabled("cta") ? (
-          <section key="cta" className="py-20 sm:py-24 lg:py-32 relative overflow-hidden">
+          <section key="cta" data-edit-id="cta.section" className="py-20 sm:py-24 lg:py-32 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-primary/70" />
             <div className="absolute inset-0 opacity-5" style={{ backgroundImage: `radial-gradient(circle at 2px 2px, hsl(0,0%,100%) 1px, transparent 0)`, backgroundSize: '24px 24px' }} />
             <motion.div animate={{ backgroundPosition: ["0% 0%", "100% 100%"] }} transition={{ duration: 25, repeat: Infinity, repeatType: "reverse" }}
@@ -255,11 +255,11 @@ const IndexContent = () => {
             <div className="container mx-auto px-4 relative z-20 text-center">
               <motion.div initial={{ opacity: 0, y: 40, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}>
-                <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.7 }}
+                <motion.h2 data-edit-id="cta.title" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.7 }}
                   className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary-foreground tracking-tight mb-6">{cta?.title}</motion.h2>
-                <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.7 }}
+                <motion.p data-edit-id="cta.description" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.7 }}
                   className="text-primary-foreground/80 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10 px-2">{cta?.description}</motion.p>
-                <motion.a href={cta?.buttonLink} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.96 }}
+                <motion.a data-edit-id="cta.button" href={cta?.buttonLink} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.96 }}
                   className="gradient-border-animated inline-flex items-center justify-center gap-2 rounded-xl bg-primary-foreground px-6 sm:px-8 py-3.5 text-sm sm:text-base font-semibold text-primary shadow-2xl shadow-background/25">
                   <span className="inline-flex items-center gap-2">{cta?.buttonText}<ArrowRight size={18} /></span>
                 </motion.a>
@@ -270,16 +270,16 @@ const IndexContent = () => {
 
       case "about":
         return isSectionEnabled("about") ? (
-          <section key="about" id="sobre" className="py-16 sm:py-20 md:py-24 relative">
+          <section key="about" id="sobre" data-edit-id="about.section" className="py-16 sm:py-20 md:py-24 relative">
             <div className="container mx-auto px-4">
               <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-start">
                 <motion.div variants={fadeSlideRight}>
-                  <span className="section-badge mb-6 inline-flex">{about?.badge}</span>
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-6">
+                  <span data-edit-id="about.badge" className="section-badge mb-6 inline-flex">{about?.badge}</span>
+                  <h2 data-edit-id="about.title" className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-6">
                     {about?.title} <span className="text-gradient-gold">{about?.titleHighlight}</span>
                   </h2>
-                  <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-6">{about?.paragraph1}</p>
-                  <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-8">{about?.paragraph2}</p>
+                  <p data-edit-id="about.paragraph1" className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-6">{about?.paragraph1}</p>
+                  <p data-edit-id="about.paragraph2" className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-8">{about?.paragraph2}</p>
                 </motion.div>
                 <motion.div variants={fadeSlideUp} className="grid sm:grid-cols-2 gap-4">
                   {(about?.features ?? []).map((item, i) => {
