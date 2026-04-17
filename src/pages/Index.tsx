@@ -138,7 +138,17 @@ const IndexContent = () => {
                 <div className="relative group">
                   <motion.div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/5 to-primary/20 rounded-2xl blur-lg opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground z-10" size={18} />
-                  <input type="text" placeholder="Buscar produto..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="search-input pl-12 relative" />
+                  <input type="text" placeholder="Buscar produto..." value={searchQuery} onChange={e => {
+                    setSearchQuery(e.target.value);
+                    if (e.target.value.trim() !== "") {
+                      const el = document.getElementById("produtos");
+                      if (el) {
+                        const offset = -250;
+                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        window.scrollTo({ top, behavior: "smooth" });
+                      }
+                    }
+                  }} className="search-input pl-12 relative" />
                 </div>
               </motion.div>
 
