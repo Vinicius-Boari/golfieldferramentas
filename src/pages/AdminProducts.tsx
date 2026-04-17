@@ -461,10 +461,14 @@ const AdminProducts = () => {
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-1 block">Preço (R$)</label>
                     <input
-                      type="number"
-                      step="0.01"
-                      value={editingProduct.price || ""}
-                      onChange={e => setEditingProduct({ ...editingProduct, price: parseFloat(e.target.value) || 0 })}
+                      type="text"
+                      inputMode="numeric"
+                      value={formatCurrencyBR(Number(editingProduct.price) || 0)}
+                      onChange={e => {
+                        const digits = e.target.value.replace(/\D/g, "");
+                        const cents = digits === "" ? 0 : parseInt(digits, 10);
+                        setEditingProduct({ ...editingProduct, price: cents / 100 });
+                      }}
                       className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50"
                     />
                   </div>
