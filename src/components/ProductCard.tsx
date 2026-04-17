@@ -77,8 +77,8 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
             src={product.image}
             className="w-full h-full object-contain p-4 sm:p-6"
             autoPlay
-            muted
-            loop
+            muted={!(product.videoAudio ?? false)}
+            loop={product.videoLoop ?? true}
             playsInline
             preload="metadata"
             whileHover={isMobile ? undefined : { scale: 1.12, rotate: 2 }}
@@ -192,6 +192,8 @@ const ProductCard = memo(ProductCardImpl, (prev, next) =>
   prev.product.image === next.product.image &&
   prev.product.name === next.product.name &&
   prev.product.mediaType === next.product.mediaType &&
+  prev.product.videoLoop === next.product.videoLoop &&
+  prev.product.videoAudio === next.product.videoAudio &&
   prev.index === next.index
 );
 

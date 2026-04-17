@@ -171,8 +171,8 @@ const CartDrawer = () => {
                           <video
                             src={item.product.image}
                             className="w-full h-full object-contain"
-                            muted
-                            loop
+                            muted={!(item.product.videoAudio ?? false)}
+                            loop={item.product.videoLoop ?? true}
                             playsInline
                             autoPlay
                             preload="metadata"
