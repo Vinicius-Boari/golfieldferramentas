@@ -310,15 +310,17 @@ const AdminVisual = () => {
 
   /* --------------------------- Derived --------------------------- */
   const stageWidth = deviceWidths[device];
-  const [stageScale, setStageScale] = useState(1);
+  const [fitScale, setFitScale] = useState(1);
+  const [zoom, setZoom] = useState(1); // user-controlled multiplier
   const [sandboxHeight, setSandboxHeight] = useState(0);
+  const stageScale = fitScale * zoom;
 
   useEffect(() => {
     const compute = () => {
       const wrap = stageRef.current;
       if (!wrap) return;
       const available = wrap.clientWidth - 32;
-      setStageScale(Math.min(1, available / stageWidth));
+      setFitScale(Math.min(1, available / stageWidth));
     };
     compute();
     window.addEventListener("resize", compute);
