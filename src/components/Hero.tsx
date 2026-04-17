@@ -113,7 +113,9 @@ const Hero = ({ config, videoConfig, backgroundColor }: HeroProps) => {
 
   // On mobile with motion disabled, never render the decorative hero video.
   const showVideo = !!(videoConfig?.enabled && videoConfig?.url && !videoFailed && motionEnabled);
-  const overlay = Math.min(0.8, Math.max(0, videoConfig?.overlayOpacity ?? 0.55));
+  const overlayEnabled = videoConfig?.overlayEnabled !== false;
+  const overlay = Math.min(1, Math.max(0, videoConfig?.overlayOpacity ?? 0.55));
+  const overlayColor = videoConfig?.overlayColor || "#000000";
   const heroBg = backgroundColor || "#1E1E1E";
 
   return (
