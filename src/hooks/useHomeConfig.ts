@@ -99,6 +99,13 @@ export interface SystemSettingsConfig {
   mobileExperience: MobileExperienceConfig;
 }
 
+export interface AppearanceConfig {
+  /** Global site background color in HEX format, e.g. "#5C5C5C". */
+  backgroundColor: string;
+}
+
+export const DEFAULT_BACKGROUND_COLOR = "#5C5C5C";
+
 export interface HomeConfig {
   sections: HomeSection[];
   hero: HeroConfig;
@@ -109,6 +116,7 @@ export interface HomeConfig {
   aboutSection: AboutSectionConfig;
   footer: FooterConfig;
   systemSettings: SystemSettingsConfig;
+  appearance: AppearanceConfig;
 }
 
 export const DEFAULT_WHATSAPP_TEMPLATE = `Olá! Meu nome é {name}.
@@ -223,6 +231,9 @@ export const defaultHomeConfig: HomeConfig = {
       enableAnimationsAndVideos: true,
     },
   },
+  appearance: {
+    backgroundColor: DEFAULT_BACKGROUND_COLOR,
+  },
 };
 
 export const useHomeConfig = () => {
@@ -266,6 +277,10 @@ export const useHomeConfig = () => {
             ...defaultHomeConfig.systemSettings.mobileExperience,
             ...(saved.systemSettings?.mobileExperience ?? {}),
           },
+        },
+        appearance: {
+          ...defaultHomeConfig.appearance,
+          ...(saved.appearance ?? {}),
         },
       };
     },
