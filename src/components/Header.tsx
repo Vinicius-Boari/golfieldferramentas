@@ -37,8 +37,6 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Build a slightly transparent version of the header color for the
-  // "scrolled" state, preserving the previous backdrop-blur effect.
   const hexToRgba = (hex: string, alpha: number) => {
     const m = /^#([0-9A-Fa-f]{6})$/.exec(hex);
     if (!m) return hex;
@@ -72,7 +70,91 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             <span className="text-border">|</span>
             <a href="https://www.instagram.com/golfield.ferramentas/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-foreground transition-colors">
               <InstagramIcon size={12} className="text-primary-foreground bg-white/0" />
-...
+              <span className="text-primary-foreground">@golfield.ferramentas</span>
+            </a>
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.header
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? "shadow-2xl shadow-background/80 border-b border-border/30 backdrop-blur-md"
+            : "backdrop-blur-sm"
+        }`}
+        style={{ backgroundColor: scrolled ? headerBgScrolled : headerBg }}
+      >
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-3 md:gap-4">
+            <motion.a
+              href="/"
+              className="flex-shrink-0 group"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <img
+                src="/images/golfield-logo.jpeg"
+                alt="Golfield"
+                className="h-11 sm:h-12 md:h-14 rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
+              />
+            </motion.a>
+
+            <nav className="hidden md:flex items-center gap-6">
+              {[
+                { label: "Sobre Nós", target: "sobre" },
+                { label: "Contato", target: "contato" },
+              ].map((item) => (
+                <motion.button
+                  key={item.target}
+                  onClick={() => {
+                    const el = document.getElementById(item.target);
+                    if (el) {
+                      const offset = 80;
+                      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                      window.scrollTo({ top, behavior: "smooth" });
+                    }
+                  }}
+                  whileHover={{ y: -1 }}
+                  className="text-sm font-medium transition-colors duration-300 text-primary-foreground"
+                >
+                  {item.label}
+                </motion.button>
+              ))}
+            </nav>
+
+            <div className="hidden md:flex flex-1 max-w-lg relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+              <input
+                type="text"
+                placeholder="Buscar ferramentas..."
+                className="search-input pl-11 text-sm"
+                value={searchQuery}
+                onChange={e => {
+                  onSearchChange(e.target.value);
+                  if (e.target.value.trim() !== "") {
+                    const el = document.getElementById("produtos");
+                    if (el) {
+                      const offset = -250;
+                      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                      window.scrollTo({ top, behavior: "smooth" });
+                    }
+                  }
+                }}
+              />
+            </div>
+
+            <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+              <motion.a
+                href="https://www.instagram.com/golfield.ferramentas/"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="hidden sm:flex p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
+              >
                 <InstagramIcon size={18} className="text-primary-foreground bg-white/0" />
               </motion.a>
 
