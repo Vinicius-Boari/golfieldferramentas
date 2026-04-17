@@ -89,6 +89,7 @@ interface HeroProps {
     secondaryButtonText?: string;
     secondaryButtonLink?: string;
     stats?: { label: string; desc: string }[];
+    backgroundColor?: string;
   };
   videoConfig?: {
     enabled?: boolean;
