@@ -11,6 +11,8 @@ import { CartProvider } from "@/context/CartContext";
 import { useProducts } from "@/hooks/useProducts";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
+import ctaCharacterLeft from "@/assets/cta-character-left.png";
+import ctaCharacterRight from "@/assets/cta-character-right.png";
 
 const staggerContainer = {
   hidden: {},
