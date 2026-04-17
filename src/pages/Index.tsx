@@ -51,6 +51,7 @@ const IndexContent = () => {
     image: p.image,
     category: p.category,
     minQty: p.min_qty,
+    mediaType: (p.media_type ?? "image") as "image" | "video",
   })), [dbProducts]);
 
   const filteredProducts = useMemo(() => {
