@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { forwardRef, memo, useState } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { ShoppingCart, Plus, Minus, Check } from "lucide-react";
 import type { Product } from "@/data/products";
@@ -10,7 +10,8 @@ interface ProductCardProps {
   index: number;
 }
 
-const ProductCardImpl = ({ product, index }: ProductCardProps) => {
+// forwardRef so AnimatePresence/PopChild can attach a ref without React warnings.
+const ProductCardImpl = forwardRef<HTMLDivElement, ProductCardProps>(({ product, index }, ref) => {
   const [qty, setQty] = useState(product.minQty);
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
