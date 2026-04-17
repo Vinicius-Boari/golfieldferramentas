@@ -72,15 +72,29 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
           </motion.span>
         )}
 
-        <motion.img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-contain p-4 sm:p-6"
-          loading="lazy"
-          decoding="async"
-          whileHover={isMobile ? undefined : { scale: 1.12, rotate: 2 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        />
+        {product.mediaType === "video" ? (
+          <motion.video
+            src={product.image}
+            className="w-full h-full object-contain p-4 sm:p-6"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            whileHover={isMobile ? undefined : { scale: 1.12, rotate: 2 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
+        ) : (
+          <motion.img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-contain p-4 sm:p-6"
+            loading="lazy"
+            decoding="async"
+            whileHover={isMobile ? undefined : { scale: 1.12, rotate: 2 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
+        )}
 
         <motion.div
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
