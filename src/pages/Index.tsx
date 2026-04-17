@@ -133,7 +133,7 @@ const IndexContent = () => {
 
       case "products":
         return isSectionEnabled("products") ? (
-          <section key="products" id="produtos" className="py-16 sm:py-20 lg:py-28 relative">
+          <section key="products" id="produtos" data-visual-id="products-section" className="py-16 sm:py-20 lg:py-28 relative">
             <motion.div
               animate={{ scale: [1, 1.1, 1], opacity: [0.02, 0.05, 0.02] }}
               transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
@@ -205,7 +205,7 @@ const IndexContent = () => {
 
       case "cta":
         return isSectionEnabled("cta") ? (
-          <section key="cta" className="py-20 sm:py-24 lg:py-32 relative overflow-hidden">
+          <section key="cta" data-visual-id="cta-section" className="py-20 sm:py-24 lg:py-32 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-primary/70" />
             <div className="absolute inset-0 opacity-5" style={{ backgroundImage: `radial-gradient(circle at 2px 2px, hsl(0,0%,100%) 1px, transparent 0)`, backgroundSize: '24px 24px' }} />
             <motion.div animate={{ backgroundPosition: ["0% 0%", "100% 100%"] }} transition={{ duration: 25, repeat: Infinity, repeatType: "reverse" }}
@@ -229,6 +229,7 @@ const IndexContent = () => {
 
             {/* Mascots — left and right */}
             <motion.img
+              data-visual-id="cta-mascot-girl"
               src={mascotGirl}
               alt=""
               aria-hidden="true"
@@ -241,6 +242,7 @@ const IndexContent = () => {
               className="hidden md:block absolute left-2 lg:left-6 xl:left-10 bottom-0 w-44 lg:w-56 xl:w-64 2xl:w-72 pointer-events-none select-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] z-10"
             />
             <motion.img
+              data-visual-id="cta-mascot-boy"
               src={mascotBoy}
               alt=""
               aria-hidden="true"
