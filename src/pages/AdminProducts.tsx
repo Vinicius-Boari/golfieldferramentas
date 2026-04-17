@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff, Upload, Link2, Loader2, Home, Users, Tag, Image as ImageIcon, Video as VideoIcon } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff, Upload, Link2, Loader2, Home, Users, Tag, Image as ImageIcon, Video as VideoIcon, Repeat, Volume2, VolumeX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useAllProducts, type DbProduct } from "@/hooks/useProducts";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import VideoQualityRecommendations from "@/components/admin/VideoQualityRecommendations";
 
 const emptyProduct = {
   name: "",
@@ -18,6 +19,8 @@ const emptyProduct = {
   active: true,
   sort_order: 0,
   media_type: "image" as "image" | "video",
+  video_loop: true,
+  video_audio: false,
 };
 
 const sanitizeFileName = (fileName: string) =>
