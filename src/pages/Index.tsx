@@ -11,6 +11,8 @@ import { CartProvider } from "@/context/CartContext";
 import { useProducts } from "@/hooks/useProducts";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
+import ctaCharacterLeft from "@/assets/cta-character-left.png";
+import ctaCharacterRight from "@/assets/cta-character-right.png";
 
 const staggerContainer = {
   hidden: {},
@@ -224,7 +226,32 @@ const IndexContent = () => {
             >
               <FloatingToolVisual />
             </motion.div>
-            <div className="container mx-auto px-4 relative z-10 text-center">
+
+            {/* Character mascots — left and right */}
+            <motion.img
+              src={ctaCharacterLeft}
+              alt=""
+              aria-hidden="true"
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+              className="hidden md:block absolute bottom-0 left-2 lg:left-8 xl:left-16 h-[60%] lg:h-[80%] xl:h-[95%] w-auto pointer-events-none select-none drop-shadow-2xl z-10"
+              draggable={false}
+            />
+            <motion.img
+              src={ctaCharacterRight}
+              alt=""
+              aria-hidden="true"
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.1 }}
+              className="hidden md:block absolute bottom-0 right-2 lg:right-8 xl:right-16 h-[60%] lg:h-[80%] xl:h-[95%] w-auto pointer-events-none select-none drop-shadow-2xl z-10"
+              draggable={false}
+            />
+
+            <div className="container mx-auto px-4 relative z-20 text-center">
               <motion.div initial={{ opacity: 0, y: 40, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}>
                 <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.7 }}
