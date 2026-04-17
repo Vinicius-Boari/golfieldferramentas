@@ -138,7 +138,7 @@ const IndexContent = () => {
                 <div className="relative group">
                   <motion.div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/5 to-primary/20 rounded-2xl blur-lg opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground z-10" size={18} />
-                  <input type="text" placeholder="Buscar produto..." value={searchQuery} onChange={e => {
+                  <input type="text" placeholder="Buscar ferramentas..." value={searchQuery} onChange={e => {
                     setSearchQuery(e.target.value);
                     if (e.target.value.trim() !== "") {
                       const el = document.getElementById("produtos");
