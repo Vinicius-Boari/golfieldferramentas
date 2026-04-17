@@ -173,8 +173,11 @@ const HeroVideoPanel = ({ value, onChange }: Props) => {
               className="absolute inset-0 w-full h-full object-cover"
             />
             <div
-              className="absolute inset-0 bg-background pointer-events-none"
-              style={{ opacity: value.overlayOpacity }}
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundColor: value.overlayEnabled !== false ? (value.overlayColor || DEFAULT_OVERLAY_COLOR) : "transparent",
+                opacity: value.overlayEnabled !== false ? value.overlayOpacity : 0,
+              }}
             />
           </div>
           <p className="text-[11px] text-muted-foreground break-all">{value.url}</p>
@@ -206,23 +209,146 @@ const HeroVideoPanel = ({ value, onChange }: Props) => {
         />
       </div>
 
-      {/* Overlay slider */}
-      <div className="rounded-xl bg-secondary/40 border border-border/50 p-4">
+      {/* Overlay de Cor no Vídeo */}
+      <OverlayColorEditor value={value} onChange={onChange} />
+    </div>
+  );
+};
+
+// ───────────────────────── Overlay editor ─────────────────────────
+
+const OverlayColorEditor = ({
+  value,
+  onChange,
+}: {
+  value: HeroVideoConfig;
+  onChange: (next: HeroVideoConfig) => void;
+}) => {
+  const enabled = value.overlayEnabled !== false;
+  const color = HEX_REGEX.test(value.overlayColor || "") ? (value.overlayColor as string) : DEFAULT_OVERLAY_COLOR;
+  const opacity = Math.min(1, Math.max(0, value.overlayOpacity ?? DEFAULT_OVERLAY_OPACITY));
+  const [hexDraft, setHexDraft] = useState(color);
+  const [copied, setCopied] = useState(false);
+
+  const update = (patch: Partial<HeroVideoConfig>) => onChange({ ...value, ...patch });
+
+  const commitHex = (raw: string) => {
+    const v = raw.startsWith("#") ? raw : `#${raw}`;
+    if (HEX_REGEX.test(v)) {
+      update({ overlayColor: v.toUpperCase() });
+      setHexDraft(v.toUpperCase());
+    } else {
+      toast.error("Código HEX inválido. Use o formato #RRGGBB.");
+      setHexDraft(color);
+    }
+  };
+
+  const copyHex = async () => {
+    try {
+      await navigator.clipboard.writeText(color);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1200);
+    } catch {
+      toast.error("Não foi possível copiar.");
+    }
+  };
+
+  const restoreDefaults = () => {
+    update({
+      overlayEnabled: DEFAULT_OVERLAY_ENABLED,
+      overlayColor: DEFAULT_OVERLAY_COLOR,
+      overlayOpacity: DEFAULT_OVERLAY_OPACITY,
+    });
+    setHexDraft(DEFAULT_OVERLAY_COLOR);
+    toast.success("Padrão do overlay restaurado. Lembre-se de salvar.");
+  };
+
+  return (
+    <div className="rounded-2xl border border-border/60 bg-secondary/30 p-5 space-y-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-lg bg-primary/10 text-primary"><Palette size={16} /></div>
+          <div>
+            <h3 className="text-sm font-semibold">Overlay de Cor no Vídeo</h3>
+            <p className="text-xs text-muted-foreground">
+              Aplica uma camada de cor sobre o vídeo. Útil para escurecer ou ajustar a tonalidade sem alterar o arquivo original.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={restoreDefaults}
+          className="shrink-0 inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-border hover:bg-secondary transition-colors"
+          title="Restaurar padrão"
+        >
+          <RotateCcw size={12} /> Padrão
+        </button>
+      </div>
+
+      <Toggle
+        checked={enabled}
+        onChange={v => update({ overlayEnabled: v })}
+        label="Ativar overlay de cor"
+        hint={enabled ? "Camada de cor visível sobre o vídeo" : "Overlay desativado"}
+        icon={Palette}
+      />
+
+      <div className={`grid sm:grid-cols-[auto,1fr,auto] gap-3 items-center ${enabled ? "" : "opacity-50 pointer-events-none"}`}>
+        <label className="relative w-14 h-14 rounded-xl border border-border overflow-hidden cursor-pointer shrink-0 shadow-inner" title="Selecionar cor">
+          <input
+            type="color"
+            value={color}
+            onChange={e => {
+              const v = e.target.value.toUpperCase();
+              update({ overlayColor: v });
+              setHexDraft(v);
+            }}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
+          <div className="absolute inset-0" style={{ backgroundColor: color }} />
+        </label>
+
+        <div className="min-w-0">
+          <label className="text-[11px] uppercase tracking-wide text-muted-foreground">Código HEX</label>
+          <input
+            type="text"
+            value={hexDraft}
+            onChange={e => setHexDraft(e.target.value)}
+            onBlur={e => commitHex(e.target.value.trim())}
+            onKeyDown={e => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+            placeholder="#000000"
+            maxLength={7}
+            className="mt-1 w-full rounded-lg bg-background border border-border px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-primary/40"
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={copyHex}
+          className="self-end inline-flex items-center gap-1.5 text-xs px-2.5 py-2 rounded-lg border border-border hover:bg-secondary transition-colors"
+          title="Copiar HEX"
+        >
+          {copied ? <Check size={12} /> : <Copy size={12} />}
+          {copied ? "Copiado" : "Copiar"}
+        </button>
+      </div>
+
+      <div className={`rounded-xl bg-secondary/40 border border-border/50 p-4 ${enabled ? "" : "opacity-50 pointer-events-none"}`}>
         <div className="flex items-center justify-between mb-3">
-          <label className="text-sm font-medium">Opacidade do overlay escuro</label>
-          <span className="text-xs font-mono text-primary">{Math.round(value.overlayOpacity * 100)}%</span>
+          <label className="text-sm font-medium">Opacidade do overlay</label>
+          <span className="text-xs font-mono text-primary">{Math.round(opacity * 100)}%</span>
         </div>
         <input
           type="range"
           min={0}
-          max={80}
+          max={100}
           step={1}
-          value={Math.round(value.overlayOpacity * 100)}
+          value={Math.round(opacity * 100)}
           onChange={e => update({ overlayOpacity: Number(e.target.value) / 100 })}
           className="w-full accent-primary"
         />
         <p className="text-[11px] text-muted-foreground mt-2">
-          Aumente a opacidade para garantir leitura do texto sobre o vídeo (recomendado: 40%–65%).
+          0% = vídeo totalmente visível · 100% = camada de cor totalmente sólida. Recomendado: 30%–65% para escurecer mantendo o vídeo legível.
         </p>
       </div>
     </div>
