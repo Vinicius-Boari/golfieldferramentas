@@ -444,8 +444,8 @@ const AdminProducts = () => {
                   <input
                     type="text"
                     value={editingProduct.name || ""}
-                    onChange={e => setEditingProduct({ ...editingProduct, name: e.target.value })}
-                    className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50"
+                    onChange={e => setEditingProduct({ ...editingProduct, name: e.target.value.toUpperCase() })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50 uppercase"
                   />
                 </div>
                 <div>
