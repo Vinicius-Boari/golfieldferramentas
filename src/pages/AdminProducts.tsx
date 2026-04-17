@@ -43,7 +43,7 @@ const AdminProducts = () => {
   const [imageMode, setImageMode] = useState<"upload" | "url">("upload");
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
-
+  const [lastVideoFile, setLastVideoFile] = useState<File | null>(null);
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
       toast.error("Acesso negado. Apenas administradores.");
@@ -72,12 +72,19 @@ const AdminProducts = () => {
     setEditingProduct({ ...emptyProduct });
     setIsNew(true);
     setImageMode("upload");
+    setLastVideoFile(null);
   };
 
   const openEditProductModal = (product: DbProduct) => {
-    setEditingProduct({ ...product, media_type: (product.media_type as "image" | "video") ?? "image" });
+    setEditingProduct({
+      ...product,
+      media_type: (product.media_type as "image" | "video") ?? "image",
+      video_loop: (product as any).video_loop ?? true,
+      video_audio: (product as any).video_audio ?? false,
+    });
     setIsNew(false);
     setImageMode(product.image ? "url" : "upload");
+    setLastVideoFile(null);
   };
 
   const handleImageUpload = async (file: File | null) => {
