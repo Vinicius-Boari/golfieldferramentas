@@ -329,7 +329,11 @@ const AdminProducts = () => {
                     <td className="p-3 pl-4">
                       <div className="w-10 h-10 rounded-lg bg-secondary/50 overflow-hidden flex items-center justify-center">
                         {product.image ? (
-                          <img src={product.image} alt="" className="w-full h-full object-contain" />
+                          product.media_type === "video" ? (
+                            <video src={product.image} className="w-full h-full object-contain" muted playsInline preload="metadata" />
+                          ) : (
+                            <img src={product.image} alt="" className="w-full h-full object-contain" />
+                          )
                         ) : (
                           <Package size={16} className="text-muted-foreground/30" />
                         )}
