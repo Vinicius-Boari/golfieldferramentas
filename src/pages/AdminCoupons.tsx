@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Pencil, Trash2, Search, Tag, LogOut, Save, X, ArrowLeft,
   Eye, EyeOff, Copy, Package, Home, Users, Loader2, BarChart3,
-  Calendar, Percent, DollarSign, Filter
+  Calendar, Percent, DollarSign, Filter, Sparkles
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
