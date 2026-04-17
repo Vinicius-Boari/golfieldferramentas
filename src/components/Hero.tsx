@@ -101,9 +101,18 @@ interface HeroProps {
   };
   /** Solid background color (HEX) for the Hero section. */
   backgroundColor?: string;
+  /** Gradient transition overlay between Hero and the next section. */
+  sectionTransition?: {
+    enabled?: boolean;
+    fromColor?: string;
+    toColor?: string;
+    direction?: "vertical" | "inverted";
+    height?: number;
+    intensity?: number;
+  };
 }
 
-const Hero = ({ config, videoConfig, backgroundColor }: HeroProps) => {
+const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroProps) => {
   const { scrollY } = useScroll();
   const isMobile = useIsMobile();
   const motionEnabled = useMobileMotionEnabled();
@@ -277,7 +286,26 @@ const Hero = ({ config, videoConfig, backgroundColor }: HeroProps) => {
         </motion.div>
       </motion.div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
+      {(() => {
+        const st = sectionTransition;
+        if (st?.enabled === false) return null;
+        const from = st?.fromColor || "#000000";
+        const to = st?.toColor || "#5C5C5C";
+        const height = Math.max(0, st?.height ?? 96);
+        const intensity = Math.min(1, Math.max(0, st?.intensity ?? 1));
+        const dir = st?.direction === "inverted" ? "to top" : "to bottom";
+        return (
+          <div
+            aria-hidden="true"
+            className="absolute bottom-0 left-0 right-0 pointer-events-none z-[1]"
+            style={{
+              height: `${height}px`,
+              backgroundImage: `linear-gradient(${dir}, ${from} 0%, ${to} 100%)`,
+              opacity: intensity,
+            }}
+          />
+        );
+      })()}
     </section>
   );
 };
