@@ -311,6 +311,7 @@ const AdminVisual = () => {
   /* --------------------------- Derived --------------------------- */
   const stageWidth = deviceWidths[device];
   const [stageScale, setStageScale] = useState(1);
+  const [sandboxHeight, setSandboxHeight] = useState(0);
 
   useEffect(() => {
     const compute = () => {
@@ -323,6 +324,18 @@ const AdminVisual = () => {
     window.addEventListener("resize", compute);
     return () => window.removeEventListener("resize", compute);
   }, [stageWidth]);
+
+  // Track real sandbox height so we can reserve the correct (scaled) space
+  // in the layout — otherwise the scaled-down site leaves a huge empty gap.
+  useEffect(() => {
+    const root = sandboxRootRef.current;
+    if (!root) return;
+    const update = () => setSandboxHeight(root.scrollHeight);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(root);
+    return () => ro.disconnect();
+  }, []);
 
   const currentStyles = (selectedId && drafts[selectedId]) || emptyStyles;
 
@@ -426,34 +439,39 @@ const AdminVisual = () => {
         {/* Center stage — sandbox */}
         <main ref={stageRef} className="flex-1 min-w-0 overflow-auto bg-muted/30 p-4">
           <div
-            className="mx-auto bg-background shadow-2xl rounded-xl overflow-hidden border border-border origin-top"
+            className="mx-auto"
             style={{
-              width: `${stageWidth}px`,
-              transform: `scale(${stageScale})`,
-              transformOrigin: "top center",
-              marginBottom: `${(1 - stageScale) * -100}vh`,
+              width: `${stageWidth * stageScale}px`,
+              height: sandboxHeight ? `${sandboxHeight * stageScale}px` : undefined,
             }}
           >
             <div
-              id="visual-sandbox-root"
-              ref={sandboxRootRef}
-              className="relative"
-              style={{ width: `${stageWidth}px`, pointerEvents: pickMode ? "auto" : "auto" }}
+              className="bg-background shadow-2xl rounded-xl overflow-hidden border border-border"
+              style={{
+                width: `${stageWidth}px`,
+                transform: `scale(${stageScale})`,
+                transformOrigin: "top left",
+              }}
             >
-              {/* Block all interactive behavior of the sandbox so users can't
-                  navigate away. We render the home and rely on click capture. */}
-              <div style={{ pointerEvents: pickMode ? "none" : "auto" }}>
-                <CartProvider>
-                  <Index />
-                </CartProvider>
+              <div
+                id="visual-sandbox-root"
+                ref={sandboxRootRef}
+                className="relative"
+                style={{ width: `${stageWidth}px` }}
+              >
+                <div style={{ pointerEvents: pickMode ? "none" : "auto" }}>
+                  <CartProvider>
+                    <Index />
+                  </CartProvider>
+                </div>
+                {pickMode && (
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 cursor-crosshair"
+                    style={{ pointerEvents: "none" }}
+                  />
+                )}
               </div>
-              {pickMode && (
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 cursor-crosshair"
-                  style={{ pointerEvents: "none" }}
-                />
-              )}
             </div>
           </div>
         </main>
