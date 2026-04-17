@@ -6,8 +6,8 @@
 
 @layer base {
   :root {
-    /* Base background — elegant light gray (#F2F2F2 ≈ hsl(0 0% 95%)) */
-    --background: 0 0% 95%;
+    /* Base background — medium gray, between light and dark (~#5C5C5C ≈ hsl(0 0% 36%)) */
+    --background: 0 0% 36%;
     --foreground: 0 0% 100%;
 
     --card: 0 0% 14%;
