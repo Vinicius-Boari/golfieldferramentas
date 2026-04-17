@@ -154,8 +154,8 @@ export const defaultHomeConfig: HomeConfig = {
       { label: "Envio Nacional", desc: "Para todo o Brasil" },
       { label: "Catálogo completo", desc: "Centenas de produtos" },
     ],
+    backgroundColor: "#1E1E1E",
   },
-  heroVideo: {
     enabled: false,
     url: "",
     loop: true,
