@@ -271,6 +271,33 @@ export type Database = {
         }
         Relationships: []
       }
+      visual_overrides: {
+        Row: {
+          created_at: string
+          element_id: string
+          enabled: boolean
+          id: string
+          styles: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          element_id: string
+          enabled?: boolean
+          id?: string
+          styles?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          element_id?: string
+          enabled?: boolean
+          id?: string
+          styles?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
