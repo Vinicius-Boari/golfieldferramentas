@@ -71,9 +71,10 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
         transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "glass shadow-2xl shadow-background/80 border-b border-border/30"
-            : "bg-background/95 backdrop-blur-sm"
+            ? "shadow-2xl shadow-background/80 border-b border-border/30 backdrop-blur-md"
+            : "backdrop-blur-sm"
         }`}
+        style={{ backgroundColor: scrolled ? "rgba(30,30,30,0.85)" : "#1E1E1E" }}
       >
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-3 md:gap-4">
