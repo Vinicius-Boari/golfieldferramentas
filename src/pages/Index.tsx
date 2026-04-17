@@ -59,7 +59,8 @@ const IndexContent = () => {
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
       const matchesSearch = searchQuery === "" || p.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = activeCategory === "todos" || p.category.toLowerCase().replace(/ /g, '-').replace(/ã/g, 'a').replace(/á/g, 'a').replace(/ê/g, 'e').replace(/í/g, 'i').replace(/â/g, 'a').replace(/ú/g, 'u').replace(/ó/g, 'o') === activeCategory;
+      const cat = (p.category ?? "").toString();
+      const matchesCategory = activeCategory === "todos" || cat.toLowerCase().replace(/ /g, '-').replace(/ã/g, 'a').replace(/á/g, 'a').replace(/ê/g, 'e').replace(/í/g, 'i').replace(/â/g, 'a').replace(/ú/g, 'u').replace(/ó/g, 'o') === activeCategory;
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, activeCategory, products]);
