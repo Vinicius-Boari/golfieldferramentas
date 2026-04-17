@@ -152,6 +152,8 @@ const AdminProducts = () => {
       setUploadingVideo(false);
     }
   };
+
+  const handleSave = async () => {
     if (!editingProduct?.name?.trim()) {
       toast.error("Nome do produto é obrigatório");
       return;
