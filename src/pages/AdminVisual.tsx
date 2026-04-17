@@ -13,7 +13,6 @@ import {
 } from "@/hooks/useVisualOverrides";
 import EditorToolbar from "@/components/admin/visual/EditorToolbar";
 import PropertyPanel, { type SelectedElement } from "@/components/admin/visual/PropertyPanel";
-import SelectionOverlay from "@/components/admin/visual/SelectionOverlay";
 
 const BP_WIDTH: Record<Breakpoint, number> = {
   desktop: 1440,
@@ -37,10 +36,6 @@ const AdminVisual = () => {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>("desktop");
   const [zoom, setZoom] = useState(0.85);
   const [selected, setSelected] = useState<SelectedElement | null>(null);
-  /** Live geometry of the selected element in iframe-document coords. */
-  const [selectedRect, setSelectedRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
-  /** In-flight preview from drag/resize, NOT yet committed to history. */
-  const [livePreview, setLivePreview] = useState<OverrideMap | null>(null);
 
   // Working copy + undo/redo history
   const [draft, setDraft] = useState<OverrideMap>({});
@@ -82,14 +77,7 @@ const AdminVisual = () => {
   useEffect(() => {
     const onMessage = (ev: MessageEvent) => {
       const data = ev.data as
-        | {
-            __visualEditor?: boolean;
-            type?: string;
-            elementId?: string;
-            tag?: string;
-            text?: string;
-            rect?: { x: number; y: number; width: number; height: number };
-          }
+        | { __visualEditor?: boolean; type?: string; elementId?: string; tag?: string; text?: string }
         | undefined;
       if (!data?.__visualEditor) return;
       if (data.type === "ready") {
@@ -101,17 +89,13 @@ const AdminVisual = () => {
           tag: data.tag ?? "div",
           text: data.text ?? "",
         });
-        if (data.rect) setSelectedRect(data.rect);
         // Echo back so the iframe marks the element as selected.
         iframeRef.current?.contentWindow?.postMessage(
           { __visualEditor: true, type: "highlight", elementId: data.elementId },
           "*",
         );
-      } else if (data.type === "rect" && data.rect) {
-        setSelectedRect(data.rect);
       } else if (data.type === "deselect") {
         setSelected(null);
-        setSelectedRect(null);
       }
     };
     window.addEventListener("message", onMessage);
@@ -127,18 +111,7 @@ const AdminVisual = () => {
     setHistoryIdx(trimmed.length - 1);
     setDraft(next);
     setHasChanges(true);
-    setLivePreview(null);
     postPreview(next);
-    // Ask iframe for the up-to-date geometry now that styles changed.
-    window.setTimeout(() => {
-      iframeRef.current?.contentWindow?.postMessage({ __visualEditor: true, type: "requestRect" }, "*");
-    }, 50);
-  };
-
-  /** Push a transient preview to the iframe without touching history. */
-  const previewLive = (map: OverrideMap) => {
-    setLivePreview(map);
-    postPreview(map);
   };
 
   const undo = () => {
@@ -147,7 +120,6 @@ const AdminVisual = () => {
     const snap = clone(history[idx]);
     setHistoryIdx(idx);
     setDraft(snap);
-    setLivePreview(null);
     setHasChanges(JSON.stringify(snap) !== JSON.stringify(savedOverrides ?? {}));
     postPreview(snap);
   };
@@ -158,7 +130,6 @@ const AdminVisual = () => {
     const snap = clone(history[idx]);
     setHistoryIdx(idx);
     setDraft(snap);
-    setLivePreview(null);
     setHasChanges(JSON.stringify(snap) !== JSON.stringify(savedOverrides ?? {}));
     postPreview(snap);
   };
@@ -215,38 +186,8 @@ const AdminVisual = () => {
     setHistory([baseline]);
     setHistoryIdx(0);
     setHasChanges(false);
-    setLivePreview(null);
     postPreview(baseline);
     setSelected(null);
-    setSelectedRect(null);
-  };
-
-  /* ---------- Drag/resize gesture wiring ----------
-   * The overlay receives a full ElementStyles object (with the active
-   * breakpoint already mutated). We translate that into a full OverrideMap
-   * and push as either a transient preview or a committed history entry.
-   */
-  const buildMapFromStyles = (next: ElementStyles): OverrideMap | null => {
-    if (!selected) return null;
-    const map = clone(draft);
-    const cleaned: ElementStyles = {};
-    (["desktop", "tablet", "mobile"] as Breakpoint[]).forEach((bp) => {
-      if (next[bp] && Object.keys(next[bp]!).length > 0) cleaned[bp] = next[bp];
-    });
-    if (Object.keys(cleaned).length === 0) {
-      delete map[selected.elementId];
-    } else {
-      map[selected.elementId] = cleaned;
-    }
-    return map;
-  };
-  const handleOverlayPreview = (next: ElementStyles) => {
-    const map = buildMapFromStyles(next);
-    if (map) previewLive(map);
-  };
-  const handleOverlayCommit = (next: ElementStyles) => {
-    const map = buildMapFromStyles(next);
-    if (map) commit(map);
   };
 
   /* ---------- Loading state ---------- */
@@ -311,7 +252,7 @@ const AdminVisual = () => {
         {/* Canvas */}
         <div className="flex-1 relative overflow-auto bg-[hsl(0_0%_12%)]">
           <div
-            className="mx-auto my-6 relative"
+            className="mx-auto my-6"
             style={{
               width: frameWidth * zoom,
               height: frameHeight * zoom,
@@ -333,16 +274,6 @@ const AdminVisual = () => {
                 style={{ width: frameWidth, height: frameHeight, border: 0, display: "block" }}
               />
             </div>
-            {/* Drag/resize overlay — sits over the scaled iframe and uses
-                iframe-document px * zoom for screen positioning. */}
-            <SelectionOverlay
-              rect={selected ? selectedRect : null}
-              zoom={zoom}
-              breakpoint={breakpoint}
-              styles={styleForSelected}
-              onChange={handleOverlayCommit}
-              onPreview={handleOverlayPreview}
-            />
           </div>
         </div>
 

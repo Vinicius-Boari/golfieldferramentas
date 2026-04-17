@@ -44,18 +44,6 @@ export const useEditorOverlay = () => {
     };
     const onLeave = () => setHighlight(null);
 
-    // Helper: build a payload describing element geometry in iframe-document
-    // coordinates (i.e. relative to the iframe viewport, NOT the page).
-    const describe = (el: HTMLElement) => {
-      const rect = el.getBoundingClientRect();
-      return {
-        elementId: el.getAttribute("data-edit-id"),
-        tag: el.tagName.toLowerCase(),
-        text: el.innerText?.slice(0, 5000) ?? "",
-        rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
-      };
-    };
-
     // ---- Block dynamic actions, capture selection --------------------------
     const onClickCapture = (e: MouseEvent) => {
       const el = findEditable(e.target);
@@ -63,29 +51,24 @@ export const useEditorOverlay = () => {
       e.preventDefault();
       e.stopPropagation();
       if (el) {
-        window.parent?.postMessage({ __visualEditor: true, type: "select", ...describe(el) }, "*");
+        const id = el.getAttribute("data-edit-id")!;
+        const rect = el.getBoundingClientRect();
+        const tag = el.tagName.toLowerCase();
+        window.parent?.postMessage(
+          {
+            __visualEditor: true,
+            type: "select",
+            elementId: id,
+            tag,
+            text: el.innerText?.slice(0, 5000) ?? "",
+            rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+          },
+          "*",
+        );
       } else {
         window.parent?.postMessage({ __visualEditor: true, type: "deselect" }, "*");
       }
     };
-
-    // Re-broadcast geometry of the currently-selected element on scroll/resize
-    // so the parent overlay can stay glued to it.
-    const broadcastSelectedRect = () => {
-      const sel = document.querySelector('[data-editor-selected="1"]') as HTMLElement | null;
-      if (!sel) return;
-      const rect = sel.getBoundingClientRect();
-      window.parent?.postMessage(
-        {
-          __visualEditor: true,
-          type: "rect",
-          elementId: sel.getAttribute("data-edit-id"),
-          rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
-        },
-        "*",
-      );
-    };
-    const onScrollOrResize = () => broadcastSelectedRect();
 
     const onSubmitCapture = (e: Event) => {
       e.preventDefault();
@@ -96,12 +79,8 @@ export const useEditorOverlay = () => {
     document.addEventListener("mouseleave", onLeave, true);
     document.addEventListener("click", onClickCapture, true);
     document.addEventListener("submit", onSubmitCapture, true);
-    window.addEventListener("scroll", onScrollOrResize, true);
-    window.addEventListener("resize", onScrollOrResize);
 
     // Inject visual styles for hover/selected outlines.
-    // The "selected" outline is intentionally subtle here because the parent
-    // window draws a richer overlay (with resize handles) on top of the iframe.
     const style = document.createElement("style");
     style.setAttribute("data-editor-style", "1");
     style.textContent = `
@@ -112,19 +91,16 @@ export const useEditorOverlay = () => {
         transition: outline-color 0.12s ease;
       }
       [data-editor-selected="1"] {
-        outline: 1px solid hsl(0 78% 55% / 0.55) !important;
-        outline-offset: 1px !important;
+        outline: 2px solid hsl(0 78% 55%) !important;
+        outline-offset: 2px !important;
+        box-shadow: 0 0 0 4px hsl(0 78% 52% / 0.18) !important;
       }
     `;
     document.head.appendChild(style);
 
     // Listen for selection acknowledgement from parent to mark the element.
     const onMessage = (ev: MessageEvent) => {
-      const data = ev.data as {
-        __visualEditor?: boolean;
-        type?: string;
-        elementId?: string;
-      };
+      const data = ev.data as { __visualEditor?: boolean; type?: string; elementId?: string };
       if (!data?.__visualEditor) return;
       if (data.type === "highlight") {
         document
@@ -136,11 +112,7 @@ export const useEditorOverlay = () => {
           ) as HTMLElement | null;
           target?.setAttribute("data-editor-selected", "1");
           target?.scrollIntoView({ behavior: "smooth", block: "center" });
-          // Send fresh geometry once scroll settles.
-          window.setTimeout(broadcastSelectedRect, 350);
         }
-      } else if (data.type === "requestRect") {
-        broadcastSelectedRect();
       }
     };
     window.addEventListener("message", onMessage);
@@ -153,8 +125,6 @@ export const useEditorOverlay = () => {
       document.removeEventListener("mouseleave", onLeave, true);
       document.removeEventListener("click", onClickCapture, true);
       document.removeEventListener("submit", onSubmitCapture, true);
-      window.removeEventListener("scroll", onScrollOrResize, true);
-      window.removeEventListener("resize", onScrollOrResize);
       window.removeEventListener("message", onMessage);
       style.remove();
       document.documentElement.removeAttribute("data-editor-mode");
