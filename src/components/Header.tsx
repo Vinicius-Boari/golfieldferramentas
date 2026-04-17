@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, ShoppingCart, Menu, X, Mail, ChevronRight, UserCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
+import { useHomeConfig, DEFAULT_HEADER_BACKGROUND_COLOR } from "@/hooks/useHomeConfig";
 
 const InstagramIcon = ({ size = 20, className }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -27,12 +28,24 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   const { totalItems, setIsOpen } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { data: config } = useHomeConfig();
+  const headerBg = config?.appearance?.headerBackgroundColor || DEFAULT_HEADER_BACKGROUND_COLOR;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Build a slightly transparent version of the header color for the
+  // "scrolled" state, preserving the previous backdrop-blur effect.
+  const hexToRgba = (hex: string, alpha: number) => {
+    const m = /^#([0-9A-Fa-f]{6})$/.exec(hex);
+    if (!m) return hex;
+    const n = parseInt(m[1], 16);
+    return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+  };
+  const headerBgScrolled = hexToRgba(headerBg, 0.85);
 
   return (
     <>
@@ -74,7 +87,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             ? "shadow-2xl shadow-background/80 border-b border-border/30 backdrop-blur-md"
             : "backdrop-blur-sm"
         }`}
-        style={{ backgroundColor: scrolled ? "rgba(92,92,92,0.85)" : "#5C5C5C" }}
+        style={{ backgroundColor: scrolled ? headerBgScrolled : headerBg }}
       >
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-3 md:gap-4">
