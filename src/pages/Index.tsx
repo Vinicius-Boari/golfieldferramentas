@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
 import Hero, { FloatingToolVisual } from "@/components/Hero";
