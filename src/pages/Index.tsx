@@ -272,7 +272,7 @@ const IndexContent = () => {
 
       case "about":
         return isSectionEnabled("about") ? (
-          <section key="about" id="sobre" className="py-16 sm:py-20 md:py-24 relative">
+          <section key="about" id="sobre" data-visual-id="about-section" className="py-16 sm:py-20 md:py-24 relative">
             <div className="container mx-auto px-4">
               <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-start">
                 <motion.div variants={fadeSlideRight}>
