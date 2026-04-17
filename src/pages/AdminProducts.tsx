@@ -472,8 +472,19 @@ const AdminProducts = () => {
                     <label className="text-xs font-medium text-muted-foreground mb-1 block">Qtd Mínima</label>
                     <input
                       type="number"
-                      value={editingProduct.min_qty || ""}
-                      onChange={e => setEditingProduct({ ...editingProduct, min_qty: parseInt(e.target.value) || 1 })}
+                      min={1}
+                      step={1}
+                      value={editingProduct.min_qty ?? ""}
+                      onChange={e => {
+                        const raw = e.target.value;
+                        if (raw === "") {
+                          setEditingProduct({ ...editingProduct, min_qty: undefined as any });
+                          return;
+                        }
+                        const parsed = parseInt(raw, 10);
+                        if (Number.isNaN(parsed)) return;
+                        setEditingProduct({ ...editingProduct, min_qty: Math.max(1, parsed) });
+                      }}
                       className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50"
                     />
                   </div>
