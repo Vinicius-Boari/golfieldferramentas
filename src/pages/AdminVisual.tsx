@@ -310,15 +310,17 @@ const AdminVisual = () => {
 
   /* --------------------------- Derived --------------------------- */
   const stageWidth = deviceWidths[device];
-  const [stageScale, setStageScale] = useState(1);
+  const [fitScale, setFitScale] = useState(1);
+  const [zoom, setZoom] = useState(1); // user-controlled multiplier
   const [sandboxHeight, setSandboxHeight] = useState(0);
+  const stageScale = fitScale * zoom;
 
   useEffect(() => {
     const compute = () => {
       const wrap = stageRef.current;
       if (!wrap) return;
       const available = wrap.clientWidth - 32;
-      setStageScale(Math.min(1, available / stageWidth));
+      setFitScale(Math.min(1, available / stageWidth));
     };
     compute();
     window.addEventListener("resize", compute);
@@ -381,6 +383,26 @@ const AdminVisual = () => {
                   </button>
                 );
               })}
+            </div>
+
+            {/* Zoom slider */}
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-secondary/60">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Zoom</span>
+              <input
+                type="range"
+                min={0.3} max={2} step={0.05}
+                value={zoom}
+                onChange={(e) => setZoom(parseFloat(e.target.value))}
+                className="w-24 h-1 accent-primary"
+              />
+              <span className="text-xs font-mono text-foreground w-10 text-right">{Math.round(stageScale * 100)}%</span>
+              <button
+                onClick={() => setZoom(1)}
+                className="text-[10px] font-semibold text-muted-foreground hover:text-foreground p-1"
+                title="Resetar zoom"
+              >
+                <RotateCcw size={12} />
+              </button>
             </div>
 
             <button onClick={() => setPickMode((p) => !p)}
@@ -476,13 +498,11 @@ const AdminVisual = () => {
           </div>
         </main>
 
-        {/* Right panel — controls for selected element */}
-        <aside className="w-full max-w-sm shrink-0 border-l border-border bg-card/40 overflow-y-auto">
+        {/* Right panel — controls for selected element. Collapses when nothing is selected to give the stage more room. */}
+        <aside className={`shrink-0 border-l border-border bg-card/40 overflow-y-auto transition-[width] ${selectedId ? "w-full max-w-sm" : "w-12"}`}>
           {!selectedId ? (
-            <div className="p-6 text-center text-sm text-muted-foreground">
-              <Sparkles size={24} className="mx-auto mb-3 text-muted-foreground/40" />
-              <p className="font-medium mb-1">Nenhum elemento selecionado</p>
-              <p className="text-xs">Ative o modo seleção e clique em qualquer elemento da pré-visualização para editá-lo.</p>
+            <div className="p-3 flex flex-col items-center text-center text-muted-foreground">
+              <Sparkles size={18} className="text-muted-foreground/40" />
             </div>
           ) : (
             <div className="p-4 space-y-5">
