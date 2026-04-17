@@ -96,8 +96,12 @@ export const useEditorOverlay = () => {
     document.addEventListener("mouseleave", onLeave, true);
     document.addEventListener("click", onClickCapture, true);
     document.addEventListener("submit", onSubmitCapture, true);
+    window.addEventListener("scroll", onScrollOrResize, true);
+    window.addEventListener("resize", onScrollOrResize);
 
     // Inject visual styles for hover/selected outlines.
+    // The "selected" outline is intentionally subtle here because the parent
+    // window draws a richer overlay (with resize handles) on top of the iframe.
     const style = document.createElement("style");
     style.setAttribute("data-editor-style", "1");
     style.textContent = `
@@ -108,16 +112,19 @@ export const useEditorOverlay = () => {
         transition: outline-color 0.12s ease;
       }
       [data-editor-selected="1"] {
-        outline: 2px solid hsl(0 78% 55%) !important;
-        outline-offset: 2px !important;
-        box-shadow: 0 0 0 4px hsl(0 78% 52% / 0.18) !important;
+        outline: 1px solid hsl(0 78% 55% / 0.55) !important;
+        outline-offset: 1px !important;
       }
     `;
     document.head.appendChild(style);
 
     // Listen for selection acknowledgement from parent to mark the element.
     const onMessage = (ev: MessageEvent) => {
-      const data = ev.data as { __visualEditor?: boolean; type?: string; elementId?: string };
+      const data = ev.data as {
+        __visualEditor?: boolean;
+        type?: string;
+        elementId?: string;
+      };
       if (!data?.__visualEditor) return;
       if (data.type === "highlight") {
         document
@@ -129,7 +136,11 @@ export const useEditorOverlay = () => {
           ) as HTMLElement | null;
           target?.setAttribute("data-editor-selected", "1");
           target?.scrollIntoView({ behavior: "smooth", block: "center" });
+          // Send fresh geometry once scroll settles.
+          window.setTimeout(broadcastSelectedRect, 350);
         }
+      } else if (data.type === "requestRect") {
+        broadcastSelectedRect();
       }
     };
     window.addEventListener("message", onMessage);
@@ -142,6 +153,8 @@ export const useEditorOverlay = () => {
       document.removeEventListener("mouseleave", onLeave, true);
       document.removeEventListener("click", onClickCapture, true);
       document.removeEventListener("submit", onSubmitCapture, true);
+      window.removeEventListener("scroll", onScrollOrResize, true);
+      window.removeEventListener("resize", onScrollOrResize);
       window.removeEventListener("message", onMessage);
       style.remove();
       document.documentElement.removeAttribute("data-editor-mode");
