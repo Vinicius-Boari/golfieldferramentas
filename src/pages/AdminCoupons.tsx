@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Pencil, Trash2, Search, Tag, LogOut, Save, X, ArrowLeft,
   Eye, EyeOff, Copy, Package, Home, Users, Loader2, BarChart3,
-  Calendar, Percent, DollarSign, Filter
+  Calendar, Percent, DollarSign, Filter, Sparkles
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -202,6 +202,9 @@ const AdminCoupons = () => {
             </motion.button>
             <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => navigate("/admin/home")} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold">
               <Home size={16} /> Home
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => navigate("/admin/visual")} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold">
+              <Sparkles size={16} /> Visual
             </motion.button>
             {isOwner && (
               <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => navigate("/admin/usuarios")} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold">

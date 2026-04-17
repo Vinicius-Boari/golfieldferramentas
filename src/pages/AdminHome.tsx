@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   ArrowLeft, Save, LogOut, Home, Type, Image, Palette, LayoutGrid,
   ChevronUp, ChevronDown, Eye, EyeOff, Plus, Trash2, Upload, Link2, Loader2, GripVertical,
-  Film, Volume2, VolumeX, Repeat, Settings
+  Film, Volume2, VolumeX, Repeat, Settings, Sparkles
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -221,6 +221,15 @@ const AdminHome = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate("/admin/visual")}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary text-foreground text-sm font-semibold"
+            >
+              <Sparkles size={14} />
+              Visual
+            </motion.button>
             <button onClick={handleResetToDefault} className="px-3 py-2 rounded-xl text-xs text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
               Restaurar padrão
             </button>
