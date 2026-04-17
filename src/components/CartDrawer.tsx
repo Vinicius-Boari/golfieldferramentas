@@ -166,14 +166,26 @@ const CartDrawer = () => {
                       exit={{ opacity: 0, x: -20, height: 0 }}
                       className="flex gap-3 p-3.5 rounded-xl bg-secondary/30 border border-border/40 group/item hover:border-border transition-colors"
                     >
-                      <div className="w-14 h-14 flex-shrink-0 rounded-lg bg-secondary/50 p-1.5 flex items-center justify-center">
-                        <img
-                          src={item.product.image}
-                          alt={item.product.name}
-                          className="w-full h-full object-contain"
-                          loading="lazy"
-                          decoding="async"
-                        />
+                      <div className="w-14 h-14 flex-shrink-0 rounded-lg bg-secondary/50 p-1.5 flex items-center justify-center overflow-hidden">
+                        {item.product.mediaType === "video" ? (
+                          <video
+                            src={item.product.image}
+                            className="w-full h-full object-contain"
+                            muted
+                            loop
+                            playsInline
+                            autoPlay
+                            preload="metadata"
+                          />
+                        ) : (
+                          <img
+                            src={item.product.image}
+                            alt={item.product.name}
+                            className="w-full h-full object-contain"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium text-sm line-clamp-2">{item.product.name}</h4>
