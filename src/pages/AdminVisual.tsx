@@ -498,13 +498,11 @@ const AdminVisual = () => {
           </div>
         </main>
 
-        {/* Right panel — controls for selected element */}
-        <aside className="w-full max-w-sm shrink-0 border-l border-border bg-card/40 overflow-y-auto">
+        {/* Right panel — controls for selected element. Collapses when nothing is selected to give the stage more room. */}
+        <aside className={`shrink-0 border-l border-border bg-card/40 overflow-y-auto transition-[width] ${selectedId ? "w-full max-w-sm" : "w-12"}`}>
           {!selectedId ? (
-            <div className="p-6 text-center text-sm text-muted-foreground">
-              <Sparkles size={24} className="mx-auto mb-3 text-muted-foreground/40" />
-              <p className="font-medium mb-1">Nenhum elemento selecionado</p>
-              <p className="text-xs">Ative o modo seleção e clique em qualquer elemento da pré-visualização para editá-lo.</p>
+            <div className="p-3 flex flex-col items-center text-center text-muted-foreground">
+              <Sparkles size={18} className="text-muted-foreground/40" />
             </div>
           ) : (
             <div className="p-4 space-y-5">
