@@ -113,7 +113,7 @@ const Hero = ({ config, videoConfig }: HeroProps) => {
 
   return (
     <section className="relative overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-20 md:py-32 lg:py-40">
-      <div className="absolute inset-0 bg-background" />
+      <div className="absolute inset-0" style={{ backgroundColor: "#1E1E1E" }} />
 
       {showVideo && (
         <motion.div
