@@ -12,7 +12,11 @@ export interface HeroVideoConfig {
   url: string;
   loop: boolean;
   muted: boolean;
-  overlayOpacity: number; // 0..0.8
+  overlayOpacity: number; // 0..1
+  /** When true, the color overlay is rendered on top of the video. */
+  overlayEnabled?: boolean;
+  /** HEX color used for the overlay layer, e.g. "#000000". */
+  overlayColor?: string;
 }
 
 export interface HeroConfig {
@@ -173,6 +177,8 @@ export const defaultHomeConfig: HomeConfig = {
     loop: true,
     muted: true,
     overlayOpacity: 0.55,
+    overlayEnabled: true,
+    overlayColor: "#000000",
   },
   trustBadges: {
     items: [

@@ -96,6 +96,8 @@ interface HeroProps {
     loop?: boolean;
     muted?: boolean;
     overlayOpacity?: number;
+    overlayEnabled?: boolean;
+    overlayColor?: string;
   };
   /** Solid background color (HEX) for the Hero section. */
   backgroundColor?: string;
@@ -111,7 +113,9 @@ const Hero = ({ config, videoConfig, backgroundColor }: HeroProps) => {
 
   // On mobile with motion disabled, never render the decorative hero video.
   const showVideo = !!(videoConfig?.enabled && videoConfig?.url && !videoFailed && motionEnabled);
-  const overlay = Math.min(0.8, Math.max(0, videoConfig?.overlayOpacity ?? 0.55));
+  const overlayEnabled = videoConfig?.overlayEnabled !== false;
+  const overlay = Math.min(1, Math.max(0, videoConfig?.overlayOpacity ?? 0.55));
+  const overlayColor = videoConfig?.overlayColor || "#000000";
   const heroBg = backgroundColor || "#1E1E1E";
 
   return (
@@ -153,10 +157,12 @@ const Hero = ({ config, videoConfig, backgroundColor }: HeroProps) => {
             animate={{ scale: [1, 1.06, 1] }}
             transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
           />
-          <div
-            className="absolute inset-0 bg-background"
-            style={{ opacity: overlay }}
-          />
+          {overlayEnabled && (
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ backgroundColor: overlayColor, opacity: overlay }}
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background" />
         </motion.div>
       )}
