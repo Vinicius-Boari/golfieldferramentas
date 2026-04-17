@@ -470,8 +470,35 @@ const AdminProducts = () => {
                 </div>
 
                 <div className="space-y-3">
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground mb-2 block">Tipo de mídia do produto</label>
+                    <div className="flex items-center gap-2 rounded-lg bg-secondary/60 p-1 w-full">
+                      <button
+                        type="button"
+                        onClick={() => setEditingProduct({ ...editingProduct, media_type: "image" })}
+                        className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-colors ${(editingProduct.media_type ?? "image") === "image" ? "bg-background text-foreground" : "text-muted-foreground"}`}
+                      >
+                        <ImageIcon size={13} /> Imagem
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingProduct({ ...editingProduct, media_type: "video" })}
+                        className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-colors ${editingProduct.media_type === "video" ? "bg-background text-foreground" : "text-muted-foreground"}`}
+                      >
+                        <VideoIcon size={13} /> Vídeo
+                      </button>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mt-1.5">
+                      {editingProduct.media_type === "video"
+                        ? "O vídeo será exibido no lugar da imagem do produto, em silêncio (muted) e com autoplay."
+                        : "Comportamento padrão: imagem estática do produto."}
+                    </p>
+                  </div>
+
                   <div className="flex items-center justify-between gap-3">
-                    <label className="text-xs font-medium text-muted-foreground block">Imagem do Produto</label>
+                    <label className="text-xs font-medium text-muted-foreground block">
+                      {editingProduct.media_type === "video" ? "Vídeo do Produto" : "Imagem do Produto"}
+                    </label>
                     <div className="flex items-center gap-2 rounded-lg bg-secondary/60 p-1">
                       <button
                         type="button"
@@ -492,25 +519,49 @@ const AdminProducts = () => {
 
                   {imageMode === "upload" ? (
                     <div className="rounded-xl border border-dashed border-border bg-secondary/30 p-4 space-y-3">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        disabled={uploadingImage}
-                        onChange={e => void handleImageUpload(e.target.files?.[0] ?? null)}
-                        className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:opacity-90"
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Envie uma imagem do seu computador. Após o upload, ela será preenchida automaticamente no produto.
-                      </p>
-                      {uploadingImage && (
-                        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
-                          <Loader2 size={14} className="animate-spin" /> Enviando imagem...
-                        </div>
+                      {editingProduct.media_type === "video" ? (
+                        <>
+                          <input
+                            type="file"
+                            accept="video/mp4,video/webm,video/ogg,video/quicktime"
+                            disabled={uploadingVideo}
+                            onChange={e => void handleVideoUpload(e.target.files?.[0] ?? null)}
+                            className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:opacity-90"
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Envie um vídeo (MP4, WebM, OGG ou MOV). Após o upload, será preenchido automaticamente no produto.
+                          </p>
+                          {uploadingVideo && (
+                            <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+                              <Loader2 size={14} className="animate-spin" /> Enviando vídeo...
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            disabled={uploadingImage}
+                            onChange={e => void handleImageUpload(e.target.files?.[0] ?? null)}
+                            className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:opacity-90"
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Envie uma imagem do seu computador. Após o upload, ela será preenchida automaticamente no produto.
+                          </p>
+                          {uploadingImage && (
+                            <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+                              <Loader2 size={14} className="animate-spin" /> Enviando imagem...
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   ) : (
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground mb-1 block">URL da Imagem</label>
+                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                        {editingProduct.media_type === "video" ? "URL do Vídeo" : "URL da Imagem"}
+                      </label>
                       <input
                         type="text"
                         value={editingProduct.image || ""}
@@ -530,11 +581,24 @@ const AdminProducts = () => {
                           onClick={() => setEditingProduct({ ...editingProduct, image: "" })}
                           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                         >
-                          Remover imagem
+                          {editingProduct.media_type === "video" ? "Remover vídeo" : "Remover imagem"}
                         </button>
                       </div>
-                      <div className="w-24 h-24 rounded-lg bg-secondary/50 overflow-hidden">
-                        <img src={editingProduct.image} alt="Prévia da imagem do produto" className="w-full h-full object-contain" />
+                      <div className="w-32 h-32 rounded-lg bg-secondary/50 overflow-hidden flex items-center justify-center">
+                        {editingProduct.media_type === "video" ? (
+                          <video
+                            src={editingProduct.image}
+                            className="w-full h-full object-contain"
+                            muted
+                            loop
+                            playsInline
+                            autoPlay
+                            controls
+                            preload="metadata"
+                          />
+                        ) : (
+                          <img src={editingProduct.image} alt="Prévia da imagem do produto" className="w-full h-full object-contain" />
+                        )}
                       </div>
                     </div>
                   )}
