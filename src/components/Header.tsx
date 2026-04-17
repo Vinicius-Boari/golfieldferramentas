@@ -74,7 +74,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             ? "shadow-2xl shadow-background/80 border-b border-border/30 backdrop-blur-md"
             : "backdrop-blur-sm"
         }`}
-        style={{ backgroundColor: scrolled ? "rgba(30,30,30,0.85)" : "#1E1E1E" }}
+        style={{ backgroundColor: scrolled ? "rgba(92,92,92,0.85)" : "#5C5C5C" }}
       >
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-3 md:gap-4">
