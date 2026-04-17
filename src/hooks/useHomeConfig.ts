@@ -177,6 +177,8 @@ export const defaultHomeConfig: HomeConfig = {
     loop: true,
     muted: true,
     overlayOpacity: 0.55,
+    overlayEnabled: true,
+    overlayColor: "#000000",
   },
   trustBadges: {
     items: [
