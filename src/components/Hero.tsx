@@ -96,6 +96,8 @@ interface HeroProps {
     loop?: boolean;
     muted?: boolean;
     overlayOpacity?: number;
+    overlayEnabled?: boolean;
+    overlayColor?: string;
   };
   /** Solid background color (HEX) for the Hero section. */
   backgroundColor?: string;
