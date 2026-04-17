@@ -170,16 +170,22 @@ const AdminProducts = () => {
       return;
     }
 
+    const minQty = Number(editingProduct.min_qty);
+    if (!Number.isFinite(minQty) || minQty < 1 || !Number.isInteger(minQty)) {
+      toast.error("Quantidade mínima deve ser um número inteiro positivo");
+      return;
+    }
+
     setSaving(true);
     try {
       if (isNew) {
         const insertPayload: any = {
-          name: editingProduct.name,
+          name: (editingProduct.name || "").toUpperCase(),
           description: editingProduct.description || "",
           price: editingProduct.price || 0,
           image: editingProduct.image || "",
           category: editingProduct.category || "",
-          min_qty: editingProduct.min_qty || 1,
+          min_qty: minQty,
           active: editingProduct.active ?? true,
           sort_order: editingProduct.sort_order || 0,
           media_type: (editingProduct.media_type as "image" | "video") || "image",
