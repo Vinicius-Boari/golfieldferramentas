@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { forwardRef, memo, useState } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { ShoppingCart, Plus, Minus, Check } from "lucide-react";
 import type { Product } from "@/data/products";
@@ -10,7 +10,8 @@ interface ProductCardProps {
   index: number;
 }
 
-const ProductCardImpl = ({ product, index }: ProductCardProps) => {
+// forwardRef so AnimatePresence/PopChild can attach a ref without React warnings.
+const ProductCardImpl = forwardRef<HTMLDivElement, ProductCardProps>(({ product, index }, ref) => {
   const [qty, setQty] = useState(product.minQty);
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
@@ -39,6 +40,7 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 40, scale: 0.95 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-40px" }}
@@ -182,7 +184,8 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
       </div>
     </motion.div>
   );
-};
+});
+ProductCardImpl.displayName = "ProductCardImpl";
 
 // Memoized so cart updates / parent re-renders don't re-render every card in the grid.
 const ProductCard = memo(ProductCardImpl, (prev, next) =>
