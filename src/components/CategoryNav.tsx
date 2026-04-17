@@ -13,7 +13,11 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
   const { data: products = [] } = useProducts();
 
   const categories = useMemo(() => {
-    const cats = [...new Set(products.map(p => p.category))].sort();
+    const cats = [...new Set(
+      products
+        .map(p => p.category)
+        .filter((c): c is string => typeof c === "string" && c.trim() !== "")
+    )].sort();
     return [
       { id: "todos", label: "Todos" },
       ...cats.map(c => ({
