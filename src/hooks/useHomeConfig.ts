@@ -102,9 +102,15 @@ export interface SystemSettingsConfig {
 export interface AppearanceConfig {
   /** Global site background color in HEX format, e.g. "#5C5C5C". */
   backgroundColor: string;
+  /** Hero section background color in HEX format, e.g. "#1E1E1E". */
+  heroBackgroundColor: string;
+  /** Sticky motion.header background color in HEX format, e.g. "#5C5C5C". */
+  headerBackgroundColor: string;
 }
 
 export const DEFAULT_BACKGROUND_COLOR = "#5C5C5C";
+export const DEFAULT_HERO_BACKGROUND_COLOR = "#1E1E1E";
+export const DEFAULT_HEADER_BACKGROUND_COLOR = "#5C5C5C";
 
 export interface HomeConfig {
   sections: HomeSection[];
@@ -233,6 +239,8 @@ export const defaultHomeConfig: HomeConfig = {
   },
   appearance: {
     backgroundColor: DEFAULT_BACKGROUND_COLOR,
+    heroBackgroundColor: DEFAULT_HERO_BACKGROUND_COLOR,
+    headerBackgroundColor: DEFAULT_HEADER_BACKGROUND_COLOR,
   },
 };
 
