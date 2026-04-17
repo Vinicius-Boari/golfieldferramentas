@@ -86,6 +86,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             : "backdrop-blur-sm"
         }`}
         style={{ backgroundColor: scrolled ? headerBgScrolled : headerBg }}
+        data-edit-id="header.bar"
       >
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-3 md:gap-4">
@@ -94,11 +95,13 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               className="flex-shrink-0 group"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
+              data-edit-id="header.logoLink"
             >
               <img
                 src="/images/golfield-logo.jpeg"
                 alt="Golfield"
                 className="h-11 sm:h-12 md:h-14 rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
+                data-edit-id="header.logo"
               />
             </motion.a>
 

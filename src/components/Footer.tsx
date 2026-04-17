@@ -51,7 +51,7 @@ const Footer = ({ config }: FooterProps) => {
   const waPhone = waUrl.includes("wa.me") ? waUrl : "https://wa.me/5511959409051";
 
   return (
-    <footer id="contato" className="relative border-t border-border/50 bg-card/30">
+    <footer id="contato" data-edit-id="footer.section" className="relative border-t border-border/50 bg-card/30">
       {/* Top accent line */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
@@ -69,8 +69,9 @@ const Footer = ({ config }: FooterProps) => {
               src="/images/golfield-logo.jpeg"
               alt="Golfield"
               className="h-14 rounded-xl object-contain mb-5"
+              data-edit-id="footer.logo"
             />
-            <p className="text-sm leading-relaxed max-w-sm mb-6 text-primary-foreground">
+            <p data-edit-id="footer.description" className="text-sm leading-relaxed max-w-sm mb-6 text-primary-foreground">
               {desc}
             </p>
             <div className="flex gap-2">

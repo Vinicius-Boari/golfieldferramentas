@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import MaintenanceGate from "@/components/MaintenanceGate";
+import VisualEditorBridge from "@/components/VisualEditorBridge";
 import { useApplyMobileMotionClass } from "@/hooks/useMobileMotion";
 import { useApplyGlobalBackground } from "@/hooks/useGlobalBackground";
 import Index from "./pages/Index.tsx";
@@ -20,6 +21,7 @@ const AdminLogin = lazy(() => import("./pages/AdminLogin.tsx"));
 const AdminHome = lazy(() => import("./pages/AdminHome.tsx"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers.tsx"));
 const AdminCoupons = lazy(() => import("./pages/AdminCoupons.tsx"));
+const AdminVisual = lazy(() => import("./pages/AdminVisual.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,6 +44,9 @@ const AppShell = () => {
   useApplyGlobalBackground();
   return (
     <BrowserRouter>
+      {/* Global: applies persisted visual overrides on the public site,
+          and bridges live-preview messages when running inside the editor iframe. */}
+      <VisualEditorBridge />
       <MaintenanceGate>
         <Suspense fallback={<RouteFallback />}>
           <Routes>
@@ -52,6 +57,7 @@ const AppShell = () => {
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/produtos" element={<AdminProducts />} />
             <Route path="/admin/home" element={<AdminHome />} />
+            <Route path="/admin/visual" element={<AdminVisual />} />
             <Route path="/admin/usuarios" element={<AdminUsers />} />
             <Route path="/admin/cupons" element={<AdminCoupons />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
