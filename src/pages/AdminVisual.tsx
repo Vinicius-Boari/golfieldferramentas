@@ -37,6 +37,10 @@ const AdminVisual = () => {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>("desktop");
   const [zoom, setZoom] = useState(0.85);
   const [selected, setSelected] = useState<SelectedElement | null>(null);
+  /** Live geometry of the selected element in iframe-document coords. */
+  const [selectedRect, setSelectedRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+  /** In-flight preview from drag/resize, NOT yet committed to history. */
+  const [livePreview, setLivePreview] = useState<OverrideMap | null>(null);
 
   // Working copy + undo/redo history
   const [draft, setDraft] = useState<OverrideMap>({});
