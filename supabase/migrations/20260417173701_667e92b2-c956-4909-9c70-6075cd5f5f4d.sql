@@ -1,0 +1,1 @@
+DELETE FROM public.visual_overrides WHERE element_id = 'hero.title.line1';
