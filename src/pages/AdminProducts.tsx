@@ -197,12 +197,12 @@ const AdminProducts = () => {
         toast.success("Produto criado com sucesso!");
       } else {
         const updatePayload: any = {
-          name: editingProduct.name,
+          name: (editingProduct.name || "").toUpperCase(),
           description: editingProduct.description,
           price: editingProduct.price,
           image: editingProduct.image,
           category: editingProduct.category,
-          min_qty: editingProduct.min_qty,
+          min_qty: minQty,
           active: editingProduct.active,
           sort_order: editingProduct.sort_order,
           media_type: (editingProduct.media_type as "image" | "video") || "image",
