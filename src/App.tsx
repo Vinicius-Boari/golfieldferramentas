@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import MaintenanceGate from "@/components/MaintenanceGate";
 import { useApplyMobileMotionClass } from "@/hooks/useMobileMotion";
+import { useApplyGlobalBackground } from "@/hooks/useGlobalBackground";
 import Index from "./pages/Index.tsx";
 
 // Lazy-load secondary routes — they are not needed for the initial paint of "/".
@@ -38,6 +39,7 @@ const RouteFallback = () => <div className="min-h-screen bg-background" />;
 
 const AppShell = () => {
   useApplyMobileMotionClass();
+  useApplyGlobalBackground();
   return (
     <BrowserRouter>
       <MaintenanceGate>

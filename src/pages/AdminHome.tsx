@@ -11,6 +11,7 @@ import { useAdmin } from "@/hooks/useAdmin";
 import { useHomeConfig, useSaveHomeConfig, defaultHomeConfig, type HomeConfig } from "@/hooks/useHomeConfig";
 import HeroVideoPanel from "@/components/admin/HeroVideoPanel";
 import SystemSettingsPanel from "@/components/admin/SystemSettingsPanel";
+import AppearancePanel from "@/components/admin/AppearancePanel";
 import { toast } from "sonner";
 
 const sectionLabels: Record<string, string> = {
@@ -32,6 +33,7 @@ const tabs = [
   { id: "about", label: "Sobre", icon: Type },
   { id: "footer", label: "Rodapé", icon: Type },
   { id: "system", label: "Sistema", icon: Settings },
+  { id: "appearance", label: "Aparência", icon: Palette },
 ];
 
 const InputField = ({ label, value, onChange, type = "text", placeholder = "", rows }: {
@@ -502,6 +504,14 @@ const AdminHome = () => {
                   value={config.systemSettings}
                   onChange={next => updateConfig(c => ({ ...c, systemSettings: next }))}
                   userId={user?.id}
+                />
+              )}
+
+              {/* APPEARANCE TAB */}
+              {activeTab === "appearance" && (
+                <AppearancePanel
+                  value={config.appearance ?? defaultHomeConfig.appearance}
+                  onChange={next => updateConfig(c => ({ ...c, appearance: next }))}
                 />
               )}
             </div>
