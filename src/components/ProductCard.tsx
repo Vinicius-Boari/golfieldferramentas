@@ -191,6 +191,7 @@ const ProductCard = memo(ProductCardImpl, (prev, next) =>
   prev.product.minQty === next.product.minQty &&
   prev.product.image === next.product.image &&
   prev.product.name === next.product.name &&
+  prev.product.mediaType === next.product.mediaType &&
   prev.index === next.index
 );
 
