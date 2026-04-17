@@ -507,7 +507,7 @@ const AdminProducts = () => {
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-1.5">
                       {editingProduct.media_type === "video"
-                        ? "O vídeo será exibido no lugar da imagem do produto, em silêncio (muted) e com autoplay."
+                        ? "O vídeo será exibido no lugar da imagem do produto, com autoplay. Loop e áudio são configuráveis abaixo."
                         : "Comportamento padrão: imagem estática do produto."}
                     </p>
                   </div>
@@ -595,7 +595,7 @@ const AdminProducts = () => {
                         <span className="text-xs font-medium text-muted-foreground">Pré-visualização</span>
                         <button
                           type="button"
-                          onClick={() => setEditingProduct({ ...editingProduct, image: "" })}
+                          onClick={() => { setEditingProduct({ ...editingProduct, image: "" }); setLastVideoFile(null); }}
                           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {editingProduct.media_type === "video" ? "Remover vídeo" : "Remover imagem"}
@@ -604,10 +604,11 @@ const AdminProducts = () => {
                       <div className="w-32 h-32 rounded-lg bg-secondary/50 overflow-hidden flex items-center justify-center">
                         {editingProduct.media_type === "video" ? (
                           <video
+                            key={`${editingProduct.image}-${(editingProduct as any).video_loop}-${(editingProduct as any).video_audio}`}
                             src={editingProduct.image}
                             className="w-full h-full object-contain"
-                            muted
-                            loop
+                            muted={!((editingProduct as any).video_audio ?? false)}
+                            loop={(editingProduct as any).video_loop ?? true}
                             playsInline
                             autoPlay
                             controls
@@ -618,6 +619,60 @@ const AdminProducts = () => {
                         )}
                       </div>
                     </div>
+                  )}
+
+                  {editingProduct.media_type === "video" && (
+                    <div className="rounded-xl border border-border bg-secondary/20 p-3 space-y-3">
+                      <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Reprodução do vídeo</h4>
+
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-start gap-2">
+                          <Repeat size={14} className="mt-0.5 text-muted-foreground" />
+                          <div>
+                            <p className="text-sm font-medium">Loop infinito</p>
+                            <p className="text-[11px] text-muted-foreground">Reinicia automaticamente ao terminar.</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setEditingProduct({ ...editingProduct, video_loop: !((editingProduct as any).video_loop ?? true) } as any)}
+                          className={`relative w-10 h-6 rounded-full transition-colors shrink-0 ${((editingProduct as any).video_loop ?? true) ? "bg-primary" : "bg-secondary"}`}
+                          aria-pressed={((editingProduct as any).video_loop ?? true)}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 rounded-full bg-primary-foreground transition-transform ${((editingProduct as any).video_loop ?? true) ? "left-5" : "left-1"}`} />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-start gap-2">
+                          {((editingProduct as any).video_audio ?? false) ? (
+                            <Volume2 size={14} className="mt-0.5 text-muted-foreground" />
+                          ) : (
+                            <VolumeX size={14} className="mt-0.5 text-muted-foreground" />
+                          )}
+                          <div>
+                            <p className="text-sm font-medium">Áudio do vídeo</p>
+                            <p className="text-[11px] text-muted-foreground">
+                              {((editingProduct as any).video_audio ?? false)
+                                ? "Áudio ativado. Alguns navegadores podem bloquear autoplay com som."
+                                : "Sem áudio (muted) — recomendado para autoplay garantido."}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setEditingProduct({ ...editingProduct, video_audio: !((editingProduct as any).video_audio ?? false) } as any)}
+                          className={`relative w-10 h-6 rounded-full transition-colors shrink-0 ${((editingProduct as any).video_audio ?? false) ? "bg-primary" : "bg-secondary"}`}
+                          aria-pressed={((editingProduct as any).video_audio ?? false)}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 rounded-full bg-primary-foreground transition-transform ${((editingProduct as any).video_audio ?? false) ? "left-5" : "left-1"}`} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {editingProduct.media_type === "video" && (
+                    <VideoQualityRecommendations file={lastVideoFile} url={editingProduct.image || null} />
                   )}
                 </div>
 
