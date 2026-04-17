@@ -31,6 +31,11 @@ const sanitizeFileName = (fileName: string) =>
     .replace(/-+/g, "-")
     .toLowerCase();
 
+const formatCurrencyBR = (value: number) => {
+  const safe = Number.isFinite(value) ? value : 0;
+  return safe.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
 const AdminProducts = () => {
   const navigate = useNavigate();
   const { isAdmin, isOwner, loading: adminLoading, user } = useAdmin();
