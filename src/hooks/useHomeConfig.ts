@@ -156,6 +156,7 @@ export const defaultHomeConfig: HomeConfig = {
     ],
     backgroundColor: "#1E1E1E",
   },
+  heroVideo: {
     enabled: false,
     url: "",
     loop: true,
