@@ -28,6 +28,8 @@ export interface HeroConfig {
   secondaryButtonText: string;
   secondaryButtonLink: string;
   stats: { label: string; desc: string }[];
+  /** Solid background color of the Hero section. Hex string (e.g. "#1E1E1E"). */
+  backgroundColor: string;
 }
 
 export interface TrustBadgesConfig {
