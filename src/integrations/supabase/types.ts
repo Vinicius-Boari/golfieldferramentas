@@ -168,6 +168,8 @@ export type Database = {
           price: number
           sort_order: number
           updated_at: string
+          video_audio: boolean
+          video_loop: boolean
         }
         Insert: {
           active?: boolean
@@ -182,6 +184,8 @@ export type Database = {
           price?: number
           sort_order?: number
           updated_at?: string
+          video_audio?: boolean
+          video_loop?: boolean
         }
         Update: {
           active?: boolean
@@ -196,6 +200,8 @@ export type Database = {
           price?: number
           sort_order?: number
           updated_at?: string
+          video_audio?: boolean
+          video_loop?: boolean
         }
         Relationships: []
       }
