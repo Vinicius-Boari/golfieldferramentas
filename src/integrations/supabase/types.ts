@@ -162,6 +162,7 @@ export type Database = {
           description: string | null
           id: string
           image: string | null
+          media_type: string
           min_qty: number
           name: string
           price: number
@@ -175,6 +176,7 @@ export type Database = {
           description?: string | null
           id?: string
           image?: string | null
+          media_type?: string
           min_qty?: number
           name: string
           price?: number
@@ -188,6 +190,7 @@ export type Database = {
           description?: string | null
           id?: string
           image?: string | null
+          media_type?: string
           min_qty?: number
           name?: string
           price?: number

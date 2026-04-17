@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff, Upload, Link2, Loader2, Home, Users, Tag } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff, Upload, Link2, Loader2, Home, Users, Tag, Image as ImageIcon, Video as VideoIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useAllProducts, type DbProduct } from "@/hooks/useProducts";
@@ -17,6 +17,7 @@ const emptyProduct = {
   min_qty: 1,
   active: true,
   sort_order: 0,
+  media_type: "image" as "image" | "video",
 };
 
 const sanitizeFileName = (fileName: string) =>
@@ -38,6 +39,7 @@ const AdminProducts = () => {
   const [saving, setSaving] = useState(false);
   const [imageMode, setImageMode] = useState<"upload" | "url">("upload");
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -70,7 +72,7 @@ const AdminProducts = () => {
   };
 
   const openEditProductModal = (product: DbProduct) => {
-    setEditingProduct({ ...product });
+    setEditingProduct({ ...product, media_type: (product.media_type as "image" | "video") ?? "image" });
     setIsNew(false);
     setImageMode(product.image ? "url" : "upload");
   };
@@ -113,6 +115,44 @@ const AdminProducts = () => {
     }
   };
 
+  const handleVideoUpload = async (file: File | null) => {
+    if (!file) return;
+
+    if (!file.type.startsWith("video/")) {
+      toast.error("Selecione um arquivo de vídeo válido (MP4, WebM, etc.)");
+      return;
+    }
+
+    if (!user) {
+      toast.error("Sessão inválida. Faça login novamente.");
+      return;
+    }
+
+    setUploadingVideo(true);
+
+    try {
+      const extension = file.name.split(".").pop() || "mp4";
+      const safeName = sanitizeFileName(file.name.replace(/\.[^.]+$/, ""));
+      const filePath = `${user.id}/${Date.now()}-${safeName}.${extension.toLowerCase()}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("product-images")
+        .upload(filePath, file, { upsert: false, contentType: file.type });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from("product-images").getPublicUrl(filePath);
+
+      setEditingProduct((current) => current ? { ...current, image: data.publicUrl, media_type: "video" } : current);
+      setImageMode("upload");
+      toast.success("Vídeo enviado com sucesso!");
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao enviar vídeo");
+    } finally {
+      setUploadingVideo(false);
+    }
+  };
+
   const handleSave = async () => {
     if (!editingProduct?.name?.trim()) {
       toast.error("Nome do produto é obrigatório");
@@ -131,6 +171,7 @@ const AdminProducts = () => {
           min_qty: editingProduct.min_qty || 1,
           active: editingProduct.active ?? true,
           sort_order: editingProduct.sort_order || 0,
+          media_type: (editingProduct.media_type as "image" | "video") || "image",
         });
         if (error) throw error;
         toast.success("Produto criado com sucesso!");
@@ -146,6 +187,7 @@ const AdminProducts = () => {
             min_qty: editingProduct.min_qty,
             active: editingProduct.active,
             sort_order: editingProduct.sort_order,
+            media_type: (editingProduct.media_type as "image" | "video") || "image",
           })
           .eq("id", editingProduct.id!);
         if (error) throw error;
@@ -287,7 +329,11 @@ const AdminProducts = () => {
                     <td className="p-3 pl-4">
                       <div className="w-10 h-10 rounded-lg bg-secondary/50 overflow-hidden flex items-center justify-center">
                         {product.image ? (
-                          <img src={product.image} alt="" className="w-full h-full object-contain" />
+                          product.media_type === "video" ? (
+                            <video src={product.image} className="w-full h-full object-contain" muted playsInline preload="metadata" />
+                          ) : (
+                            <img src={product.image} alt="" className="w-full h-full object-contain" />
+                          )
                         ) : (
                           <Package size={16} className="text-muted-foreground/30" />
                         )}
@@ -424,8 +470,35 @@ const AdminProducts = () => {
                 </div>
 
                 <div className="space-y-3">
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground mb-2 block">Tipo de mídia do produto</label>
+                    <div className="flex items-center gap-2 rounded-lg bg-secondary/60 p-1 w-full">
+                      <button
+                        type="button"
+                        onClick={() => setEditingProduct({ ...editingProduct, media_type: "image" })}
+                        className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-colors ${(editingProduct.media_type ?? "image") === "image" ? "bg-background text-foreground" : "text-muted-foreground"}`}
+                      >
+                        <ImageIcon size={13} /> Imagem
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingProduct({ ...editingProduct, media_type: "video" })}
+                        className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-colors ${editingProduct.media_type === "video" ? "bg-background text-foreground" : "text-muted-foreground"}`}
+                      >
+                        <VideoIcon size={13} /> Vídeo
+                      </button>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mt-1.5">
+                      {editingProduct.media_type === "video"
+                        ? "O vídeo será exibido no lugar da imagem do produto, em silêncio (muted) e com autoplay."
+                        : "Comportamento padrão: imagem estática do produto."}
+                    </p>
+                  </div>
+
                   <div className="flex items-center justify-between gap-3">
-                    <label className="text-xs font-medium text-muted-foreground block">Imagem do Produto</label>
+                    <label className="text-xs font-medium text-muted-foreground block">
+                      {editingProduct.media_type === "video" ? "Vídeo do Produto" : "Imagem do Produto"}
+                    </label>
                     <div className="flex items-center gap-2 rounded-lg bg-secondary/60 p-1">
                       <button
                         type="button"
@@ -446,25 +519,49 @@ const AdminProducts = () => {
 
                   {imageMode === "upload" ? (
                     <div className="rounded-xl border border-dashed border-border bg-secondary/30 p-4 space-y-3">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        disabled={uploadingImage}
-                        onChange={e => void handleImageUpload(e.target.files?.[0] ?? null)}
-                        className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:opacity-90"
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Envie uma imagem do seu computador. Após o upload, ela será preenchida automaticamente no produto.
-                      </p>
-                      {uploadingImage && (
-                        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
-                          <Loader2 size={14} className="animate-spin" /> Enviando imagem...
-                        </div>
+                      {editingProduct.media_type === "video" ? (
+                        <>
+                          <input
+                            type="file"
+                            accept="video/mp4,video/webm,video/ogg,video/quicktime"
+                            disabled={uploadingVideo}
+                            onChange={e => void handleVideoUpload(e.target.files?.[0] ?? null)}
+                            className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:opacity-90"
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Envie um vídeo (MP4, WebM, OGG ou MOV). Após o upload, será preenchido automaticamente no produto.
+                          </p>
+                          {uploadingVideo && (
+                            <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+                              <Loader2 size={14} className="animate-spin" /> Enviando vídeo...
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            disabled={uploadingImage}
+                            onChange={e => void handleImageUpload(e.target.files?.[0] ?? null)}
+                            className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:opacity-90"
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Envie uma imagem do seu computador. Após o upload, ela será preenchida automaticamente no produto.
+                          </p>
+                          {uploadingImage && (
+                            <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+                              <Loader2 size={14} className="animate-spin" /> Enviando imagem...
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   ) : (
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground mb-1 block">URL da Imagem</label>
+                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                        {editingProduct.media_type === "video" ? "URL do Vídeo" : "URL da Imagem"}
+                      </label>
                       <input
                         type="text"
                         value={editingProduct.image || ""}
@@ -484,11 +581,24 @@ const AdminProducts = () => {
                           onClick={() => setEditingProduct({ ...editingProduct, image: "" })}
                           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                         >
-                          Remover imagem
+                          {editingProduct.media_type === "video" ? "Remover vídeo" : "Remover imagem"}
                         </button>
                       </div>
-                      <div className="w-24 h-24 rounded-lg bg-secondary/50 overflow-hidden">
-                        <img src={editingProduct.image} alt="Prévia da imagem do produto" className="w-full h-full object-contain" />
+                      <div className="w-32 h-32 rounded-lg bg-secondary/50 overflow-hidden flex items-center justify-center">
+                        {editingProduct.media_type === "video" ? (
+                          <video
+                            src={editingProduct.image}
+                            className="w-full h-full object-contain"
+                            muted
+                            loop
+                            playsInline
+                            autoPlay
+                            controls
+                            preload="metadata"
+                          />
+                        ) : (
+                          <img src={editingProduct.image} alt="Prévia da imagem do produto" className="w-full h-full object-contain" />
+                        )}
                       </div>
                     </div>
                   )}
@@ -525,7 +635,7 @@ const AdminProducts = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSave}
-                  disabled={saving || uploadingImage}
+                  disabled={saving || uploadingImage || uploadingVideo}
                   className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50"
                 >
                   <Save size={16} />

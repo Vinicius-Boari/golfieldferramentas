@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+export type ProductMediaType = "image" | "video";
+
 export interface DbProduct {
   id: string;
   name: string;
@@ -11,6 +13,7 @@ export interface DbProduct {
   min_qty: number;
   active: boolean;
   sort_order: number;
+  media_type: ProductMediaType;
 }
 
 export const useProducts = () => {
