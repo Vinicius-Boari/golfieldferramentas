@@ -6,6 +6,7 @@ import AuthLayout from "@/components/auth/AuthLayout";
 import PasswordInput from "@/components/auth/PasswordInput";
 import PasswordStrength from "@/components/auth/PasswordStrength";
 import { formatCNPJ, validateCNPJ } from "@/lib/cnpj";
+import { supabase } from "@/integrations/supabase/client";
 
 const EXPIRY_SECONDS = 300; // 5 min
 
@@ -42,8 +43,8 @@ const ForgotPassword = () => {
 
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
 
-  // Step 1 submit
-  const handleStep1 = (e: React.FormEvent) => {
+  // Step 1 submit — envia código OTP de 6 dígitos por email (Supabase)
+  const handleStep1 = async (e: React.FormEvent) => {
     e.preventDefault();
     setBanner("");
     const errs: Record<string, string> = {};
@@ -54,11 +55,20 @@ const ForgotPassword = () => {
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const normalizedEmail = email.trim().toLowerCase();
+      const { error } = await supabase.auth.signInWithOtp({
+        email: normalizedEmail,
+        options: { shouldCreateUser: false },
+      });
+      if (error) throw error;
       setStep(2);
       setTimer(EXPIRY_SECONDS);
-    }, 1500);
+    } catch (err: any) {
+      setBanner(err?.message || "Não foi possível enviar o código. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Code input
@@ -87,29 +97,46 @@ const ForgotPassword = () => {
     inputRefs.current[focusIdx]?.focus();
   };
 
-  // Step 2 submit
-  const handleStep2 = (e: React.FormEvent) => {
+  // Step 2 submit — verifica o código OTP no Supabase
+  const handleStep2 = async (e: React.FormEvent) => {
     e.preventDefault();
     const full = code.join("");
     if (full.length !== 6) { setCodeError("Informe o código completo"); return; }
     if (timer <= 0) { setCodeError("O código expirou. Solicite um novo."); return; }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // Simulate success
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: email.trim().toLowerCase(),
+        token: full,
+        type: "email",
+      });
+      if (error) throw error;
       setStep(3);
-    }, 1200);
+    } catch (err: any) {
+      setCodeError(err?.message || "Código inválido ou expirado.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const resendCode = () => {
+  const resendCode = async () => {
     setCode(["", "", "", "", "", ""]);
-    setTimer(EXPIRY_SECONDS);
     setCodeError("");
     inputRefs.current[0]?.focus();
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email.trim().toLowerCase(),
+        options: { shouldCreateUser: false },
+      });
+      if (error) throw error;
+      setTimer(EXPIRY_SECONDS);
+    } catch (err: any) {
+      setCodeError(err?.message || "Não foi possível reenviar o código.");
+    }
   };
 
-  // Step 3 submit
-  const handleStep3 = (e: React.FormEvent) => {
+  // Step 3 submit — atualiza a senha do usuário autenticado pela verificação OTP
+  const handleStep3 = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs: Record<string, string> = {};
     if (!newPassword) errs.newPassword = "Informe a nova senha";
@@ -120,11 +147,18 @@ const ForgotPassword = () => {
     setPwErrors(errs);
     if (Object.keys(errs).length > 0) return;
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      // encerra a sessão temporária criada pelo OTP
+      await supabase.auth.signOut();
       setSuccessMsg(true);
       setTimeout(() => navigate("/login"), 3000);
-    }, 1500);
+    } catch (err: any) {
+      setPwErrors({ newPassword: err?.message || "Não foi possível redefinir a senha." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const stepIndicator = (
