@@ -14,6 +14,8 @@ export interface DbProduct {
   active: boolean;
   sort_order: number;
   media_type: ProductMediaType;
+  video_loop: boolean;
+  video_audio: boolean;
 }
 
 export const useProducts = () => {
