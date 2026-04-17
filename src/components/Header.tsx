@@ -139,7 +139,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                   if (e.target.value.trim() !== "") {
                     const el = document.getElementById("produtos");
                     if (el) {
-                      const offset = 200;
+                      const offset = -250;
                       const top = el.getBoundingClientRect().top + window.scrollY - offset;
                       window.scrollTo({ top, behavior: "smooth" });
                     }
