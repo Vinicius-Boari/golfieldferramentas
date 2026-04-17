@@ -157,10 +157,12 @@ const Hero = ({ config, videoConfig, backgroundColor }: HeroProps) => {
             animate={{ scale: [1, 1.06, 1] }}
             transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
           />
-          <div
-            className="absolute inset-0 bg-background"
-            style={{ opacity: overlay }}
-          />
+          {overlayEnabled && (
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ backgroundColor: overlayColor, opacity: overlay }}
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background" />
         </motion.div>
       )}
