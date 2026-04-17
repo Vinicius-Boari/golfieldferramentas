@@ -12,6 +12,13 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: products = [] } = useProducts();
 
+  const normalizeCategory = (s: string) =>
+    s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, "-");
+
   const categories = useMemo(() => {
     const cats = [...new Set(
       products
@@ -21,7 +28,7 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
     return [
       { id: "todos", label: "Todos" },
       ...cats.map(c => ({
-        id: c.toLowerCase().replace(/ /g, '-').replace(/ã/g, 'a').replace(/á/g, 'a').replace(/ê/g, 'e').replace(/í/g, 'i').replace(/â/g, 'a').replace(/ú/g, 'u').replace(/ó/g, 'o'),
+        id: normalizeCategory(c),
         label: c,
       })),
     ];
