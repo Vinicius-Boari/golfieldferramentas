@@ -139,8 +139,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                   if (e.target.value.trim() !== "") {
                     const el = document.getElementById("produtos");
                     if (el) {
-                      const rect = el.getBoundingClientRect();
-                      const top = rect.top + window.scrollY - Math.max(0, (window.innerHeight - rect.height) / 2);
+                      const offset = 200;
+                      const top = el.getBoundingClientRect().top + window.scrollY - offset;
                       window.scrollTo({ top, behavior: "smooth" });
                     }
                   }
