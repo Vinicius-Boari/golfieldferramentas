@@ -56,16 +56,29 @@ const IndexContent = () => {
     videoAudio: (p as any).video_audio ?? false,
   })), [dbProducts]);
 
+  const normalizeCategory = (s: string) =>
+    s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, "-");
+
   const filteredProducts = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
     return products.filter(p => {
-      const matchesSearch = searchQuery === "" || p.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = q === "" || p.name.toLowerCase().includes(q);
       const cat = (p.category ?? "").toString();
-      const matchesCategory = activeCategory === "todos" || cat.toLowerCase().replace(/ /g, '-').replace(/ã/g, 'a').replace(/á/g, 'a').replace(/ê/g, 'e').replace(/í/g, 'i').replace(/â/g, 'a').replace(/ú/g, 'u').replace(/ó/g, 'o') === activeCategory;
+      const matchesCategory = activeCategory === "todos" || normalizeCategory(cat) === activeCategory;
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, activeCategory, products]);
 
-  const isHomepage = activeCategory === "todos" && searchQuery === "" && !showAll;
+  // Reset "show all" when filters change so list updates predictably
+  useEffect(() => {
+    setShowAll(false);
+  }, [activeCategory, searchQuery]);
+
+  const isHomepage = activeCategory === "todos" && searchQuery.trim() === "" && !showAll;
   const displayProducts = isHomepage ? filteredProducts.slice(0, 20) : filteredProducts;
 
   // Section visibility and ordering
