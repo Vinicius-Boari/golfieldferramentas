@@ -103,6 +103,21 @@ export interface SystemSettingsConfig {
   mobileExperience: MobileExperienceConfig;
 }
 
+export interface SectionTransitionConfig {
+  /** Whether the gradient transition between Hero and the next section is rendered. */
+  enabled: boolean;
+  /** Top color of the gradient (HEX). */
+  fromColor: string;
+  /** Bottom color of the gradient (HEX). */
+  toColor: string;
+  /** Direction of the gradient. "vertical" = top→bottom, "inverted" = bottom→top. */
+  direction: "vertical" | "inverted";
+  /** Height of the gradient overlay in pixels. Controls how soft/extended the fade is. */
+  height: number;
+  /** Maximum opacity of the gradient overlay (0..1). Controls intensity. */
+  intensity: number;
+}
+
 export interface AppearanceConfig {
   /** Global site background color in HEX format, e.g. "#5C5C5C". */
   backgroundColor: string;
@@ -110,11 +125,21 @@ export interface AppearanceConfig {
   heroBackgroundColor: string;
   /** Sticky motion.header background color in HEX format, e.g. "#5C5C5C". */
   headerBackgroundColor: string;
+  /** Gradient transition between Hero and next section. */
+  sectionTransition: SectionTransitionConfig;
 }
 
 export const DEFAULT_BACKGROUND_COLOR = "#5C5C5C";
 export const DEFAULT_HERO_BACKGROUND_COLOR = "#1E1E1E";
 export const DEFAULT_HEADER_BACKGROUND_COLOR = "#5C5C5C";
+export const DEFAULT_SECTION_TRANSITION: SectionTransitionConfig = {
+  enabled: true,
+  fromColor: "#000000",
+  toColor: "#5C5C5C",
+  direction: "vertical",
+  height: 96,
+  intensity: 1,
+};
 
 export interface HomeConfig {
   sections: HomeSection[];
@@ -247,6 +272,7 @@ export const defaultHomeConfig: HomeConfig = {
     backgroundColor: DEFAULT_BACKGROUND_COLOR,
     heroBackgroundColor: DEFAULT_HERO_BACKGROUND_COLOR,
     headerBackgroundColor: DEFAULT_HEADER_BACKGROUND_COLOR,
+    sectionTransition: { ...DEFAULT_SECTION_TRANSITION },
   },
 };
 
@@ -295,6 +321,10 @@ export const useHomeConfig = () => {
         appearance: {
           ...defaultHomeConfig.appearance,
           ...(saved.appearance ?? {}),
+          sectionTransition: {
+            ...defaultHomeConfig.appearance.sectionTransition,
+            ...(saved.appearance?.sectionTransition ?? {}),
+          },
         },
       };
     },
