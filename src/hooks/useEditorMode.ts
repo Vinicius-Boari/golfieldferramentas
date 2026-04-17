@@ -44,6 +44,18 @@ export const useEditorOverlay = () => {
     };
     const onLeave = () => setHighlight(null);
 
+    // Helper: build a payload describing element geometry in iframe-document
+    // coordinates (i.e. relative to the iframe viewport, NOT the page).
+    const describe = (el: HTMLElement) => {
+      const rect = el.getBoundingClientRect();
+      return {
+        elementId: el.getAttribute("data-edit-id"),
+        tag: el.tagName.toLowerCase(),
+        text: el.innerText?.slice(0, 5000) ?? "",
+        rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+      };
+    };
+
     // ---- Block dynamic actions, capture selection --------------------------
     const onClickCapture = (e: MouseEvent) => {
       const el = findEditable(e.target);
@@ -51,24 +63,29 @@ export const useEditorOverlay = () => {
       e.preventDefault();
       e.stopPropagation();
       if (el) {
-        const id = el.getAttribute("data-edit-id")!;
-        const rect = el.getBoundingClientRect();
-        const tag = el.tagName.toLowerCase();
-        window.parent?.postMessage(
-          {
-            __visualEditor: true,
-            type: "select",
-            elementId: id,
-            tag,
-            text: el.innerText?.slice(0, 5000) ?? "",
-            rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
-          },
-          "*",
-        );
+        window.parent?.postMessage({ __visualEditor: true, type: "select", ...describe(el) }, "*");
       } else {
         window.parent?.postMessage({ __visualEditor: true, type: "deselect" }, "*");
       }
     };
+
+    // Re-broadcast geometry of the currently-selected element on scroll/resize
+    // so the parent overlay can stay glued to it.
+    const broadcastSelectedRect = () => {
+      const sel = document.querySelector('[data-editor-selected="1"]') as HTMLElement | null;
+      if (!sel) return;
+      const rect = sel.getBoundingClientRect();
+      window.parent?.postMessage(
+        {
+          __visualEditor: true,
+          type: "rect",
+          elementId: sel.getAttribute("data-edit-id"),
+          rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+        },
+        "*",
+      );
+    };
+    const onScrollOrResize = () => broadcastSelectedRect();
 
     const onSubmitCapture = (e: Event) => {
       e.preventDefault();
