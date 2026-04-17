@@ -173,7 +173,7 @@ const AdminProducts = () => {
     setSaving(true);
     try {
       if (isNew) {
-        const { error } = await supabase.from("products").insert({
+        const insertPayload: any = {
           name: editingProduct.name,
           description: editingProduct.description || "",
           price: editingProduct.price || 0,
@@ -185,25 +185,27 @@ const AdminProducts = () => {
           media_type: (editingProduct.media_type as "image" | "video") || "image",
           video_loop: (editingProduct as any).video_loop ?? true,
           video_audio: (editingProduct as any).video_audio ?? false,
-        });
+        };
+        const { error } = await supabase.from("products").insert(insertPayload);
         if (error) throw error;
         toast.success("Produto criado com sucesso!");
       } else {
+        const updatePayload: any = {
+          name: editingProduct.name,
+          description: editingProduct.description,
+          price: editingProduct.price,
+          image: editingProduct.image,
+          category: editingProduct.category,
+          min_qty: editingProduct.min_qty,
+          active: editingProduct.active,
+          sort_order: editingProduct.sort_order,
+          media_type: (editingProduct.media_type as "image" | "video") || "image",
+          video_loop: (editingProduct as any).video_loop ?? true,
+          video_audio: (editingProduct as any).video_audio ?? false,
+        };
         const { error } = await supabase
           .from("products")
-          .update({
-            name: editingProduct.name,
-            description: editingProduct.description,
-            price: editingProduct.price,
-            image: editingProduct.image,
-            category: editingProduct.category,
-            min_qty: editingProduct.min_qty,
-            active: editingProduct.active,
-            sort_order: editingProduct.sort_order,
-            media_type: (editingProduct.media_type as "image" | "video") || "image",
-            video_loop: (editingProduct as any).video_loop ?? true,
-            video_audio: (editingProduct as any).video_audio ?? false,
-          })
+          .update(updatePayload)
           .eq("id", editingProduct.id!);
         if (error) throw error;
         toast.success("Produto atualizado!");
