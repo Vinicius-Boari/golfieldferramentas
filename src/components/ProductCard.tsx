@@ -40,6 +40,7 @@ const ProductCardImpl = forwardRef<HTMLDivElement, ProductCardProps>(({ product,
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 40, scale: 0.95 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-40px" }}
