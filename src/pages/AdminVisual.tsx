@@ -311,6 +311,7 @@ const AdminVisual = () => {
   /* --------------------------- Derived --------------------------- */
   const stageWidth = deviceWidths[device];
   const [stageScale, setStageScale] = useState(1);
+  const [sandboxHeight, setSandboxHeight] = useState(0);
 
   useEffect(() => {
     const compute = () => {
@@ -323,6 +324,18 @@ const AdminVisual = () => {
     window.addEventListener("resize", compute);
     return () => window.removeEventListener("resize", compute);
   }, [stageWidth]);
+
+  // Track real sandbox height so we can reserve the correct (scaled) space
+  // in the layout — otherwise the scaled-down site leaves a huge empty gap.
+  useEffect(() => {
+    const root = sandboxRootRef.current;
+    if (!root) return;
+    const update = () => setSandboxHeight(root.scrollHeight);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(root);
+    return () => ro.disconnect();
+  }, []);
 
   const currentStyles = (selectedId && drafts[selectedId]) || emptyStyles;
 
