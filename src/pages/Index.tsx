@@ -236,7 +236,7 @@ const IndexContent = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-              className="hidden md:block absolute bottom-0 left-2 lg:left-8 xl:left-16 h-[60%] lg:h-[80%] xl:h-[95%] w-auto pointer-events-none select-none drop-shadow-2xl z-10"
+              className="hidden md:block absolute bottom-0 left-1 lg:left-2 xl:left-4 h-[40%] lg:h-[55%] xl:h-[65%] w-auto pointer-events-none select-none drop-shadow-2xl z-10"
               draggable={false}
             />
             <motion.img
@@ -247,7 +247,7 @@ const IndexContent = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.1 }}
-              className="hidden md:block absolute bottom-0 right-2 lg:right-8 xl:right-16 h-[60%] lg:h-[80%] xl:h-[95%] w-auto pointer-events-none select-none drop-shadow-2xl z-10"
+              className="hidden md:block absolute bottom-0 right-1 lg:right-2 xl:right-4 h-[40%] lg:h-[55%] xl:h-[65%] w-auto pointer-events-none select-none drop-shadow-2xl z-10"
               draggable={false}
             />
 
