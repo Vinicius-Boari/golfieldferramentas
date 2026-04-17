@@ -115,8 +115,19 @@ const Hero = ({ config, videoConfig, backgroundColor }: HeroProps) => {
   const heroBg = backgroundColor || "#1E1E1E";
 
   return (
-    <section className="relative overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-20 md:py-32 lg:py-40">
-      <div className="absolute inset-0" style={{ backgroundColor: heroBg }} />
+    <section
+      className="relative overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-20 md:py-32 lg:py-40"
+      style={{ backgroundColor: heroBg }}
+    >
+      {/* Solid Hero background — fully independent of the global site background.
+          Uses an inline style with setProperty('important') so it always wins
+          over any global rule (Tailwind utilities, theme tokens, etc.). */}
+      <div
+        className="absolute inset-0"
+        ref={(el) => {
+          if (el) el.style.setProperty("background-color", heroBg, "important");
+        }}
+      />
 
       {showVideo && (
         <motion.div
