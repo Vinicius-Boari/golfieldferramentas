@@ -7,6 +7,8 @@ export interface Product {
   minQty: number;
   badge?: string;
   mediaType?: "image" | "video";
+  videoLoop?: boolean;
+  videoAudio?: boolean;
 }
 
 const IMG = "https://profielditajai.or01.futurasistemas.com.br/image/cache/data/eftr/";

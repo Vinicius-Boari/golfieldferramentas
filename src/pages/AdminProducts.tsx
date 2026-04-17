@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff, Upload, Link2, Loader2, Home, Users, Tag, Image as ImageIcon, Video as VideoIcon } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff, Upload, Link2, Loader2, Home, Users, Tag, Image as ImageIcon, Video as VideoIcon, Repeat, Volume2, VolumeX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useAllProducts, type DbProduct } from "@/hooks/useProducts";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import VideoQualityRecommendations from "@/components/admin/VideoQualityRecommendations";
 
 const emptyProduct = {
   name: "",
@@ -18,6 +19,8 @@ const emptyProduct = {
   active: true,
   sort_order: 0,
   media_type: "image" as "image" | "video",
+  video_loop: true,
+  video_audio: false,
 };
 
 const sanitizeFileName = (fileName: string) =>
@@ -40,7 +43,7 @@ const AdminProducts = () => {
   const [imageMode, setImageMode] = useState<"upload" | "url">("upload");
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
-
+  const [lastVideoFile, setLastVideoFile] = useState<File | null>(null);
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
       toast.error("Acesso negado. Apenas administradores.");
@@ -69,12 +72,19 @@ const AdminProducts = () => {
     setEditingProduct({ ...emptyProduct });
     setIsNew(true);
     setImageMode("upload");
+    setLastVideoFile(null);
   };
 
   const openEditProductModal = (product: DbProduct) => {
-    setEditingProduct({ ...product, media_type: (product.media_type as "image" | "video") ?? "image" });
+    setEditingProduct({
+      ...product,
+      media_type: (product.media_type as "image" | "video") ?? "image",
+      video_loop: (product as any).video_loop ?? true,
+      video_audio: (product as any).video_audio ?? false,
+    });
     setIsNew(false);
     setImageMode(product.image ? "url" : "upload");
+    setLastVideoFile(null);
   };
 
   const handleImageUpload = async (file: File | null) => {
@@ -129,6 +139,7 @@ const AdminProducts = () => {
     }
 
     setUploadingVideo(true);
+    setLastVideoFile(file);
 
     try {
       const extension = file.name.split(".").pop() || "mp4";
@@ -162,7 +173,7 @@ const AdminProducts = () => {
     setSaving(true);
     try {
       if (isNew) {
-        const { error } = await supabase.from("products").insert({
+        const insertPayload: any = {
           name: editingProduct.name,
           description: editingProduct.description || "",
           price: editingProduct.price || 0,
@@ -172,23 +183,29 @@ const AdminProducts = () => {
           active: editingProduct.active ?? true,
           sort_order: editingProduct.sort_order || 0,
           media_type: (editingProduct.media_type as "image" | "video") || "image",
-        });
+          video_loop: (editingProduct as any).video_loop ?? true,
+          video_audio: (editingProduct as any).video_audio ?? false,
+        };
+        const { error } = await supabase.from("products").insert(insertPayload);
         if (error) throw error;
         toast.success("Produto criado com sucesso!");
       } else {
+        const updatePayload: any = {
+          name: editingProduct.name,
+          description: editingProduct.description,
+          price: editingProduct.price,
+          image: editingProduct.image,
+          category: editingProduct.category,
+          min_qty: editingProduct.min_qty,
+          active: editingProduct.active,
+          sort_order: editingProduct.sort_order,
+          media_type: (editingProduct.media_type as "image" | "video") || "image",
+          video_loop: (editingProduct as any).video_loop ?? true,
+          video_audio: (editingProduct as any).video_audio ?? false,
+        };
         const { error } = await supabase
           .from("products")
-          .update({
-            name: editingProduct.name,
-            description: editingProduct.description,
-            price: editingProduct.price,
-            image: editingProduct.image,
-            category: editingProduct.category,
-            min_qty: editingProduct.min_qty,
-            active: editingProduct.active,
-            sort_order: editingProduct.sort_order,
-            media_type: (editingProduct.media_type as "image" | "video") || "image",
-          })
+          .update(updatePayload)
           .eq("id", editingProduct.id!);
         if (error) throw error;
         toast.success("Produto atualizado!");
@@ -490,7 +507,7 @@ const AdminProducts = () => {
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-1.5">
                       {editingProduct.media_type === "video"
-                        ? "O vídeo será exibido no lugar da imagem do produto, em silêncio (muted) e com autoplay."
+                        ? "O vídeo será exibido no lugar da imagem do produto, com autoplay. Loop e áudio são configuráveis abaixo."
                         : "Comportamento padrão: imagem estática do produto."}
                     </p>
                   </div>
@@ -578,7 +595,7 @@ const AdminProducts = () => {
                         <span className="text-xs font-medium text-muted-foreground">Pré-visualização</span>
                         <button
                           type="button"
-                          onClick={() => setEditingProduct({ ...editingProduct, image: "" })}
+                          onClick={() => { setEditingProduct({ ...editingProduct, image: "" }); setLastVideoFile(null); }}
                           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {editingProduct.media_type === "video" ? "Remover vídeo" : "Remover imagem"}
@@ -587,10 +604,11 @@ const AdminProducts = () => {
                       <div className="w-32 h-32 rounded-lg bg-secondary/50 overflow-hidden flex items-center justify-center">
                         {editingProduct.media_type === "video" ? (
                           <video
+                            key={`${editingProduct.image}-${(editingProduct as any).video_loop}-${(editingProduct as any).video_audio}`}
                             src={editingProduct.image}
                             className="w-full h-full object-contain"
-                            muted
-                            loop
+                            muted={!((editingProduct as any).video_audio ?? false)}
+                            loop={(editingProduct as any).video_loop ?? true}
                             playsInline
                             autoPlay
                             controls
@@ -601,6 +619,60 @@ const AdminProducts = () => {
                         )}
                       </div>
                     </div>
+                  )}
+
+                  {editingProduct.media_type === "video" && (
+                    <div className="rounded-xl border border-border bg-secondary/20 p-3 space-y-3">
+                      <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Reprodução do vídeo</h4>
+
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-start gap-2">
+                          <Repeat size={14} className="mt-0.5 text-muted-foreground" />
+                          <div>
+                            <p className="text-sm font-medium">Loop infinito</p>
+                            <p className="text-[11px] text-muted-foreground">Reinicia automaticamente ao terminar.</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setEditingProduct({ ...editingProduct, video_loop: !((editingProduct as any).video_loop ?? true) } as any)}
+                          className={`relative w-10 h-6 rounded-full transition-colors shrink-0 ${((editingProduct as any).video_loop ?? true) ? "bg-primary" : "bg-secondary"}`}
+                          aria-pressed={((editingProduct as any).video_loop ?? true)}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 rounded-full bg-primary-foreground transition-transform ${((editingProduct as any).video_loop ?? true) ? "left-5" : "left-1"}`} />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-start gap-2">
+                          {((editingProduct as any).video_audio ?? false) ? (
+                            <Volume2 size={14} className="mt-0.5 text-muted-foreground" />
+                          ) : (
+                            <VolumeX size={14} className="mt-0.5 text-muted-foreground" />
+                          )}
+                          <div>
+                            <p className="text-sm font-medium">Áudio do vídeo</p>
+                            <p className="text-[11px] text-muted-foreground">
+                              {((editingProduct as any).video_audio ?? false)
+                                ? "Áudio ativado. Alguns navegadores podem bloquear autoplay com som."
+                                : "Sem áudio (muted) — recomendado para autoplay garantido."}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setEditingProduct({ ...editingProduct, video_audio: !((editingProduct as any).video_audio ?? false) } as any)}
+                          className={`relative w-10 h-6 rounded-full transition-colors shrink-0 ${((editingProduct as any).video_audio ?? false) ? "bg-primary" : "bg-secondary"}`}
+                          aria-pressed={((editingProduct as any).video_audio ?? false)}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 rounded-full bg-primary-foreground transition-transform ${((editingProduct as any).video_audio ?? false) ? "left-5" : "left-1"}`} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {editingProduct.media_type === "video" && (
+                    <VideoQualityRecommendations file={lastVideoFile} url={editingProduct.image || null} />
                   )}
                 </div>
 
