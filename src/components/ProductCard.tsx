@@ -184,7 +184,8 @@ const ProductCardImpl = forwardRef<HTMLDivElement, ProductCardProps>(({ product,
       </div>
     </motion.div>
   );
-};
+});
+ProductCardImpl.displayName = "ProductCardImpl";
 
 // Memoized so cart updates / parent re-renders don't re-render every card in the grid.
 const ProductCard = memo(ProductCardImpl, (prev, next) =>
