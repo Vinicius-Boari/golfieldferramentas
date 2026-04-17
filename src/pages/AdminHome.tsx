@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   ArrowLeft, Save, LogOut, Home, Type, Image, Palette, LayoutGrid,
   ChevronUp, ChevronDown, Eye, EyeOff, Plus, Trash2, Upload, Link2, Loader2, GripVertical,
-  Film, Volume2, VolumeX, Repeat, Settings
+  Film, Volume2, VolumeX, Repeat, Settings, MousePointer2
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -221,6 +221,14 @@ const AdminHome = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate("/admin/visual")}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-secondary text-foreground hover:bg-secondary/80 transition-colors"
+              title="Abrir editor visual ao vivo"
+            >
+              <MousePointer2 size={14} />
+              Editor Visual
+            </button>
             <button onClick={handleResetToDefault} className="px-3 py-2 rounded-xl text-xs text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
               Restaurar padrão
             </button>
