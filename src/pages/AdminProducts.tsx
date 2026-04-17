@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff, Upload, Link2, Loader2, Home, Users, Tag } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff, Upload, Link2, Loader2, Home, Users, Tag, Image as ImageIcon, Video as VideoIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useAllProducts, type DbProduct } from "@/hooks/useProducts";
@@ -17,6 +17,7 @@ const emptyProduct = {
   min_qty: 1,
   active: true,
   sort_order: 0,
+  media_type: "image" as "image" | "video",
 };
 
 const sanitizeFileName = (fileName: string) =>
@@ -38,6 +39,7 @@ const AdminProducts = () => {
   const [saving, setSaving] = useState(false);
   const [imageMode, setImageMode] = useState<"upload" | "url">("upload");
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -113,7 +115,43 @@ const AdminProducts = () => {
     }
   };
 
-  const handleSave = async () => {
+  const handleVideoUpload = async (file: File | null) => {
+    if (!file) return;
+
+    if (!file.type.startsWith("video/")) {
+      toast.error("Selecione um arquivo de vídeo válido (MP4, WebM, etc.)");
+      return;
+    }
+
+    if (!user) {
+      toast.error("Sessão inválida. Faça login novamente.");
+      return;
+    }
+
+    setUploadingVideo(true);
+
+    try {
+      const extension = file.name.split(".").pop() || "mp4";
+      const safeName = sanitizeFileName(file.name.replace(/\.[^.]+$/, ""));
+      const filePath = `${user.id}/${Date.now()}-${safeName}.${extension.toLowerCase()}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("product-images")
+        .upload(filePath, file, { upsert: false, contentType: file.type });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from("product-images").getPublicUrl(filePath);
+
+      setEditingProduct((current) => current ? { ...current, image: data.publicUrl, media_type: "video" } : current);
+      setImageMode("upload");
+      toast.success("Vídeo enviado com sucesso!");
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao enviar vídeo");
+    } finally {
+      setUploadingVideo(false);
+    }
+  };
     if (!editingProduct?.name?.trim()) {
       toast.error("Nome do produto é obrigatório");
       return;
