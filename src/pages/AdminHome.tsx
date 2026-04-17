@@ -297,62 +297,6 @@ const AdminHome = () => {
               {activeTab === "hero" && (
                 <div className="space-y-5">
                   <h2 className="text-lg font-bold mb-1">Hero / Banner Principal</h2>
-
-                  {/* Cor de Fundo do Hero */}
-                  <div className="rounded-xl border border-border/60 bg-secondary/20 p-4 space-y-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <div>
-                        <label className="text-sm font-semibold block">Cor de Fundo do Hero</label>
-                        <p className="text-xs text-muted-foreground mt-0.5">Aplicada apenas ao fundo da seção Hero. Não afeta o resto do site.</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => updateConfig(c => ({ ...c, hero: { ...c.hero, backgroundColor: defaultHomeConfig.hero.backgroundColor } }))}
-                        className="text-xs px-2.5 py-1.5 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
-                      >
-                        Restaurar padrão
-                      </button>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="relative shrink-0">
-                        <input
-                          type="color"
-                          value={/^#[0-9A-Fa-f]{6}$/.test(config.hero.backgroundColor || "") ? config.hero.backgroundColor : "#1E1E1E"}
-                          onChange={e => updateConfig(c => ({ ...c, hero: { ...c.hero, backgroundColor: e.target.value.toUpperCase() } }))}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                          aria-label="Selecionar cor"
-                        />
-                        <div
-                          className="w-12 h-12 rounded-lg border-2 border-border shadow-inner"
-                          style={{ backgroundColor: config.hero.backgroundColor || "#1E1E1E" }}
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <input
-                          type="text"
-                          value={config.hero.backgroundColor || ""}
-                          onChange={e => {
-                            let v = e.target.value.trim();
-                            if (v && !v.startsWith("#")) v = "#" + v;
-                            v = v.toUpperCase().slice(0, 7);
-                            updateConfig(c => ({ ...c, hero: { ...c.hero, backgroundColor: v } }));
-                          }}
-                          placeholder="#1E1E1E"
-                          maxLength={7}
-                          spellCheck={false}
-                          className={`w-full px-3 py-2.5 rounded-xl bg-background border text-sm font-mono outline-none focus:border-primary/50 transition-colors ${
-                            /^#[0-9A-Fa-f]{6}$/.test(config.hero.backgroundColor || "")
-                              ? "border-border/50"
-                              : "border-destructive/60"
-                          }`}
-                        />
-                        {!/^#[0-9A-Fa-f]{6}$/.test(config.hero.backgroundColor || "") && (
-                          <p className="text-xs text-destructive mt-1">Código hexadecimal inválido. Use o formato #RRGGBB.</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
                   <ImageField label="Logo" value={config.hero.logoImage}
                     onChange={v => updateConfig(c => ({ ...c, hero: { ...c.hero, logoImage: v } }))} userId={user?.id} />
                   <InputField label="Texto do Badge" value={config.hero.badgeText}

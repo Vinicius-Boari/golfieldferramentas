@@ -28,8 +28,6 @@ export interface HeroConfig {
   secondaryButtonText: string;
   secondaryButtonLink: string;
   stats: { label: string; desc: string }[];
-  /** Solid background color of the Hero section. Hex string (e.g. "#1E1E1E"). */
-  backgroundColor: string;
 }
 
 export interface TrustBadgesConfig {
@@ -154,7 +152,6 @@ export const defaultHomeConfig: HomeConfig = {
       { label: "Envio Nacional", desc: "Para todo o Brasil" },
       { label: "Catálogo completo", desc: "Centenas de produtos" },
     ],
-    backgroundColor: "#1E1E1E",
   },
   heroVideo: {
     enabled: false,

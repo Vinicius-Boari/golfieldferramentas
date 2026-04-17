@@ -89,7 +89,6 @@ interface HeroProps {
     secondaryButtonText?: string;
     secondaryButtonLink?: string;
     stats?: { label: string; desc: string }[];
-    backgroundColor?: string;
   };
   videoConfig?: {
     enabled?: boolean;
@@ -112,11 +111,9 @@ const Hero = ({ config, videoConfig }: HeroProps) => {
   const showVideo = !!(videoConfig?.enabled && videoConfig?.url && !videoFailed && motionEnabled);
   const overlay = Math.min(0.8, Math.max(0, videoConfig?.overlayOpacity ?? 0.55));
 
-  const heroBg = config?.backgroundColor || "#1E1E1E";
-
   return (
     <section className="relative overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-20 md:py-32 lg:py-40">
-      <div className="absolute inset-0" style={{ backgroundColor: heroBg }} />
+      <div className="absolute inset-0" style={{ backgroundColor: "#1E1E1E" }} />
 
       {showVideo && (
         <motion.div
@@ -124,7 +121,7 @@ const Hero = ({ config, videoConfig }: HeroProps) => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
           className="absolute inset-0 overflow-hidden pointer-events-none"
-          style={{ backgroundColor: heroBg }}
+          style={{ backgroundColor: "#1E1E1E" }}
           aria-hidden="true"
         >
           <motion.video
