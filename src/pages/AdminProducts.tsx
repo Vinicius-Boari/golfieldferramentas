@@ -170,16 +170,22 @@ const AdminProducts = () => {
       return;
     }
 
+    const minQty = Number(editingProduct.min_qty);
+    if (!Number.isFinite(minQty) || minQty < 1 || !Number.isInteger(minQty)) {
+      toast.error("Quantidade mínima deve ser um número inteiro positivo");
+      return;
+    }
+
     setSaving(true);
     try {
       if (isNew) {
         const insertPayload: any = {
-          name: editingProduct.name,
+          name: (editingProduct.name || "").toUpperCase(),
           description: editingProduct.description || "",
           price: editingProduct.price || 0,
           image: editingProduct.image || "",
           category: editingProduct.category || "",
-          min_qty: editingProduct.min_qty || 1,
+          min_qty: minQty,
           active: editingProduct.active ?? true,
           sort_order: editingProduct.sort_order || 0,
           media_type: (editingProduct.media_type as "image" | "video") || "image",
@@ -191,12 +197,12 @@ const AdminProducts = () => {
         toast.success("Produto criado com sucesso!");
       } else {
         const updatePayload: any = {
-          name: editingProduct.name,
+          name: (editingProduct.name || "").toUpperCase(),
           description: editingProduct.description,
           price: editingProduct.price,
           image: editingProduct.image,
           category: editingProduct.category,
-          min_qty: editingProduct.min_qty,
+          min_qty: minQty,
           active: editingProduct.active,
           sort_order: editingProduct.sort_order,
           media_type: (editingProduct.media_type as "image" | "video") || "image",
@@ -438,8 +444,8 @@ const AdminProducts = () => {
                   <input
                     type="text"
                     value={editingProduct.name || ""}
-                    onChange={e => setEditingProduct({ ...editingProduct, name: e.target.value })}
-                    className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50"
+                    onChange={e => setEditingProduct({ ...editingProduct, name: e.target.value.toUpperCase() })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50 uppercase"
                   />
                 </div>
                 <div>
@@ -466,8 +472,19 @@ const AdminProducts = () => {
                     <label className="text-xs font-medium text-muted-foreground mb-1 block">Qtd Mínima</label>
                     <input
                       type="number"
-                      value={editingProduct.min_qty || ""}
-                      onChange={e => setEditingProduct({ ...editingProduct, min_qty: parseInt(e.target.value) || 1 })}
+                      min={1}
+                      step={1}
+                      value={editingProduct.min_qty ?? ""}
+                      onChange={e => {
+                        const raw = e.target.value;
+                        if (raw === "") {
+                          setEditingProduct({ ...editingProduct, min_qty: undefined as any });
+                          return;
+                        }
+                        const parsed = parseInt(raw, 10);
+                        if (Number.isNaN(parsed)) return;
+                        setEditingProduct({ ...editingProduct, min_qty: Math.max(1, parsed) });
+                      }}
                       className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50"
                     />
                   </div>
