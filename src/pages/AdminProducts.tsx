@@ -72,7 +72,7 @@ const AdminProducts = () => {
   };
 
   const openEditProductModal = (product: DbProduct) => {
-    setEditingProduct({ ...product });
+    setEditingProduct({ ...product, media_type: (product.media_type as "image" | "video") ?? "image" });
     setIsNew(false);
     setImageMode(product.image ? "url" : "upload");
   };
