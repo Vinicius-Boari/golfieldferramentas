@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { ShoppingCart, Plus, Minus, Check } from "lucide-react";
 import type { Product } from "@/data/products";
@@ -10,7 +10,7 @@ interface ProductCardProps {
   index: number;
 }
 
-const ProductCard = ({ product, index }: ProductCardProps) => {
+const ProductCardImpl = ({ product, index }: ProductCardProps) => {
   const [qty, setQty] = useState(product.minQty);
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
@@ -169,5 +169,15 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
     </motion.div>
   );
 };
+
+// Memoized so cart updates / parent re-renders don't re-render every card in the grid.
+const ProductCard = memo(ProductCardImpl, (prev, next) =>
+  prev.product.id === next.product.id &&
+  prev.product.price === next.product.price &&
+  prev.product.minQty === next.product.minQty &&
+  prev.product.image === next.product.image &&
+  prev.product.name === next.product.name &&
+  prev.index === next.index
+);
 
 export default ProductCard;

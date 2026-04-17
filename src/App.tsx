@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -6,36 +7,55 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import MaintenanceGate from "@/components/MaintenanceGate";
 import { useApplyMobileMotionClass } from "@/hooks/useMobileMotion";
 import Index from "./pages/Index.tsx";
-import Login from "./pages/Login.tsx";
-import Register from "./pages/Register.tsx";
-import ForgotPassword from "./pages/ForgotPassword.tsx";
-import NotFound from "./pages/NotFound.tsx";
-import AdminProducts from "./pages/AdminProducts.tsx";
-import AdminLogin from "./pages/AdminLogin.tsx";
-import AdminHome from "./pages/AdminHome.tsx";
-import AdminUsers from "./pages/AdminUsers.tsx";
-import AdminCoupons from "./pages/AdminCoupons.tsx";
 
-const queryClient = new QueryClient();
+// Lazy-load secondary routes — they are not needed for the initial paint of "/".
+// This significantly shrinks the first JS chunk and speeds up TTI on the homepage.
+const Login = lazy(() => import("./pages/Login.tsx"));
+const Register = lazy(() => import("./pages/Register.tsx"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword.tsx"));
+const NotFound = lazy(() => import("./pages/NotFound.tsx"));
+const AdminProducts = lazy(() => import("./pages/AdminProducts.tsx"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin.tsx"));
+const AdminHome = lazy(() => import("./pages/AdminHome.tsx"));
+const AdminUsers = lazy(() => import("./pages/AdminUsers.tsx"));
+const AdminCoupons = lazy(() => import("./pages/AdminCoupons.tsx"));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Cache config/products for a minute — avoids redundant network refetches
+      // when the user navigates between sections or remounts components.
+      staleTime: 60_000,
+      gcTime: 5 * 60_000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
+
+// Minimal fallback (no spinner -> no layout flash). Background matches theme.
+const RouteFallback = () => <div className="min-h-screen bg-background" />;
 
 const AppShell = () => {
   useApplyMobileMotionClass();
   return (
     <BrowserRouter>
       <MaintenanceGate>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/cadastro" element={<Register />} />
-          <Route path="/esqueci-senha" element={<ForgotPassword />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/produtos" element={<AdminProducts />} />
-          <Route path="/admin/home" element={<AdminHome />} />
-          <Route path="/admin/usuarios" element={<AdminUsers />} />
-          <Route path="/admin/cupons" element={<AdminCoupons />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/cadastro" element={<Register />} />
+            <Route path="/esqueci-senha" element={<ForgotPassword />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/produtos" element={<AdminProducts />} />
+            <Route path="/admin/home" element={<AdminHome />} />
+            <Route path="/admin/usuarios" element={<AdminUsers />} />
+            <Route path="/admin/cupons" element={<AdminCoupons />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </MaintenanceGate>
     </BrowserRouter>
   );
@@ -52,4 +72,3 @@ const App = () => (
 );
 
 export default App;
-
