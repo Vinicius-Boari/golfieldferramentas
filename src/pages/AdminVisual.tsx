@@ -127,7 +127,18 @@ const AdminVisual = () => {
     setHistoryIdx(trimmed.length - 1);
     setDraft(next);
     setHasChanges(true);
+    setLivePreview(null);
     postPreview(next);
+    // Ask iframe for the up-to-date geometry now that styles changed.
+    window.setTimeout(() => {
+      iframeRef.current?.contentWindow?.postMessage({ __visualEditor: true, type: "requestRect" }, "*");
+    }, 50);
+  };
+
+  /** Push a transient preview to the iframe without touching history. */
+  const previewLive = (map: OverrideMap) => {
+    setLivePreview(map);
+    postPreview(map);
   };
 
   const undo = () => {
