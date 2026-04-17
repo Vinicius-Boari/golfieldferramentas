@@ -171,6 +171,7 @@ const AdminProducts = () => {
           min_qty: editingProduct.min_qty || 1,
           active: editingProduct.active ?? true,
           sort_order: editingProduct.sort_order || 0,
+          media_type: (editingProduct.media_type as "image" | "video") || "image",
         });
         if (error) throw error;
         toast.success("Produto criado com sucesso!");
@@ -186,6 +187,7 @@ const AdminProducts = () => {
             min_qty: editingProduct.min_qty,
             active: editingProduct.active,
             sort_order: editingProduct.sort_order,
+            media_type: (editingProduct.media_type as "image" | "video") || "image",
           })
           .eq("id", editingProduct.id!);
         if (error) throw error;
