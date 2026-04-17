@@ -139,6 +139,7 @@ const AdminProducts = () => {
     }
 
     setUploadingVideo(true);
+    setLastVideoFile(file);
 
     try {
       const extension = file.name.split(".").pop() || "mp4";
