@@ -183,6 +183,8 @@ const AdminProducts = () => {
           active: editingProduct.active ?? true,
           sort_order: editingProduct.sort_order || 0,
           media_type: (editingProduct.media_type as "image" | "video") || "image",
+          video_loop: (editingProduct as any).video_loop ?? true,
+          video_audio: (editingProduct as any).video_audio ?? false,
         });
         if (error) throw error;
         toast.success("Produto criado com sucesso!");
@@ -199,6 +201,8 @@ const AdminProducts = () => {
             active: editingProduct.active,
             sort_order: editingProduct.sort_order,
             media_type: (editingProduct.media_type as "image" | "video") || "image",
+            video_loop: (editingProduct as any).video_loop ?? true,
+            video_audio: (editingProduct as any).video_audio ?? false,
           })
           .eq("id", editingProduct.id!);
         if (error) throw error;
