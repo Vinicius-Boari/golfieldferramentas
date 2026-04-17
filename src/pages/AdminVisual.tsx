@@ -311,7 +311,7 @@ const AdminVisual = () => {
         {/* Canvas */}
         <div className="flex-1 relative overflow-auto bg-[hsl(0_0%_12%)]">
           <div
-            className="mx-auto my-6"
+            className="mx-auto my-6 relative"
             style={{
               width: frameWidth * zoom,
               height: frameHeight * zoom,
@@ -333,6 +333,16 @@ const AdminVisual = () => {
                 style={{ width: frameWidth, height: frameHeight, border: 0, display: "block" }}
               />
             </div>
+            {/* Drag/resize overlay — sits over the scaled iframe and uses
+                iframe-document px * zoom for screen positioning. */}
+            <SelectionOverlay
+              rect={selected ? selectedRect : null}
+              zoom={zoom}
+              breakpoint={breakpoint}
+              styles={styleForSelected}
+              onChange={handleOverlayCommit}
+              onPreview={handleOverlayPreview}
+            />
           </div>
         </div>
 
