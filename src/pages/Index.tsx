@@ -238,7 +238,7 @@ const IndexContent = () => {
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
               animate={{ y: [0, -8, 0] }}
               style={{ animationDelay: "0s" }}
-              className="hidden md:block absolute -left-4 lg:left-0 xl:left-2 bottom-0 w-64 lg:w-80 xl:w-96 2xl:w-[28rem] pointer-events-none select-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] z-10"
+              className="hidden md:block absolute -left-6 lg:-left-4 xl:left-0 bottom-0 w-72 lg:w-96 xl:w-[26rem] 2xl:w-[32rem] pointer-events-none select-none drop-shadow-[0_30px_40px_rgba(0,0,0,0.5)] z-10"
             />
             <motion.img
               src={mascotBoy}
@@ -249,7 +249,7 @@ const IndexContent = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.15 }}
               animate={{ y: [0, -8, 0] }}
-              className="hidden md:block absolute -right-4 lg:right-0 xl:right-2 bottom-0 w-64 lg:w-80 xl:w-96 2xl:w-[28rem] pointer-events-none select-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] z-10"
+              className="hidden md:block absolute -right-6 lg:-right-4 xl:right-0 bottom-0 w-72 lg:w-96 xl:w-[26rem] 2xl:w-[32rem] pointer-events-none select-none drop-shadow-[0_30px_40px_rgba(0,0,0,0.5)] z-10"
             />
 
             <div className="container mx-auto px-4 relative z-20 text-center">
