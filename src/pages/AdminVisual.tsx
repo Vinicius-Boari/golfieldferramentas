@@ -13,6 +13,7 @@ import {
 } from "@/hooks/useVisualOverrides";
 import EditorToolbar from "@/components/admin/visual/EditorToolbar";
 import PropertyPanel, { type SelectedElement } from "@/components/admin/visual/PropertyPanel";
+import SelectionOverlay from "@/components/admin/visual/SelectionOverlay";
 
 const BP_WIDTH: Record<Breakpoint, number> = {
   desktop: 1440,
