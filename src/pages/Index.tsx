@@ -10,6 +10,7 @@ import ChatWidget from "@/components/ChatWidget";
 import { CartProvider } from "@/context/CartContext";
 import { useProducts } from "@/hooks/useProducts";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
+import { chatBus } from "@/lib/chatBus";
 import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
 import mascotGirl from "@/assets/mascot-girl.png";
 import mascotBoy from "@/assets/mascot-boy.png";
@@ -79,6 +80,33 @@ const IndexContent = () => {
   useEffect(() => {
     setShowAll(false);
   }, [activeCategory, searchQuery]);
+
+  // Listen to chat assistant navigation events (filter category / search products)
+  useEffect(() => {
+    const scrollToProducts = () => {
+      // pequeno delay para o filtro renderizar antes de rolar
+      setTimeout(() => {
+        const el = document.getElementById("produtos");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 120);
+    };
+    const offCat = chatBus.on("chat:setCategory", (catId) => {
+      setActiveCategory(catId);
+      setSearchQuery("");
+      setShowAll(true);
+      scrollToProducts();
+    });
+    const offSearch = chatBus.on("chat:setSearch", (q) => {
+      setSearchQuery(q);
+      setActiveCategory("todos");
+      setShowAll(true);
+      scrollToProducts();
+    });
+    return () => {
+      offCat();
+      offSearch();
+    };
+  }, []);
 
   const isHomepage = activeCategory === "todos" && searchQuery.trim() === "" && !showAll;
   const displayProducts = isHomepage ? filteredProducts.slice(0, 20) : filteredProducts;

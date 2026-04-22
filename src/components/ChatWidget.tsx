@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 import { X, Send } from "lucide-react";
+import { chatBus, normalizeCategoryId } from "@/lib/chatBus";
 
 const WHATSAPP_URL = "https://wa.me/5511959409051";
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/public-chat`;
 
 type Msg = { role: "user" | "assistant"; content: string; showWhatsApp?: boolean };
+type ToolCallAcc = { id?: string; name: string; args: string };
 
 const RobotIcon = ({ size = 28 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -68,6 +71,49 @@ const ChatWidget = () => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Executa uma tool call solicitada pelo modelo
+  const runToolCall = useCallback((name: string, rawArgs: string) => {
+    let args: any = {};
+    try { args = rawArgs ? JSON.parse(rawArgs) : {}; } catch { args = {}; }
+
+    const goHomeThen = (cb: () => void) => {
+      if (location.pathname !== "/") {
+        navigate("/");
+        // espera a Index montar e registrar listeners do bus
+        setTimeout(cb, 350);
+      } else {
+        cb();
+      }
+    };
+
+    switch (name) {
+      case "navigate_to_page": {
+        const path = typeof args.path === "string" ? args.path : "/";
+        navigate(path);
+        break;
+      }
+      case "filter_by_category": {
+        const cat = String(args.category ?? "").trim();
+        if (!cat) return;
+        const id = cat.toLowerCase() === "todos" ? "todos" : normalizeCategoryId(cat);
+        goHomeThen(() => chatBus.emit("chat:setCategory", id));
+        break;
+      }
+      case "search_products": {
+        const q = String(args.query ?? "").trim();
+        if (!q) return;
+        goHomeThen(() => chatBus.emit("chat:setSearch", q));
+        break;
+      }
+      case "open_whatsapp": {
+        window.open(WHATSAPP_URL, "_blank", "noopener,noreferrer");
+        break;
+      }
+    }
+  }, [navigate, location.pathname]);
 
   // Mensagem inicial ao abrir pela primeira vez
   useEffect(() => {
@@ -127,6 +173,8 @@ const ChatWidget = () => {
       let assistantSoFar = "";
       let started = false;
       let streamDone = false;
+      // tool calls vêm fragmentados por índice em deltas separados
+      const toolAcc: Record<number, ToolCallAcc> = {};
 
       const upsertAssistant = (chunk: string) => {
         assistantSoFar += chunk;
@@ -158,8 +206,22 @@ const ChatWidget = () => {
           }
           try {
             const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+            const delta = parsed.choices?.[0]?.delta;
+            const content = delta?.content as string | undefined;
             if (content) upsertAssistant(content);
+
+            const tcs = delta?.tool_calls as Array<any> | undefined;
+            if (Array.isArray(tcs)) {
+              for (const tc of tcs) {
+                const idx: number = typeof tc.index === "number" ? tc.index : 0;
+                if (!toolAcc[idx]) toolAcc[idx] = { name: "", args: "" };
+                if (tc.id) toolAcc[idx].id = tc.id;
+                if (tc.function?.name) toolAcc[idx].name = tc.function.name;
+                if (typeof tc.function?.arguments === "string") {
+                  toolAcc[idx].args += tc.function.arguments;
+                }
+              }
+            }
           } catch {
             textBuffer = line + "\n" + textBuffer;
             break;
@@ -167,10 +229,23 @@ const ChatWidget = () => {
         }
       }
 
+      // Executa todas as tool_calls que o modelo pediu
+      const calls = Object.values(toolAcc).filter((c) => c.name);
+      for (const c of calls) {
+        runToolCall(c.name, c.args);
+      }
+
+      // Se a IA chamou tool mas não escreveu texto, mostra um placeholder amigável
+      if (calls.length > 0 && !assistantSoFar) {
+        upsertAssistant("Pronto! ✅");
+      }
+
       // Marca para mostrar botão WhatsApp se necessário
       const lastUserText = text;
       const lastAssistantText = assistantSoFar.toLowerCase();
+      const calledWhatsapp = calls.some((c) => c.name === "open_whatsapp");
       const shouldShow =
+        calledWhatsapp ||
         detectHumanRequest(lastUserText) ||
         /whatsapp|atendente|nossa equipe|redirecion/i.test(lastAssistantText);
 
@@ -193,7 +268,7 @@ const ChatWidget = () => {
       setLoading(false);
       inputRef.current?.focus();
     }
-  }, [input, loading, messages]);
+  }, [input, loading, messages, runToolCall]);
 
   const onKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
