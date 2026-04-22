@@ -114,16 +114,7 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
                     : "ring-1 ring-border/60 group-hover:ring-primary/50"
                 }`}
               >
-                {cat.image ? (
-                  <img
-                    src={cat.image}
-                    alt={cat.label}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                ) : (
-                  <Layers size={28} className="text-muted-foreground" />
-                )}
+                <CategoryImage src={cat.image} alt={cat.label} />
                 {isActive && (
                   <span className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent pointer-events-none" />
                 )}
