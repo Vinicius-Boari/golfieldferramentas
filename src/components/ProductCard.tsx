@@ -1,9 +1,10 @@
 import { memo, useState } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
-import { ShoppingCart, Plus, Minus, Check } from "lucide-react";
+import { ShoppingCart, Plus, Minus, Check, Scale } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
+import { useCompare } from "@/context/CompareContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ProductCardProps {
@@ -15,6 +16,8 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
   const [qty, setQty] = useState(product.minQty);
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
+  const { toggle: toggleCompare, has: hasInCompare } = useCompare();
+  const inCompare = hasInCompare(product.id);
   const isMobile = useIsMobile();
 
   const x = useMotionValue(0);
