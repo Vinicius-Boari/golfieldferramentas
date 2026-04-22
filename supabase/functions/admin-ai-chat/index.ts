@@ -84,11 +84,9 @@ serve(async (req) => {
       });
     }
 
-    // Loga uso (não bloqueia stream se falhar)
-    if (userId) {
-      logAiUsage({ userId, feature: "chat", model: "google/gemini-3-flash-preview", costUsd: cost })
-        .catch((e) => console.error(e));
-    }
+    // Loga uso (sempre — userId null se anônimo)
+    logAiUsage({ userId, feature: "chat", model: "google/gemini-3-flash-preview", costUsd: cost })
+      .catch((e) => console.error(e));
 
     return new Response(response.body, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
