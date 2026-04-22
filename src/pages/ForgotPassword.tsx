@@ -248,9 +248,7 @@ const ForgotPassword = () => {
                   value={digit}
                   onChange={(e) => handleCodeChange(i, e.target.value)}
                   onKeyDown={(e) => handleCodeKeyDown(i, e)}
-                  className={`w-12 h-14 text-center text-xl font-bold rounded-xl bg-secondary/60 border text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary/40 ${
-                    codeError ? "border-destructive" : "border-border/50 focus:border-primary/60"
-                  }`}
+                  className="w-12 h-14 text-center text-xl font-bold rounded-xl bg-secondary/60 border-2 border-destructive text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-destructive/60 focus:border-destructive"
                   aria-label={`Dígito ${i + 1}`}
                 />
               ))}
