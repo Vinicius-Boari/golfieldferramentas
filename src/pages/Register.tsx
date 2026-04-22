@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import AuthLayout from "@/components/auth/AuthLayout";
 import PasswordInput from "@/components/auth/PasswordInput";
 import PasswordStrength from "@/components/auth/PasswordStrength";
 import { formatCNPJ, validateCNPJ, formatPhone } from "@/lib/cnpj";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 const SEGMENTS = [
   "Construção Civil", "Indústria", "Comércio de Ferragens", "Manutenção Industrial",
