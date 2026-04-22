@@ -73,7 +73,7 @@ const ChatWidget = () => {
   useEffect(() => {
     if (open && messages.length === 0) {
       setMessages([
-        { role: "assistant", content: "Olá! 👋 Eu sou o GolField, assistente virtual da empresa. Como posso te ajudar hoje?" },
+        { role: "assistant", content: "Olá! 👋 Eu sou a GolField, sua assistente virtual. Como posso te ajudar hoje?" },
       ]);
     }
   }, [open, messages.length]);
