@@ -48,15 +48,15 @@ const WhatsAppButton = () => (
     rel="noopener noreferrer"
     initial={{ opacity: 0, y: 6 }}
     animate={{ opacity: 1, y: 0 }}
-    className="mt-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25D366] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-shadow relative overflow-hidden"
+    className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366] text-white font-medium text-xs shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
   >
     <motion.span
-      className="absolute inset-0 rounded-xl"
+      className="absolute inset-0 rounded-lg"
       style={{ boxShadow: "0 0 0 0 rgba(37,211,102,0.7)" }}
-      animate={{ boxShadow: ["0 0 0 0 rgba(37,211,102,0.7)", "0 0 0 12px rgba(37,211,102,0)"] }}
+      animate={{ boxShadow: ["0 0 0 0 rgba(37,211,102,0.7)", "0 0 0 8px rgba(37,211,102,0)"] }}
       transition={{ duration: 1.6, repeat: Infinity }}
     />
-    <WhatsAppIcon size={18} />
+    <WhatsAppIcon size={14} />
     <span className="relative">Falar no WhatsApp</span>
   </motion.a>
 );
