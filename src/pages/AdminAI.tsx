@@ -4,10 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Sparkles, Send, Loader2, Trash2, Copy, Check, User as UserIcon, Bot,
   Image as ImageIcon, Wand2, Video, MessageSquare, Download, Upload, X, Zap,
+  Power, Settings as SettingsIcon, DollarSign,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useAdmin } from "@/hooks/useAdmin";
 import { supabase } from "@/integrations/supabase/client";
+import { useAiSettings, useUpdateAiSettings, useAiUsageStats } from "@/hooks/useAiSettings";
 import { toast } from "sonner";
 
 type Msg = { role: "user" | "assistant"; content: string };
