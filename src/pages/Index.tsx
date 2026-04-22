@@ -11,6 +11,7 @@ import { CartProvider, useCart } from "@/context/CartContext";
 import { useProducts } from "@/hooks/useProducts";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { chatBus, emitCartReply } from "@/lib/chatBus";
+import { roundUpToMultiple } from "@/lib/qty";
 import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
 import mascotGirl from "@/assets/mascot-girl.png";
 import mascotBoy from "@/assets/mascot-boy.png";
@@ -135,16 +136,24 @@ const IndexContent = () => {
         return;
       }
       const requested = Math.max(1, Math.floor(Number(quantity) || 1));
-      const finalQty = Math.max(requested, best.product.minQty);
+      const step = best.product.minQty;
+      const finalQty = roundUpToMultiple(requested, step);
       const adjusted = finalQty !== requested;
+      const adjustReason: "below_min" | "not_multiple" | undefined = !adjusted
+        ? undefined
+        : requested < step
+        ? "below_min"
+        : "not_multiple";
       addItem(best.product as any, finalQty);
       emitCartReply({
         ok: true,
         replyId,
         productName: best.product.name,
+        requestedQty: requested,
         addedQty: finalQty,
-        minQty: best.product.minQty,
+        minQty: step,
         adjusted,
+        adjustReason,
       });
     });
 

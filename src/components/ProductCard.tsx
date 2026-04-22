@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { ShoppingCart, Plus, Minus, Check } from "lucide-react";
+import { toast } from "sonner";
 import type { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -142,7 +143,26 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
             <input
               type="number"
               value={qty}
-              onChange={e => { const v = parseInt(e.target.value) || product.minQty; setQty(Math.max(product.minQty, Math.round(v / product.minQty) * product.minQty)); }}
+              onChange={e => {
+                const raw = parseInt(e.target.value);
+                if (!Number.isFinite(raw) || raw <= 0) {
+                  setQty(product.minQty);
+                  return;
+                }
+                const step = product.minQty;
+                if (raw < step) {
+                  setQty(step);
+                  toast.info(`Quantidade mínima é ${step} un.`);
+                  return;
+                }
+                if (raw % step !== 0) {
+                  const adjusted = raw + (step - (raw % step));
+                  setQty(adjusted);
+                  toast.info(`A quantidade deve ser múltipla de ${step}. Ajustei para ${adjusted}.`);
+                  return;
+                }
+                setQty(raw);
+              }}
               className="w-12 text-center bg-transparent text-sm font-medium outline-none"
             />
             <motion.button

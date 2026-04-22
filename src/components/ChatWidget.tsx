@@ -141,9 +141,13 @@ const ChatWidget = () => {
           ? `Não encontrei nenhum produto correspondente a "${query}". Pode tentar com um nome mais específico?`
           : `Não consegui adicionar "${query}" agora. Tente novamente em instantes.`;
       } else {
-        content = r.adjusted
-          ? `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento (mínimo do produto: ${r.minQty}).`
-          : `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento.`;
+        if (!r.adjusted) {
+          content = `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento.`;
+        } else if (r.adjustReason === "below_min") {
+          content = `⚠️ "${r.productName}" tem mínimo de ${r.minQty} un. (vendido em múltiplos de ${r.minQty}). Você pediu ${r.requestedQty}, ajustei para ${r.addedQty}.`;
+        } else {
+          content = `⚠️ "${r.productName}" é vendido em múltiplos de ${r.minQty} un. Você pediu ${r.requestedQty}, ajustei para ${r.addedQty}.`;
+        }
       }
       setMessages((prev) => [...prev, { role: "assistant", content }]);
     });
