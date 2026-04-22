@@ -290,26 +290,26 @@ const AdminProducts = () => {
               Editar Home
             </motion.button>
             {isOwner && (
-              <>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate("/admin/clientes")}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold"
-                >
-                  <UserRound size={16} />
-                  Clientes
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate("/admin/usuarios")}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold"
-                >
-                  <Users size={16} />
-                  Usuários
-                </motion.button>
-              </>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => navigate("/admin/clientes")}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold"
+              >
+                <UserRound size={16} />
+                Clientes
+              </motion.button>
+            )}
+            {isOwner && (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => navigate("/admin/usuarios")}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold"
+              >
+                <Users size={16} />
+                Usuários
+              </motion.button>
             )}
             <motion.button
               whileHover={{ scale: 1.02 }}
