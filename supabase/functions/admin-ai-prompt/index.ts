@@ -1,6 +1,7 @@
 // Edge function: gera prompts otimizados (vídeo, imagem cinematográfica, anúncios, etc)
 // usando GPT-5 / Gemini Pro via Lovable AI Gateway
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { checkAiBudget, logAiUsage, getUserIdFromRequest, COST_BY_FEATURE } from "../_shared/ai-budget.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -69,6 +70,16 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
 
+    const cost = COST_BY_FEATURE.prompt;
+    const budget = await checkAiBudget(cost);
+    if (!budget.ok) {
+      return new Response(JSON.stringify({ error: budget.message }), {
+        status: budget.reason === "disabled" ? 423 : 402,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const userId = await getUserIdFromRequest(req);
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -107,6 +118,11 @@ serve(async (req) => {
 
     const data = await response.json();
     const text = data.choices?.[0]?.message?.content || "";
+
+    if (userId) {
+      logAiUsage({ userId, feature: "prompt", model: "google/gemini-3-flash-preview", costUsd: cost })
+        .catch((e) => console.error(e));
+    }
 
     return new Response(JSON.stringify({ text }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

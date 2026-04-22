@@ -1,10 +1,17 @@
 // Edge function: gera ou edita imagens via Lovable AI (Nano Banana / Gemini Image)
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { checkAiBudget, logAiUsage, getUserIdFromRequest, COST_BY_FEATURE } from "../_shared/ai-budget.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+};
+
+const MODEL_TO_COST_KEY: Record<string, string> = {
+  "google/gemini-2.5-flash-image": "image-fast",
+  "google/gemini-3.1-flash-image-preview": "image-std",
+  "google/gemini-3-pro-image-preview": "image-pro",
 };
 
 serve(async (req) => {
@@ -22,13 +29,21 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
 
-    // Modelos de imagem suportados
-    const allowedModels = new Set([
-      "google/gemini-2.5-flash-image",        // Nano Banana — rápido/barato
-      "google/gemini-3-pro-image-preview",    // Nano Banana Pro — melhor qualidade
-      "google/gemini-3.1-flash-image-preview" // Nano Banana 2 — rápido com qualidade pro
-    ]);
+    const allowedModels = new Set(Object.keys(MODEL_TO_COST_KEY));
     const chosenModel = allowedModels.has(model) ? model : "google/gemini-2.5-flash-image";
+    const costKey = MODEL_TO_COST_KEY[chosenModel];
+    const cost = COST_BY_FEATURE[costKey];
+
+    // Checa orçamento e habilitação
+    const budget = await checkAiBudget(cost);
+    if (!budget.ok) {
+      return new Response(JSON.stringify({ error: budget.message }), {
+        status: budget.reason === "disabled" ? 423 : 402,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const userId = await getUserIdFromRequest(req);
 
     const userContent: any = imageUrl
       ? [
@@ -81,6 +96,16 @@ serve(async (req) => {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Loga uso só após sucesso
+    if (userId) {
+      logAiUsage({
+        userId,
+        feature: imageUrl ? "edit" : "image",
+        model: chosenModel,
+        costUsd: cost,
+      }).catch((e) => console.error(e));
     }
 
     return new Response(JSON.stringify({ image: generated, text }), {
