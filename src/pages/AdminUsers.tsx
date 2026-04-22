@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Users, Plus, Trash2, Shield, Crown, X, Loader2, LogOut, Pencil } from "lucide-react";
+import { ArrowLeft, Users, Plus, Trash2, Shield, Crown, X, Loader2, LogOut, Pencil, UserRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -155,6 +155,15 @@ const AdminUsers = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate("/admin/clientes")}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold"
+            >
+              <UserRound size={16} />
+              Clientes
+            </motion.button>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
