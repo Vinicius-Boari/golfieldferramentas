@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, Clock, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface IconProps { size?: number; className?: string }
 
@@ -45,11 +46,12 @@ interface FooterProps {
 }
 
 const Footer = ({ config }: FooterProps) => {
-  const desc = config?.description || "Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado.";
+  const { t } = useTranslation();
+  const desc = config?.description || t("footer.description");
   const phone = config?.phone || "(11) 95940-9051";
   const email = config?.email || "paula.profield@hotmail.com";
   const location = config?.location || "São Paulo - SP, Brasil";
-  const hours = config?.hours || "Seg a Sex: 7h às 18h";
+  const hours = config?.hours || t("header.hours");
   const igUrl = config?.instagramUrl || "https://www.instagram.com/golfield.ferramentas/";
   const waUrl = config?.whatsappUrl || "https://wa.me/5511959409051";
   const cats = config?.categories || ["Alicates", "Brocas", "Discos", "Chaves", "Trenas", "Torneiras", "Martelos", "Serras"];
@@ -105,7 +107,7 @@ const Footer = ({ config }: FooterProps) => {
 
           {/* Contato */}
           <motion.div variants={itemVariants} className="md:col-span-4">
-            <h3 className="text-sm font-semibold tracking-wider uppercase mb-5 text-primary-foreground">Contato</h3>
+            <h3 className="text-sm font-semibold tracking-wider uppercase mb-5 text-primary-foreground">{t("footer.contact")}</h3>
             <ul className="space-y-3.5 text-sm">
               <li>
                 <a href={waPhone} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 transition-colors group text-primary-foreground">
@@ -132,7 +134,7 @@ const Footer = ({ config }: FooterProps) => {
 
           {/* Categorias */}
           <motion.div variants={itemVariants} className="md:col-span-3">
-            <h3 className="text-sm font-semibold tracking-wider uppercase mb-5 text-primary-foreground">Categorias</h3>
+            <h3 className="text-sm font-semibold tracking-wider uppercase mb-5 text-primary-foreground">{t("footer.categories")}</h3>
             <ul className="space-y-2.5 text-sm">
               {cats.map((cat) => (
                 <li key={cat}>
@@ -150,11 +152,11 @@ const Footer = ({ config }: FooterProps) => {
           variants={itemVariants}
           className="border-t border-border/50 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground"
         >
-          <p className="text-primary-foreground">© {new Date().getFullYear()} Golfield. Todos os direitos reservados.</p>
+          <p className="text-primary-foreground">{t("footer.rights", { year: new Date().getFullYear() })}</p>
           <Link to="/admin/login" className="transition-colors cursor-pointer text-[10px] text-primary-foreground">
-            Painel
+            {t("footer.panel")}
           </Link>
-          <p className="text-primary-foreground">Os valores são exclusivos para compras por atacado.</p>
+          <p className="text-primary-foreground">{t("footer.wholesaleNote")}</p>
         </motion.div>
       </motion.div>
     </footer>
