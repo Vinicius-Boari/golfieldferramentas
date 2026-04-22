@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 import { X, Send } from "lucide-react";
+import { chatBus, normalizeCategoryId } from "@/lib/chatBus";
 
 const WHATSAPP_URL = "https://wa.me/5511959409051";
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/public-chat`;
 
 type Msg = { role: "user" | "assistant"; content: string; showWhatsApp?: boolean };
+type ToolCallAcc = { id?: string; name: string; args: string };
 
 const RobotIcon = ({ size = 28 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
