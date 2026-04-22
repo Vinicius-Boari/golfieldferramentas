@@ -19,6 +19,16 @@ export default defineConfig(({ mode }) => ({
     },
     dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime", "@tanstack/react-query"],
   },
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "react-i18next",
+      "i18next",
+      "i18next-browser-languagedetector",
+    ],
+  },
   build: {
     // Quebra o bundle em chunks por categoria de dependência.
     // Reduz o JS inicial baixado e permite cache mais granular do navegador
