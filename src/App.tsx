@@ -24,6 +24,7 @@ const AdminUsers = lazy(() => import("./pages/AdminUsers.tsx"));
 const AdminCustomers = lazy(() => import("./pages/AdminCustomers.tsx"));
 const AdminCoupons = lazy(() => import("./pages/AdminCoupons.tsx"));
 const AdminVisual = lazy(() => import("./pages/AdminVisual.tsx"));
+const AdminAI = lazy(() => import("./pages/AdminAI.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,6 +65,7 @@ const AppShell = () => {
             <Route path="/admin/usuarios" element={<AdminUsers />} />
             <Route path="/admin/clientes" element={<AdminCustomers />} />
             <Route path="/admin/cupons" element={<AdminCoupons />} />
+            <Route path="/admin/ia" element={<AdminAI />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

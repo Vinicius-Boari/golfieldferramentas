@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff, Upload, Link2, Loader2, Home, Users, UserRound, Tag, Image as ImageIcon, Video as VideoIcon, Repeat, Volume2, VolumeX } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Package, LogOut, Save, X, ArrowLeft, Eye, EyeOff, Upload, Link2, Loader2, Home, Users, UserRound, Tag, Image as ImageIcon, Video as VideoIcon, Repeat, Volume2, VolumeX, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useAllProducts, type DbProduct } from "@/hooks/useProducts";
@@ -288,6 +288,16 @@ const AdminProducts = () => {
             >
               <Home size={16} />
               Editar Home
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate("/admin/ia")}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary/15 to-purple-500/15 border border-primary/30 text-foreground text-sm font-semibold relative overflow-hidden group"
+            >
+              <Sparkles size={16} className="text-primary" />
+              IA
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-primary/20 text-primary font-bold">BETA</span>
             </motion.button>
             {isOwner && (
               <motion.button
