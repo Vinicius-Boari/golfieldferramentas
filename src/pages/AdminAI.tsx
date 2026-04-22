@@ -263,6 +263,7 @@ const AdminAI = () => {
   const editImage = async () => {
     if (!editPrompt.trim() || !editSourceUrl || editLoading) return;
     if (!guardOrToast()) return;
+    setEditLoading(true);
     setEditedImg(null);
     try {
       const { data, error } = await supabase.functions.invoke("admin-ai-image", {
@@ -277,6 +278,7 @@ const AdminAI = () => {
       if (!data?.image) throw new Error("Nenhuma imagem foi retornada.");
       setEditedImg(data.image);
       toast.success("Imagem editada!");
+      refetchUsage();
     } catch (err: any) {
       toast.error(err.message || "Erro ao editar imagem");
     } finally {
