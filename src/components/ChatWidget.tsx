@@ -75,6 +75,11 @@ const ChatWidget = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { isOpen: cartOpen } = useCart();
+  const isMobile = useIsMobile();
+  // Em desktop, quando o carrinho está aberto, o chat se move para a esquerda
+  // para não ficar atrás do drawer. No mobile, mantém na direita (carrinho ocupa tudo).
+  const shiftLeft = cartOpen && !isMobile;
 
   // Executa uma tool call solicitada pelo modelo
   const runToolCall = useCallback((name: string, rawArgs: string) => {
