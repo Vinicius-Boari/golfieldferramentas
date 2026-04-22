@@ -96,12 +96,17 @@ export async function logAiUsage(params: {
   if (error) console.error("logAiUsage error:", error);
 }
 
-/** Extrai o user_id do JWT de Authorization (sem validar — verify_jwt já fez isso) */
+/** Extrai o user_id do JWT de Authorization (sem validar). Retorna null se não houver. */
 export async function getUserIdFromRequest(req: Request): Promise<string | null> {
   const auth = req.headers.get("Authorization") || req.headers.get("authorization");
   if (!auth) return null;
   const token = auth.replace(/^Bearer\s+/i, "");
-  const admin = getAdminClient();
-  const { data } = await admin.auth.getUser(token);
-  return data.user?.id ?? null;
+  if (!token) return null;
+  try {
+    const admin = getAdminClient();
+    const { data } = await admin.auth.getUser(token);
+    return data.user?.id ?? null;
+  } catch {
+    return null;
+  }
 }

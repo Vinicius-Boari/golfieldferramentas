@@ -111,27 +111,8 @@ const AdminAI = () => {
     return true;
   };
 
-  useEffect(() => {
-    if (!adminLoading && !isAdmin) {
-      toast.error("Acesso negado. Apenas administradores.");
-      navigate("/");
-    }
-  }, [adminLoading, isAdmin, navigate]);
-
-  // Valida se a sessão ainda existe no servidor (evita JWT órfão após logout em outro device)
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (cancelled) return;
-      if (error || !data?.user) {
-        await supabase.auth.signOut();
-        toast.error("Sua sessão expirou. Faça login novamente.");
-        navigate("/login");
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [navigate]);
+  // Acesso público: /admin/ia não exige login. Mantemos o hook só para mostrar
+  // recursos extras se o user for admin, mas não bloqueamos a página.
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -161,25 +142,18 @@ const AdminAI = () => {
     };
 
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const accessToken = sessionData.session?.access_token;
-      if (!accessToken) throw new Error("Sessão expirada. Faça login novamente.");
-
       const controller = new AbortController();
       abortRef.current = controller;
       const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-ai-chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
         body: JSON.stringify({ messages: newHistory }),
         signal: controller.signal,
       });
 
-      if (resp.status === 401) {
-        await supabase.auth.signOut();
-        toast.error("Sua sessão expirou. Faça login novamente.");
-        navigate("/login");
-        return;
-      }
       if (resp.status === 423) throw new Error("A IA está desativada pelo administrador.");
       if (resp.status === 429) throw new Error("Muitas requisições. Aguarde um instante.");
       if (resp.status === 402) throw new Error("Saldo de IA esgotado este mês.");
