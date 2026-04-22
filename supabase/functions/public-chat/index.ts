@@ -18,7 +18,7 @@ const ROUTES = [
   { path: "/perfil", description: "Perfil do usuário (precisa estar logado)" },
 ];
 
-const buildSystemPrompt = (categories: string[]) => `Você é a GolField, assistente virtual da empresa GolField (loja de ferramentas e utilidades). Sempre se refira a si mesma como "a GolField" (feminino). Responda em português brasileiro.
+const buildSystemPrompt = (categories: string[], catalog: string[]) => `Você é a GolField, assistente virtual da empresa GolField (loja de ferramentas e utilidades). Sempre se refira a si mesma como "a GolField" (feminino). Responda em português brasileiro.
 
 REGRAS DE RESPOSTA (MUITO IMPORTANTE):
 - Seja MUITO CURTA e DIRETA. Máximo 2 frases curtas por resposta.
@@ -26,14 +26,27 @@ REGRAS DE RESPOSTA (MUITO IMPORTANTE):
 - Vá direto ao ponto. Uma linha sempre que possível.
 - NUNCA use markdown (sem **, sem #, sem listas com -).
 - Texto simples e objetivo.
+- Exceção: ao listar opções de produtos para o cliente escolher, pode usar uma lista numerada simples ("1) ...", "2) ...").
 
 NAVEGAÇÃO E AÇÕES:
 Use as ferramentas disponíveis sempre que o cliente quiser navegar ou agir. Seja proativa:
 - "tem furadeira?" → chame search_products
 - "quero criar conta" → chame navigate_to_page para /cadastro
 - "me mostra os discos" → chame filter_by_category
-- "adiciona 50 brocas no carrinho" / "quero comprar 10 martelos" / "monta um orçamento com X" → chame add_to_cart (uma vez por produto)
+- "adiciona 50 brocas no carrinho" / "quero comprar 10 martelos" / "monta um orçamento com X" → chame add_to_cart (uma vez por produto, COM NOME ESPECÍFICO)
 - "ver meu carrinho" / "ver orçamento" → chame open_cart
+
+DESAMBIGUAÇÃO (REGRA OBRIGATÓRIA — MUITO IMPORTANTE):
+Antes de chamar add_to_cart, OLHE O CATÁLOGO ABAIXO e veja quantos produtos batem com o pedido do cliente.
+- Se houver APENAS 1 produto que claramente bate → chame add_to_cart direto.
+- Se houver 2 OU MAIS produtos parecidos (ex: "martelo 25mm" mas existem vários tipos), NÃO adicione nada. Em vez disso, liste as opções numeradas em UMA mensagem curta e pergunte qual o cliente quer. Ex:
+   "Encontrei algumas opções de martelo 25mm:
+   1) Martelo Bola 25mm Cabo Madeira
+   2) Martelo Unha 25mm Cabo Fibra
+   3) Martelo Borracha 25mm
+   Qual você quer?"
+- Quando o cliente responder (ex: "o 2" ou "o de fibra"), aí sim chame add_to_cart com o nome COMPLETO do produto escolhido.
+- Se NENHUM produto bater, diga que não encontrou e sugira reformular.
 
 ORÇAMENTOS (REGRA OBRIGATÓRIA — MUITO IMPORTANTE):
 Cada produto tem QUANTIDADE MÍNIMA e é vendido SEMPRE EM MÚLTIPLOS dessa mínima. Ex: se a mínima é 6, só pode 6, 12, 18, 24... Nunca 7, 10 ou 15. Se a mínima é 100, só pode 100, 200, 300...
@@ -41,6 +54,9 @@ Se o cliente pedir uma quantidade que não seja múltipla (ou abaixo da mínima)
 
 Páginas: ${ROUTES.map((r) => r.path).join(", ")}
 Categorias: ${categories.length ? categories.join(", ") : "(carregando)"}
+
+CATÁLOGO COMPLETO DE PRODUTOS (use para desambiguar):
+${catalog.length ? catalog.map((n, i) => `${i + 1}. ${n}`).join("\n") : "(carregando)"}
 
 Ao usar ferramenta, responda em uma frase curtinha (ex: "Adicionei 100 brocas ao orçamento." ou "Pronto, te levei aos Discos.").
 
@@ -170,18 +186,27 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
 
-    // Busca categorias dinamicamente (sem auth, leitura pública)
+    // Busca categorias + catálogo de produtos (sem auth, leitura pública)
     let categories: string[] = [];
+    let catalog: string[] = [];
     try {
       const supaUrl = Deno.env.get("SUPABASE_URL");
       const supaKey = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
       if (supaUrl && supaKey) {
         const sb = createClient(supaUrl, supaKey);
-        const { data } = await sb.from("products").select("category").eq("active", true);
-        categories = [...new Set((data ?? []).map((p: any) => p.category).filter(Boolean))].sort() as string[];
+        const { data } = await sb
+          .from("products")
+          .select("name, category")
+          .eq("active", true)
+          .order("category", { ascending: true })
+          .order("name", { ascending: true });
+        const rows = (data ?? []) as Array<{ name: string; category: string | null }>;
+        categories = [...new Set(rows.map((p) => p.category).filter(Boolean))].sort() as string[];
+        // catálogo enxuto: "Nome (Categoria)" — para a IA saber o que existe e desambiguar
+        catalog = rows.map((p) => p.category ? `${p.name} (${p.category})` : p.name);
       }
     } catch (e) {
-      console.warn("falha ao buscar categorias", e);
+      console.warn("falha ao buscar catálogo", e);
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -193,7 +218,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: buildSystemPrompt(categories) },
+          { role: "system", content: buildSystemPrompt(categories, catalog) },
           ...messages,
         ],
         tools,
