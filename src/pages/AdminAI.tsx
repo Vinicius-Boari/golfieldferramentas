@@ -118,6 +118,21 @@ const AdminAI = () => {
     }
   }, [adminLoading, isAdmin, navigate]);
 
+  // Valida se a sessão ainda existe no servidor (evita JWT órfão após logout em outro device)
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (cancelled) return;
+      if (error || !data?.user) {
+        await supabase.auth.signOut();
+        toast.error("Sua sessão expirou. Faça login novamente.");
+        navigate("/login");
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [navigate]);
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
