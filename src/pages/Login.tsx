@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AlertCircle } from "lucide-react";
 import AuthLayout from "@/components/auth/AuthLayout";
 import PasswordInput from "@/components/auth/PasswordInput";
 import { formatCNPJ, validateCNPJ } from "@/lib/cnpj";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [cnpj, setCnpj] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -28,11 +31,38 @@ const Login = () => {
     setBanner("");
     if (!validate()) return;
     setLoading(true);
-    // Simulate auth
-    setTimeout(() => {
+    try {
+      // 1. Buscar e-mail vinculado ao CNPJ
+      const { data: email, error: rpcError } = await supabase.rpc("get_email_by_cnpj", {
+        _cnpj: cnpj,
+      });
+
+      if (rpcError) throw rpcError;
+      if (!email) {
+        setBanner("CNPJ ou senha incorretos. Verifique seus dados e tente novamente.");
+        setLoading(false);
+        return;
+      }
+
+      // 2. Autenticar com e-mail + senha
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email as string,
+        password,
+      });
+
+      if (signInError) {
+        setBanner("CNPJ ou senha incorretos. Verifique seus dados e tente novamente.");
+        setLoading(false);
+        return;
+      }
+
+      toast({ title: "Bem-vindo!", description: "Login realizado com sucesso." });
+      navigate("/");
+    } catch (err) {
+      console.error("Login error:", err);
+      setBanner("Erro ao realizar login. Tente novamente.");
       setLoading(false);
-      setBanner("CNPJ ou senha incorretos. Verifique seus dados e tente novamente.");
-    }, 1500);
+    }
   };
 
   return (
