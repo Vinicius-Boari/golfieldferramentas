@@ -25,3 +25,5 @@ project_id = "ehtlblplrzqdjrviodzi"
     verify_jwt = true
   [functions.admin-ai-prompt]
     verify_jwt = true
+  [functions.public-chat]
+    verify_jwt = false

@@ -6,7 +6,7 @@ import CategoryNav from "@/components/CategoryNav";
 import ProductCard from "@/components/ProductCard";
 import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
-import WhatsAppFloat from "@/components/WhatsAppFloat";
+import ChatWidget from "@/components/ChatWidget";
 import { CartProvider } from "@/context/CartContext";
 import { useProducts } from "@/hooks/useProducts";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
@@ -313,7 +313,7 @@ const IndexContent = () => {
         <div key={section.id}>{renderSection(section.id)}</div>
       ))}
       <CartDrawer />
-      <WhatsAppFloat />
+      <ChatWidget />
     </div>
   );
 };
