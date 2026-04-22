@@ -1,6 +1,30 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Layers } from "lucide-react";
+
+const isUsableImage = (url: unknown): url is string =>
+  typeof url === "string" && url.trim() !== "" && !url.includes("placeholder");
+
+// Componente de imagem com fallback automático para ícone
+const CategoryImage = ({ src, alt }: { src: string | null; alt: string }) => {
+  const [errored, setErrored] = useState(false);
+  if (!src || errored) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-secondary to-secondary/40">
+        <Layers size={28} className="text-muted-foreground" />
+      </div>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      onError={() => setErrored(true)}
+      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+    />
+  );
+};
 import { useProducts } from "@/hooks/useProducts";
 
 interface CategoryNavProps {
@@ -20,19 +44,17 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
       .replace(/\s+/g, "-");
 
   const categories = useMemo(() => {
-    // Mapeia cada categoria para a primeira imagem de produto encontrada
+    // Mapeia cada categoria para a primeira imagem utilizável (qualquer media_type, desde que tenha thumbnail)
     const map = new Map<string, { label: string; image: string | null }>();
     for (const p of products) {
       const cat = (p.category ?? "").toString().trim();
       if (!cat) continue;
-      if (!map.has(cat)) {
-        const isImage = (p.media_type ?? "image") === "image";
-        map.set(cat, { label: cat, image: isImage ? p.image : null });
-      } else {
-        const cur = map.get(cat)!;
-        if (!cur.image && (p.media_type ?? "image") === "image") {
-          map.set(cat, { ...cur, image: p.image });
-        }
+      const candidate = isUsableImage(p.image) ? p.image : null;
+      const cur = map.get(cat);
+      if (!cur) {
+        map.set(cat, { label: cat, image: candidate });
+      } else if (!cur.image && candidate) {
+        map.set(cat, { ...cur, image: candidate });
       }
     }
 
@@ -44,11 +66,11 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
         image: info.image,
       }));
 
-    // Imagem para "Todos": primeira imagem disponível
-    const firstImage = products.find(p => (p.media_type ?? "image") === "image")?.image ?? null;
+    // Imagem para "Todos": primeira imagem utilizável encontrada
+    const firstImage = products.find(p => isUsableImage(p.image))?.image ?? null;
 
     return [
-      { id: "todos", label: "Todos", image: firstImage },
+      { id: "todos", label: "Todos", image: firstImage ?? null },
       ...list,
     ];
   }, [products]);
@@ -92,16 +114,7 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
                     : "ring-1 ring-border/60 group-hover:ring-primary/50"
                 }`}
               >
-                {cat.image ? (
-                  <img
-                    src={cat.image}
-                    alt={cat.label}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                ) : (
-                  <Layers size={28} className="text-muted-foreground" />
-                )}
+                <CategoryImage src={cat.image} alt={cat.label} />
                 {isActive && (
                   <span className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent pointer-events-none" />
                 )}
