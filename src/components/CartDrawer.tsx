@@ -17,7 +17,7 @@ interface CartDrawerProps {
 }
 
 const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
-  const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart, appliedCoupon, setAppliedCoupon, finalPrice } = useCart();
+  const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart, appliedCoupon, setAppliedCoupon, finalPrice, addItem } = useCart();
   const { isAuthenticated } = useAuth();
   const { data: homeConfig } = useHomeConfig();
   const navigate = useNavigate();
