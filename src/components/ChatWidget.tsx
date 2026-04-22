@@ -173,6 +173,8 @@ const ChatWidget = () => {
       let assistantSoFar = "";
       let started = false;
       let streamDone = false;
+      // tool calls vêm fragmentados por índice em deltas separados
+      const toolAcc: Record<number, ToolCallAcc> = {};
 
       const upsertAssistant = (chunk: string) => {
         assistantSoFar += chunk;
@@ -204,8 +206,22 @@ const ChatWidget = () => {
           }
           try {
             const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+            const delta = parsed.choices?.[0]?.delta;
+            const content = delta?.content as string | undefined;
             if (content) upsertAssistant(content);
+
+            const tcs = delta?.tool_calls as Array<any> | undefined;
+            if (Array.isArray(tcs)) {
+              for (const tc of tcs) {
+                const idx: number = typeof tc.index === "number" ? tc.index : 0;
+                if (!toolAcc[idx]) toolAcc[idx] = { name: "", args: "" };
+                if (tc.id) toolAcc[idx].id = tc.id;
+                if (tc.function?.name) toolAcc[idx].name = tc.function.name;
+                if (typeof tc.function?.arguments === "string") {
+                  toolAcc[idx].args += tc.function.arguments;
+                }
+              }
+            }
           } catch {
             textBuffer = line + "\n" + textBuffer;
             break;
@@ -213,10 +229,23 @@ const ChatWidget = () => {
         }
       }
 
+      // Executa todas as tool_calls que o modelo pediu
+      const calls = Object.values(toolAcc).filter((c) => c.name);
+      for (const c of calls) {
+        runToolCall(c.name, c.args);
+      }
+
+      // Se a IA chamou tool mas não escreveu texto, mostra um placeholder amigável
+      if (calls.length > 0 && !assistantSoFar) {
+        upsertAssistant("Pronto! ✅");
+      }
+
       // Marca para mostrar botão WhatsApp se necessário
       const lastUserText = text;
       const lastAssistantText = assistantSoFar.toLowerCase();
+      const calledWhatsapp = calls.some((c) => c.name === "open_whatsapp");
       const shouldShow =
+        calledWhatsapp ||
         detectHumanRequest(lastUserText) ||
         /whatsapp|atendente|nossa equipe|redirecion/i.test(lastAssistantText);
 
