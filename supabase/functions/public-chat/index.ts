@@ -35,8 +35,8 @@ Categorias: ${categories.length ? categories.join(", ") : "(carregando)"}
 
 Ao usar ferramenta, responda em uma frase curtinha (ex: "Pronto, te levei aos Discos." ou "Buscando furadeira pra você.").
 
-ATENDIMENTO HUMANO:
-Se for reclamação grave, urgência ou pedirem humano, ofereça WhatsApp em uma frase. Nunca invente informações.`;
+ATENDIMENTO HUMANO (REGRA OBRIGATÓRIA):
+Quando o cliente pedir para falar com humano, atendente, suporte, fizer reclamação grave, urgência, ou pedir contato direto, você DEVE chamar a ferramenta offer_whatsapp. NUNCA escreva links de WhatsApp no texto. NUNCA tente abrir WhatsApp sozinha. SEMPRE use a ferramenta — ela mostra o botão verde de WhatsApp para o cliente clicar. Nunca invente informações.`;
 
 const tools = [
   {
@@ -97,9 +97,19 @@ const tools = [
   {
     type: "function",
     function: {
-      name: "open_whatsapp",
-      description: "Abre o WhatsApp para o cliente falar com um atendente humano.",
-      parameters: { type: "object", properties: {}, additionalProperties: false },
+      name: "offer_whatsapp",
+      description: "Oferece ao cliente o botão para falar no WhatsApp. Use SEMPRE que o cliente quiser falar com humano, atendente, fizer reclamação grave, urgência, ou pedir contato direto. NUNCA tente abrir WhatsApp por conta própria — apenas chame esta ferramenta para mostrar o botão.",
+      parameters: {
+        type: "object",
+        properties: {
+          reason: {
+            type: "string",
+            description: "Frase curta explicando ao cliente (ex: 'Vou te conectar com nossa equipe.')",
+          },
+        },
+        required: ["reason"],
+        additionalProperties: false,
+      },
     },
   },
 ];
