@@ -1,5 +1,6 @@
 // Edge function: chat assistant para o painel admin (Lovable AI Gateway)
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { checkAiBudget, logAiUsage, getUserIdFromRequest, COST_BY_FEATURE } from "../_shared/ai-budget.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -34,6 +35,18 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
 
+    // Checa orçamento e habilitação
+    const cost = COST_BY_FEATURE.chat;
+    const budget = await checkAiBudget(cost);
+    if (!budget.ok) {
+      return new Response(JSON.stringify({ error: budget.message }), {
+        status: budget.reason === "disabled" ? 423 : 402,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const userId = await getUserIdFromRequest(req);
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -59,7 +72,7 @@ serve(async (req) => {
       }
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: "Créditos de IA esgotados. Adicione créditos no workspace Lovable." }),
+          JSON.stringify({ error: "Créditos de IA esgotados na Lovable. Adicione saldo no workspace." }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
@@ -69,6 +82,12 @@ serve(async (req) => {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Loga uso (não bloqueia stream se falhar)
+    if (userId) {
+      logAiUsage({ userId, feature: "chat", model: "google/gemini-3-flash-preview", costUsd: cost })
+        .catch((e) => console.error(e));
     }
 
     return new Response(response.body, {
