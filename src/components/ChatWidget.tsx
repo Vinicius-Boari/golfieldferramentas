@@ -71,6 +71,49 @@ const ChatWidget = () => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Executa uma tool call solicitada pelo modelo
+  const runToolCall = useCallback((name: string, rawArgs: string) => {
+    let args: any = {};
+    try { args = rawArgs ? JSON.parse(rawArgs) : {}; } catch { args = {}; }
+
+    const goHomeThen = (cb: () => void) => {
+      if (location.pathname !== "/") {
+        navigate("/");
+        // espera a Index montar e registrar listeners do bus
+        setTimeout(cb, 350);
+      } else {
+        cb();
+      }
+    };
+
+    switch (name) {
+      case "navigate_to_page": {
+        const path = typeof args.path === "string" ? args.path : "/";
+        navigate(path);
+        break;
+      }
+      case "filter_by_category": {
+        const cat = String(args.category ?? "").trim();
+        if (!cat) return;
+        const id = cat.toLowerCase() === "todos" ? "todos" : normalizeCategoryId(cat);
+        goHomeThen(() => chatBus.emit("chat:setCategory", id));
+        break;
+      }
+      case "search_products": {
+        const q = String(args.query ?? "").trim();
+        if (!q) return;
+        goHomeThen(() => chatBus.emit("chat:setSearch", q));
+        break;
+      }
+      case "open_whatsapp": {
+        window.open(WHATSAPP_URL, "_blank", "noopener,noreferrer");
+        break;
+      }
+    }
+  }, [navigate, location.pathname]);
 
   // Mensagem inicial ao abrir pela primeira vez
   useEffect(() => {
