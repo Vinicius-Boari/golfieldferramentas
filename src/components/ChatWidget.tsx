@@ -341,7 +341,7 @@ const ChatWidget = () => {
         }}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-40 p-3.5 md:p-4 rounded-full shadow-xl text-white transition-shadow hover:shadow-2xl"
+        className={`fixed bottom-4 right-4 md:bottom-6 md:right-6 ${cartOpen ? "z-[60]" : "z-40"} p-3.5 md:p-4 rounded-full shadow-xl text-white transition-shadow hover:shadow-2xl`}
         style={{ background: "#2563EB", boxShadow: "0 10px 30px -8px rgba(37,99,235,0.55)" }}
         aria-label="Abrir chat com assistente virtual"
       >
@@ -371,9 +371,9 @@ const ChatWidget = () => {
               scale: { type: "spring", stiffness: 280, damping: 26 },
               x: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 },
             }}
-            className="fixed z-40 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-200
+            className={`fixed ${cartOpen ? "z-[60]" : "z-40"} bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-200
                        bottom-20 right-4 left-4 max-h-[calc(100vh-7rem)]
-                       md:bottom-24 md:right-6 md:left-auto md:w-[380px] md:h-[560px] md:max-h-[80vh]"
+                       md:bottom-24 md:right-6 md:left-auto md:w-[380px] md:h-[560px] md:max-h-[80vh]`}
             style={{ boxShadow: "0 25px 60px -15px rgba(0,0,0,0.3)" }}
           >
             {/* Header */}
