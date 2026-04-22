@@ -9,6 +9,7 @@ import { useValidateCoupon } from "@/hooks/useCoupons";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { renderWhatsAppTemplate } from "@/components/admin/SystemSettingsPanel";
 import { supabase } from "@/integrations/supabase/client";
+import { formatCNPJ } from "@/lib/cnpj";
 
 const CartDrawer = () => {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart, appliedCoupon, setAppliedCoupon, finalPrice } = useCart();
@@ -18,7 +19,7 @@ const CartDrawer = () => {
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const validateCoupon = useValidateCoupon();
-  const [profile, setProfile] = useState<{ nome_responsavel?: string; telefone?: string; email?: string } | null>(null);
+  const [profile, setProfile] = useState<{ nome_responsavel?: string; telefone?: string; email?: string; cnpj?: string } | null>(null);
 
   // Load profile data for template variables when authenticated
   useEffect(() => {
@@ -29,7 +30,7 @@ const CartDrawer = () => {
       if (!user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("nome_responsavel,telefone,email")
+        .select("nome_responsavel,telefone,email,cnpj")
         .eq("user_id", user.id)
         .maybeSingle();
       if (!cancelled) setProfile(data ?? { email: user.email ?? "" });
@@ -48,6 +49,7 @@ const CartDrawer = () => {
         name: profile?.nome_responsavel || "",
         phone: profile?.telefone || "",
         email: profile?.email || "",
+        cnpj: profile?.cnpj ? formatCNPJ(profile.cnpj) : "",
         products: productsText,
         subtotal: `R$ ${totalPrice.toFixed(2).replace('.', ',')}`,
         total: `R$ ${finalPrice.toFixed(2).replace('.', ',')}`,

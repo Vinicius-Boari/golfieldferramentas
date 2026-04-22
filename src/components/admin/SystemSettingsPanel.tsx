@@ -17,6 +17,7 @@ const VARIABLES: { key: string; label: string; sample: string }[] = [
   { key: "{name}", label: "Nome do cliente", sample: "João Silva" },
   { key: "{phone}", label: "Telefone do cliente", sample: "(11) 99999-9999" },
   { key: "{email}", label: "Email do cliente", sample: "joao@empresa.com" },
+  { key: "{cnpj}", label: "CNPJ do cliente", sample: "12.345.678/0001-90" },
   { key: "{products}", label: "Lista de produtos", sample: "• Martelo — 10un x R$25,00 = R$250,00\n• Trena 5m — 5un x R$30,00 = R$150,00" },
   { key: "{subtotal}", label: "Subtotal", sample: "R$ 400,00" },
   { key: "{total}", label: "Total final", sample: "R$ 400,00" },
