@@ -20,6 +20,7 @@ const AdminProducts = lazy(() => import("./pages/AdminProducts.tsx"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin.tsx"));
 const AdminHome = lazy(() => import("./pages/AdminHome.tsx"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers.tsx"));
+const AdminCustomers = lazy(() => import("./pages/AdminCustomers.tsx"));
 const AdminCoupons = lazy(() => import("./pages/AdminCoupons.tsx"));
 const AdminVisual = lazy(() => import("./pages/AdminVisual.tsx"));
 
