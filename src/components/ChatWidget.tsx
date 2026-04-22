@@ -108,6 +108,18 @@ const ChatWidget = () => {
         goHomeThen(() => chatBus.emit("chat:setSearch", q));
         break;
       }
+      case "add_to_cart": {
+        const q = String(args.product_query ?? "").trim();
+        const qty = Math.max(1, Math.floor(Number(args.quantity) || 1));
+        if (!q) return;
+        const replyId = `cart-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+        goHomeThen(() => chatBus.emit("chat:addToCart", { query: q, quantity: qty, replyId }));
+        break;
+      }
+      case "open_cart": {
+        goHomeThen(() => chatBus.emit("chat:openCart", undefined as any));
+        break;
+      }
       // 'offer_whatsapp' não abre nada — apenas sinaliza para mostrar o botão verde
       // (tratado em send() ao detectar a chamada pelo nome)
       case "offer_whatsapp":
@@ -117,6 +129,24 @@ const ChatWidget = () => {
       }
     }
   }, [navigate, location.pathname]);
+
+  // Escuta respostas das tentativas de adicionar ao carrinho e mostra como mensagem do assistente
+  useEffect(() => {
+    const off = onCartReply((r) => {
+      let content = "";
+      if (r.ok) {
+        content = r.adjusted
+          ? `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento (mínimo do produto: ${r.minQty}).`
+          : `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento.`;
+      } else if (r.reason === "not_found") {
+        content = `Não encontrei nenhum produto correspondente a "${r.query}". Pode tentar com um nome mais específico?`;
+      } else {
+        content = `Não consegui adicionar "${r.query}" agora. Tente novamente em instantes.`;
+      }
+      setMessages((prev) => [...prev, { role: "assistant", content }]);
+    });
+    return off;
+  }, []);
 
   // Mensagem inicial ao abrir pela primeira vez
   useEffect(() => {
