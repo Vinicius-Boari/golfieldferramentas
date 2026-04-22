@@ -335,10 +335,7 @@ const AdminAI = () => {
                 <Sparkles size={20} className="text-primary" />
               </div>
               <div>
-                <h1 className="text-lg font-bold flex items-center gap-2">
-                  IA Studio
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-semibold">BETA</span>
-                </h1>
+                <h1 className="text-lg font-bold">IA Studio</h1>
                 <p className="text-xs text-muted-foreground">Chat · Imagens · Edição · Prompts Pro</p>
               </div>
             </div>

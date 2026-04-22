@@ -293,11 +293,10 @@ const AdminProducts = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate("/admin/ia")}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary/15 to-purple-500/15 border border-primary/30 text-foreground text-sm font-semibold relative overflow-hidden group"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold"
             >
-              <Sparkles size={16} className="text-primary" />
+              <Sparkles size={16} />
               IA
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-primary/20 text-primary font-bold">BETA</span>
             </motion.button>
             {isOwner && (
               <motion.button
