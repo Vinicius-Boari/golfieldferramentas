@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import type { Product } from "@/data/products";
+import { roundUpToMultiple } from "@/lib/qty";
 
 interface CartItem {
   product: Product;
@@ -38,12 +39,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
 
   const addItem = useCallback((product: Product, qty: number) => {
+    // Garante múltiplo da quantidade mínima (regra B2B)
+    const safeQty = roundUpToMultiple(qty, product.minQty);
     setItems(prev => {
       const existing = prev.find(i => i.product.id === product.id);
       if (existing) {
-        return prev.map(i => i.product.id === product.id ? { ...i, quantity: i.quantity + qty } : i);
+        // Soma respeitando múltiplo: o incremento já é seguro, então a soma também é
+        return prev.map(i => i.product.id === product.id ? { ...i, quantity: i.quantity + safeQty } : i);
       }
-      return [...prev, { product, quantity: qty }];
+      return [...prev, { product, quantity: safeQty }];
     });
     setIsOpen(true);
   }, []);
@@ -55,10 +59,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateQuantity = useCallback((productId: number | string, qty: number) => {
     setItems(prev => {
       const item = prev.find(i => i.product.id === productId);
-      if (!item || qty < item.product.minQty) {
+      if (!item) return prev;
+      if (qty < item.product.minQty) {
+        // Abaixo do mínimo → remove o item
         return prev.filter(i => i.product.id !== productId);
       }
-      return prev.map(i => i.product.id === productId ? { ...i, quantity: qty } : i);
+      // Força múltiplo do minQty
+      const safeQty = roundUpToMultiple(qty, item.product.minQty);
+      return prev.map(i => i.product.id === productId ? { ...i, quantity: safeQty } : i);
     });
   }, []);
 
