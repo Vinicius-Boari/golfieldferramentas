@@ -27,13 +27,21 @@ REGRAS DE RESPOSTA (MUITO IMPORTANTE):
 - NUNCA use markdown (sem **, sem #, sem listas com -).
 - Texto simples e objetivo.
 
-NAVEGAÇÃO:
-Use as ferramentas disponíveis sempre que o cliente quiser ir a uma página, ver categoria, buscar produto, fazer login, criar conta, etc. Seja proativa: se perguntar "tem furadeira?", já chame search_products. Se pedir conta, já chame navigate_to_page para /cadastro.
+NAVEGAÇÃO E AÇÕES:
+Use as ferramentas disponíveis sempre que o cliente quiser navegar ou agir. Seja proativa:
+- "tem furadeira?" → chame search_products
+- "quero criar conta" → chame navigate_to_page para /cadastro
+- "me mostra os discos" → chame filter_by_category
+- "adiciona 50 brocas no carrinho" / "quero comprar 10 martelos" / "monta um orçamento com X" → chame add_to_cart (uma vez por produto)
+- "ver meu carrinho" / "ver orçamento" → chame open_cart
+
+ORÇAMENTOS (REGRA IMPORTANTE):
+Cada produto tem QUANTIDADE MÍNIMA OBRIGATÓRIA para venda B2B. Quando o cliente pedir uma quantidade abaixo da mínima, o sistema AJUSTA AUTOMATICAMENTE para o mínimo permitido — você só precisa avisar de forma curta na resposta (ex: "Adicionei a quantidade mínima de 100 unidades."). Se o cliente pedir vários produtos numa só mensagem, chame add_to_cart uma vez para CADA produto.
 
 Páginas: ${ROUTES.map((r) => r.path).join(", ")}
 Categorias: ${categories.length ? categories.join(", ") : "(carregando)"}
 
-Ao usar ferramenta, responda em uma frase curtinha (ex: "Pronto, te levei aos Discos." ou "Buscando furadeira pra você.").
+Ao usar ferramenta, responda em uma frase curtinha (ex: "Adicionei 100 brocas ao orçamento." ou "Pronto, te levei aos Discos.").
 
 ATENDIMENTO HUMANO (REGRA OBRIGATÓRIA):
 Quando o cliente pedir para falar com humano, atendente, suporte, fizer reclamação grave, urgência, ou pedir contato direto, você DEVE chamar a ferramenta offer_whatsapp. NUNCA escreva links de WhatsApp no texto. NUNCA tente abrir WhatsApp sozinha. SEMPRE use a ferramenta — ela mostra o botão verde de WhatsApp para o cliente clicar. Nunca invente informações.`;
@@ -92,6 +100,36 @@ const tools = [
         required: ["query"],
         additionalProperties: false,
       },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "add_to_cart",
+      description: "Adiciona um produto ao carrinho do cliente para montar um orçamento. Use quando o cliente pedir para 'adicionar', 'colocar no carrinho', 'quero comprar', 'monta um orçamento', 'preciso de X unidades', etc. IMPORTANTE: cada produto tem uma quantidade mínima obrigatória — se o cliente pedir menos, o sistema ajustará automaticamente para a quantidade mínima.",
+      parameters: {
+        type: "object",
+        properties: {
+          product_query: {
+            type: "string",
+            description: "Nome ou palavra-chave do produto que o cliente quer (ex: 'martelo 25mm', 'broca concreto longa 10mm', 'disco de corte madeira 180mm 36 dentes'). Seja o mais específico possível.",
+          },
+          quantity: {
+            type: "number",
+            description: "Quantidade que o cliente pediu. Se não informou, use 1 — o sistema ajustará para a mínima.",
+          },
+        },
+        required: ["product_query", "quantity"],
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "open_cart",
+      description: "Abre o carrinho/orçamento do cliente para que ele veja o que foi montado. Use quando o cliente pedir para 'ver carrinho', 'ver orçamento', 'finalizar', 'mostrar carrinho'.",
+      parameters: { type: "object", properties: {}, additionalProperties: false },
     },
   },
   {

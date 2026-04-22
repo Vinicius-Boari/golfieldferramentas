@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { X, Send } from "lucide-react";
-import { chatBus, normalizeCategoryId } from "@/lib/chatBus";
+import { chatBus, normalizeCategoryId, onCartReply, type CartReplyPayload } from "@/lib/chatBus";
 
 const WHATSAPP_URL = "https://wa.me/5511959409051";
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/public-chat`;
@@ -108,6 +108,18 @@ const ChatWidget = () => {
         goHomeThen(() => chatBus.emit("chat:setSearch", q));
         break;
       }
+      case "add_to_cart": {
+        const q = String(args.product_query ?? "").trim();
+        const qty = Math.max(1, Math.floor(Number(args.quantity) || 1));
+        if (!q) return;
+        const replyId = `cart-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+        goHomeThen(() => chatBus.emit("chat:addToCart", { query: q, quantity: qty, replyId }));
+        break;
+      }
+      case "open_cart": {
+        goHomeThen(() => chatBus.emit("chat:openCart", undefined as any));
+        break;
+      }
       // 'offer_whatsapp' não abre nada — apenas sinaliza para mostrar o botão verde
       // (tratado em send() ao detectar a chamada pelo nome)
       case "offer_whatsapp":
@@ -117,6 +129,26 @@ const ChatWidget = () => {
       }
     }
   }, [navigate, location.pathname]);
+
+  // Escuta respostas das tentativas de adicionar ao carrinho e mostra como mensagem do assistente
+  useEffect(() => {
+    const off = onCartReply((r: CartReplyPayload) => {
+      let content = "";
+      if (r.ok === false) {
+        const reason = r.reason;
+        const query = r.query;
+        content = reason === "not_found"
+          ? `Não encontrei nenhum produto correspondente a "${query}". Pode tentar com um nome mais específico?`
+          : `Não consegui adicionar "${query}" agora. Tente novamente em instantes.`;
+      } else {
+        content = r.adjusted
+          ? `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento (mínimo do produto: ${r.minQty}).`
+          : `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento.`;
+      }
+      setMessages((prev) => [...prev, { role: "assistant", content }]);
+    });
+    return off;
+  }, []);
 
   // Mensagem inicial ao abrir pela primeira vez
   useEffect(() => {

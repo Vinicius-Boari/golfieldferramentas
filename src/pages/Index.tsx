@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
 import Hero, { FloatingToolVisual } from "@/components/Hero";
@@ -7,10 +7,10 @@ import ProductCard from "@/components/ProductCard";
 import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
-import { CartProvider } from "@/context/CartContext";
+import { CartProvider, useCart } from "@/context/CartContext";
 import { useProducts } from "@/hooks/useProducts";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
-import { chatBus } from "@/lib/chatBus";
+import { chatBus, emitCartReply } from "@/lib/chatBus";
 import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
 import mascotGirl from "@/assets/mascot-girl.png";
 import mascotBoy from "@/assets/mascot-boy.png";
@@ -81,15 +81,21 @@ const IndexContent = () => {
     setShowAll(false);
   }, [activeCategory, searchQuery]);
 
-  // Listen to chat assistant navigation events (filter category / search products)
+  const { addItem, setIsOpen: setCartOpen } = useCart();
+
+  // ref aos produtos atuais (evita reassinar listeners do bus a cada render)
+  const productsRef = useRef(products);
+  useEffect(() => { productsRef.current = products; }, [products]);
+
+  // Listen to chat assistant events (navegação + carrinho)
   useEffect(() => {
     const scrollToProducts = () => {
-      // pequeno delay para o filtro renderizar antes de rolar
       setTimeout(() => {
         const el = document.getElementById("produtos");
         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 120);
     };
+
     const offCat = chatBus.on("chat:setCategory", (catId) => {
       setActiveCategory(catId);
       setSearchQuery("");
@@ -102,11 +108,53 @@ const IndexContent = () => {
       setShowAll(true);
       scrollToProducts();
     });
+    const offOpenCart = chatBus.on("chat:openCart", () => {
+      setCartOpen(true);
+    });
+    const offAdd = chatBus.on("chat:addToCart", ({ query, quantity, replyId }) => {
+      const list = productsRef.current;
+      if (!list.length) {
+        emitCartReply({ ok: false, replyId, reason: "error", query });
+        return;
+      }
+      // busca fuzzy: tokeniza a query e pontua produtos pelo número de tokens encontrados no nome
+      const norm = (s: string) =>
+        s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const tokens = norm(query).split(/[^a-z0-9]+/).filter((t) => t.length >= 2);
+      let best: { product: typeof list[number]; score: number } | null = null;
+      for (const p of list) {
+        const name = norm(p.name);
+        let score = 0;
+        for (const t of tokens) if (name.includes(t)) score += t.length;
+        // bônus para nome inteiro mais curto (preferir match mais "limpo")
+        if (score > 0) score += Math.max(0, 30 - name.length) * 0.05;
+        if (score > 0 && (!best || score > best.score)) best = { product: p, score };
+      }
+      if (!best) {
+        emitCartReply({ ok: false, replyId, reason: "not_found", query });
+        return;
+      }
+      const requested = Math.max(1, Math.floor(Number(quantity) || 1));
+      const finalQty = Math.max(requested, best.product.minQty);
+      const adjusted = finalQty !== requested;
+      addItem(best.product as any, finalQty);
+      emitCartReply({
+        ok: true,
+        replyId,
+        productName: best.product.name,
+        addedQty: finalQty,
+        minQty: best.product.minQty,
+        adjusted,
+      });
+    });
+
     return () => {
       offCat();
       offSearch();
+      offOpenCart();
+      offAdd();
     };
-  }, []);
+  }, [addItem, setCartOpen]);
 
   const isHomepage = activeCategory === "todos" && searchQuery.trim() === "" && !showAll;
   const displayProducts = isHomepage ? filteredProducts.slice(0, 20) : filteredProducts;
