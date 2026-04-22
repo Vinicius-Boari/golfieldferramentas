@@ -19,3 +19,5 @@ project_id = "ehtlblplrzqdjrviodzi"
     verify_jwt = false
   [functions.reset-password]
     verify_jwt = false
+  [functions.admin-ai-chat]
+    verify_jwt = true
