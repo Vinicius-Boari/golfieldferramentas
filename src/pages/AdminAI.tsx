@@ -194,6 +194,7 @@ const AdminAI = () => {
     } finally {
       setIsStreaming(false);
       abortRef.current = null;
+      refetchUsage();
     }
   };
 
