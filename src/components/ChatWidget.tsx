@@ -73,7 +73,7 @@ const ChatWidget = () => {
   useEffect(() => {
     if (open && messages.length === 0) {
       setMessages([
-        { role: "assistant", content: "Olá! 👋 Sou o assistente virtual. Como posso te ajudar hoje?" },
+        { role: "assistant", content: "Olá! 👋 Eu sou o GolField, assistente virtual da empresa. Como posso te ajudar hoje?" },
       ]);
     }
   }, [open, messages.length]);
@@ -246,7 +246,8 @@ const ChatWidget = () => {
                 <RobotIcon size={24} />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-[15px] leading-tight">Assistente Virtual</div>
+                <div className="font-semibold text-[15px] leading-tight">GolField</div>
+                <div className="text-[10px] uppercase tracking-wider text-white/70">Assistente Virtual</div>
                 <div className="text-xs text-white/80 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
                   Online agora
