@@ -49,7 +49,7 @@ const Register = () => {
     setErrors((prev) => err ? { ...prev, [field]: err } : (() => { const { [field]: _, ...rest } = prev; return rest; })());
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const fields = ["cnpj", "razaoSocial", "nomeResponsavel", "cargo", "email", "telefone", "senha", "confirmarSenha", "termos"];
     const newErrors: Record<string, string> = {};
@@ -58,7 +58,41 @@ const Register = () => {
     if (Object.keys(newErrors).length > 0) return;
 
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSuccess(true); }, 2000);
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: form.email,
+        password: form.senha,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            cnpj: form.cnpj,
+            razao_social: form.razaoSocial,
+            nome_fantasia: form.nomeFantasia,
+            segmento: form.segmento,
+            nome_responsavel: form.nomeResponsavel,
+            cargo: form.cargo,
+            email: form.email,
+            telefone: form.telefone,
+          },
+        },
+      });
+
+      if (error) {
+        const msg = error.message.toLowerCase().includes("already")
+          ? "Este e-mail já está cadastrado. Faça login."
+          : error.message;
+        toast({ title: "Erro no cadastro", description: msg, variant: "destructive" });
+        setLoading(false);
+        return;
+      }
+
+      toast({ title: "Cadastro realizado!", description: "Sua conta foi criada com sucesso." });
+      setSuccess(true);
+      setTimeout(() => navigate("/"), 1500);
+    } catch (err: any) {
+      toast({ title: "Erro inesperado", description: err?.message ?? "Tente novamente.", variant: "destructive" });
+      setLoading(false);
+    }
   };
 
   const inputClass = (field: string) =>
