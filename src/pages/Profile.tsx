@@ -92,13 +92,33 @@ const Profile = () => {
     navigate("/", { replace: true });
   };
 
-  if (authLoading || isLoading || !profile) {
+  if (authLoading || isLoading) {
     return (
       <AuthLayout title="Meu perfil">
         <div className="space-y-4">
           <div className="h-24 bg-secondary/40 rounded-xl animate-pulse" />
           <div className="h-12 bg-secondary/40 rounded-xl animate-pulse" />
           <div className="h-12 bg-secondary/40 rounded-xl animate-pulse" />
+        </div>
+      </AuthLayout>
+    );
+  }
+
+  // Defensive fallback: user is logged in but profile row is missing.
+  // Instead of an infinite skeleton (blank screen), show an actionable message.
+  if (!profile) {
+    return (
+      <AuthLayout title="Perfil indisponível" subtitle="Não conseguimos carregar seus dados">
+        <div className="space-y-4 text-center">
+          <p className="text-sm text-muted-foreground">
+            Sua conta está autenticada, mas o perfil não foi encontrado. Tente sair e entrar novamente.
+          </p>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive font-medium hover:bg-destructive/20 transition"
+          >
+            <LogOut size={16} /> Sair da conta
+          </button>
         </div>
       </AuthLayout>
     );
