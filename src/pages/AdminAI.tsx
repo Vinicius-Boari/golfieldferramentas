@@ -85,6 +85,32 @@ const AdminAI = () => {
   const [promptLoading, setPromptLoading] = useState(false);
   const [promptCopied, setPromptCopied] = useState(false);
 
+  // Settings + usage panel
+  const { data: aiSettings } = useAiSettings();
+  const { data: aiUsage, refetch: refetchUsage } = useAiUsageStats();
+  const updateSettings = useUpdateAiSettings();
+  const [showSettings, setShowSettings] = useState(false);
+  const [budgetDraft, setBudgetDraft] = useState<string>("");
+
+  const aiEnabled = aiSettings?.enabled ?? true;
+  const budgetUsd = aiSettings?.monthly_budget_usd ?? 1;
+  const usedUsd = aiUsage?.totalUsd ?? 0;
+  const usagePct = budgetUsd > 0 ? Math.min(100, (usedUsd / budgetUsd) * 100) : 0;
+  const remainingUsd = Math.max(0, budgetUsd - usedUsd);
+  const budgetReached = usedUsd >= budgetUsd;
+
+  const guardOrToast = (): boolean => {
+    if (!aiEnabled) {
+      toast.error("A IA está desativada. Ative no painel de configurações.");
+      return false;
+    }
+    if (budgetReached) {
+      toast.error(`Orçamento mensal atingido ($${budgetUsd.toFixed(2)}). Aumente no painel ou aguarde o próximo mês.`);
+      return false;
+    }
+    return true;
+  };
+
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
       toast.error("Acesso negado. Apenas administradores.");
