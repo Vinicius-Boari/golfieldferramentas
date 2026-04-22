@@ -164,6 +164,7 @@ Gostaria de fazer um orçamento dos seguintes produtos:
 *Total: {total}*
 
 Meus dados de contato:
+• CNPJ: {cnpj}
 • Telefone: {phone}
 • Email: {email}
 
