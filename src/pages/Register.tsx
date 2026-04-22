@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import AuthLayout from "@/components/auth/AuthLayout";
 import PasswordInput from "@/components/auth/PasswordInput";
 import PasswordStrength from "@/components/auth/PasswordStrength";
 import { formatCNPJ, validateCNPJ, formatPhone } from "@/lib/cnpj";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 const SEGMENTS = [
   "Construção Civil", "Indústria", "Comércio de Ferragens", "Manutenção Industrial",
@@ -13,6 +15,7 @@ const SEGMENTS = [
 ];
 
 const Register = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     cnpj: "", razaoSocial: "", nomeFantasia: "", segmento: "",
     nomeResponsavel: "", cargo: "", email: "", telefone: "",
@@ -46,7 +49,7 @@ const Register = () => {
     setErrors((prev) => err ? { ...prev, [field]: err } : (() => { const { [field]: _, ...rest } = prev; return rest; })());
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const fields = ["cnpj", "razaoSocial", "nomeResponsavel", "cargo", "email", "telefone", "senha", "confirmarSenha", "termos"];
     const newErrors: Record<string, string> = {};
@@ -55,7 +58,41 @@ const Register = () => {
     if (Object.keys(newErrors).length > 0) return;
 
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSuccess(true); }, 2000);
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: form.email,
+        password: form.senha,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            cnpj: form.cnpj,
+            razao_social: form.razaoSocial,
+            nome_fantasia: form.nomeFantasia,
+            segmento: form.segmento,
+            nome_responsavel: form.nomeResponsavel,
+            cargo: form.cargo,
+            email: form.email,
+            telefone: form.telefone,
+          },
+        },
+      });
+
+      if (error) {
+        const msg = error.message.toLowerCase().includes("already")
+          ? "Este e-mail já está cadastrado. Faça login."
+          : error.message;
+        toast({ title: "Erro no cadastro", description: msg, variant: "destructive" });
+        setLoading(false);
+        return;
+      }
+
+      toast({ title: "Cadastro realizado!", description: "Sua conta foi criada com sucesso." });
+      setSuccess(true);
+      setTimeout(() => navigate("/"), 1500);
+    } catch (err: any) {
+      toast({ title: "Erro inesperado", description: err?.message ?? "Tente novamente.", variant: "destructive" });
+      setLoading(false);
+    }
   };
 
   const inputClass = (field: string) =>
@@ -65,15 +102,15 @@ const Register = () => {
 
   if (success) {
     return (
-      <AuthLayout title="Cadastro enviado!" subtitle="">
+      <AuthLayout title="Conta criada!" subtitle="">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center space-y-5">
           <div className="mx-auto w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center">
             <CheckCircle2 className="text-green-500" size={36} />
           </div>
           <p className="text-muted-foreground text-sm">
-            Seu cadastro foi enviado com sucesso. Nossa equipe irá analisar seus dados e entraremos em contato em breve.
+            Sua conta foi criada com sucesso! Você já pode aproveitar a plataforma.
           </p>
-          <Link to="/login" className="btn-golfield inline-flex">Voltar ao Login</Link>
+          <Link to="/" className="btn-golfield inline-flex">Ir para a loja</Link>
         </motion.div>
       </AuthLayout>
     );
