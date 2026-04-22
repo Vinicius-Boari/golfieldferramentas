@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useProducts } from "@/hooks/useProducts";
+import { useTranslatedCategory } from "@/i18n/useTranslatedCategory";
 
 interface CategoryNavProps {
   activeCategory: string;
@@ -13,6 +14,7 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: products = [] } = useProducts();
   const { t } = useTranslation();
+  const tCategory = useTranslatedCategory();
 
   const normalizeCategory = (s: string) =>
     s
@@ -31,10 +33,10 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
       { id: "todos", label: t("category.all") },
       ...cats.map(c => ({
         id: normalizeCategory(c),
-        label: c,
+        label: tCategory(c),
       })),
     ];
-  }, [products, t]);
+  }, [products, t, tCategory]);
 
   const scroll = (dir: "left" | "right") => {
     if (scrollRef.current) {

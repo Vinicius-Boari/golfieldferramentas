@@ -1,11 +1,15 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ShoppingCart, Trash2, Scale, Check, Minus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useCompare } from "@/context/CompareContext";
 import { useCart } from "@/context/CartContext";
+import { useTranslatedCategory } from "@/i18n/useTranslatedCategory";
 
 const CompareDrawer = () => {
   const { items, isOpen, setIsOpen, remove, clear, max } = useCompare();
   const { addItem } = useCart();
+  const { t } = useTranslation();
+  const tCategory = useTranslatedCategory();
 
   // Calcula valores min/max para destacar melhor preço/menor mínimo
   const minPrice = items.length ? Math.min(...items.map(i => i.price)) : 0;
@@ -37,9 +41,9 @@ const CompareDrawer = () => {
                   <Scale size={20} />
                 </div>
                 <div>
-                  <h2 className="text-lg sm:text-xl font-bold">Comparar Produtos</h2>
+                  <h2 className="text-lg sm:text-xl font-bold">{t("compare.title")}</h2>
                   <p className="text-xs text-muted-foreground">
-                    {items.length} de {max} produtos selecionados
+                    {t("compare.selected", { count: items.length, max })}
                   </p>
                 </div>
               </div>
@@ -49,13 +53,13 @@ const CompareDrawer = () => {
                     onClick={clear}
                     className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground hover:text-destructive transition-colors px-3 py-1.5 rounded-lg hover:bg-destructive/10"
                   >
-                    <Trash2 size={14} /> Limpar tudo
+                    <Trash2 size={14} /> {t("compare.clearAll")}
                   </button>
                 )}
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 rounded-lg hover:bg-secondary transition-colors"
-                  aria-label="Fechar comparador"
+                  aria-label={t("compare.close")}
                 >
                   <X size={20} />
                 </button>
@@ -69,9 +73,9 @@ const CompareDrawer = () => {
                   <div className="p-6 rounded-full bg-secondary/40 mb-4">
                     <Scale size={48} className="text-muted-foreground" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Nenhum produto para comparar</h3>
+                  <h3 className="text-lg font-semibold mb-2">{t("compare.empty")}</h3>
                   <p className="text-sm text-muted-foreground max-w-sm">
-                    Clique no ícone de balança nos produtos para adicioná-los à comparação (até {max}).
+                    {t("compare.emptyHint", { max })}
                   </p>
                 </div>
               ) : (
@@ -90,7 +94,7 @@ const CompareDrawer = () => {
                         <button
                           onClick={() => remove(p.id)}
                           className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-card/90 backdrop-blur hover:bg-destructive hover:text-destructive-foreground transition-all shadow"
-                          aria-label="Remover do comparador"
+                          aria-label={t("compare.removeFromCompare")}
                         >
                           <X size={14} />
                         </button>
@@ -105,33 +109,33 @@ const CompareDrawer = () => {
 
                         <div className="p-3 sm:p-4 flex-1 flex flex-col gap-3">
                           <div>
-                            <p className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">{p.category}</p>
+                            <p className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1">{tCategory(p.category)}</p>
                             <h3 className="text-sm font-semibold leading-tight line-clamp-2 min-h-[2.5rem]">{p.name}</h3>
                           </div>
 
                           <dl className="space-y-2 text-xs">
                             <div className="flex justify-between items-center pt-2 border-t border-border/40">
-                              <dt className="text-muted-foreground">Preço unit.</dt>
+                              <dt className="text-muted-foreground">{t("compare.unitPrice")}</dt>
                               <dd className={`font-bold ${isBestPrice ? "text-[hsl(142,70%,45%)]" : "text-foreground"}`}>
                                 {isBestPrice && <Check size={12} className="inline mr-1" />}
                                 R$ {p.price.toFixed(2).replace(".", ",")}
                               </dd>
                             </div>
                             <div className="flex justify-between items-center">
-                              <dt className="text-muted-foreground">Mínimo</dt>
+                              <dt className="text-muted-foreground">{t("compare.minimum")}</dt>
                               <dd className={`font-medium ${isLowestMinQty ? "text-[hsl(142,70%,45%)]" : ""}`}>
-                                {p.minQty} un.
+                                {p.minQty} {t("compare.units")}
                               </dd>
                             </div>
                             <div className="flex justify-between items-center">
-                              <dt className="text-muted-foreground">Total mín.</dt>
+                              <dt className="text-muted-foreground">{t("compare.minTotal")}</dt>
                               <dd className="font-medium">
                                 R$ {(p.price * p.minQty).toFixed(2).replace(".", ",")}
                               </dd>
                             </div>
                             {p.badge && (
                               <div className="flex justify-between items-center">
-                                <dt className="text-muted-foreground">Destaque</dt>
+                                <dt className="text-muted-foreground">{t("compare.highlight")}</dt>
                                 <dd className="font-medium text-primary">{p.badge}</dd>
                               </div>
                             )}
@@ -141,13 +145,13 @@ const CompareDrawer = () => {
                             onClick={() => { addItem(p, p.minQty); }}
                             className="mt-auto flex items-center justify-center gap-2 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:shadow-lg hover:shadow-primary/25 transition-all"
                           >
-                            <ShoppingCart size={13} /> Adicionar
+                            <ShoppingCart size={13} /> {t("compare.add")}
                           </button>
                           <button
                             onClick={() => remove(p.id)}
                             className="sm:hidden flex items-center justify-center gap-1.5 py-1.5 text-[11px] text-muted-foreground hover:text-destructive transition-colors"
                           >
-                            <Minus size={12} /> Remover
+                            <Minus size={12} /> {t("compare.remove")}
                           </button>
                         </div>
                       </motion.div>
