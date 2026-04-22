@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
 import Hero, { FloatingToolVisual } from "@/components/Hero";
@@ -84,8 +84,8 @@ const IndexContent = () => {
   const { addItem, setIsOpen: setCartOpen } = useCart();
 
   // ref aos produtos atuais (evita reassinar listeners do bus a cada render)
-  const productsRef = React.useRef(products);
-  React.useEffect(() => { productsRef.current = products; }, [products]);
+  const productsRef = useRef(products);
+  useEffect(() => { productsRef.current = products; }, [products]);
 
   // Listen to chat assistant events (navegação + carrinho)
   useEffect(() => {
