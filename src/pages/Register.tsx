@@ -80,7 +80,7 @@ const Register = () => {
   }
 
   return (
-    <AuthLayout title="Solicite seu acesso" subtitle="Preencha os dados da sua empresa para criar uma conta B2B">
+    <AuthLayout title="Realize o seu cadastro" subtitle="Preencha os dados da sua empresa para criar uma conta B2B">
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         {/* CNPJ */}
         <div>
