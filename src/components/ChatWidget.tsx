@@ -246,7 +246,7 @@ const ChatWidget = () => {
       // Marca para mostrar botão WhatsApp se necessário
       const lastUserText = text;
       const lastAssistantText = assistantSoFar.toLowerCase();
-      const calledWhatsapp = calls.some((c) => c.name === "open_whatsapp");
+      const calledWhatsapp = calls.some((c) => c.name === "offer_whatsapp" || c.name === "open_whatsapp");
       const shouldShow =
         calledWhatsapp ||
         detectHumanRequest(lastUserText) ||
