@@ -140,8 +140,6 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
     return sameCategory;
   }, [items, relatedProducts]);
 
-  const { addItem } = useCart();
-
   return (
     <AnimatePresence>
       {isOpen && (
