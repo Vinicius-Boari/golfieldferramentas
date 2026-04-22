@@ -10,6 +10,7 @@ import VisualEditorBridge from "@/components/VisualEditorBridge";
 import { useApplyMobileMotionClass } from "@/hooks/useMobileMotion";
 import { useApplyGlobalBackground } from "@/hooks/useGlobalBackground";
 import { CompareProvider } from "@/context/CompareContext";
+import { CartProvider } from "@/context/CartContext";
 import CompareDrawer from "@/components/CompareDrawer";
 import CompareFloatingButton from "@/components/CompareFloatingButton";
 import Index from "./pages/Index.tsx";
@@ -54,6 +55,7 @@ const AppShell = () => {
       {/* Global: applies persisted visual overrides on the public site,
           and bridges live-preview messages when running inside the editor iframe. */}
       <VisualEditorBridge />
+      <CartProvider>
       <CompareProvider>
         <MaintenanceGate>
           <Suspense fallback={<RouteFallback />}>
@@ -79,6 +81,7 @@ const AppShell = () => {
         <CompareFloatingButton />
         <CompareDrawer />
       </CompareProvider>
+      </CartProvider>
     </BrowserRouter>
   );
 };

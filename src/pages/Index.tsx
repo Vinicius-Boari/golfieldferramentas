@@ -411,12 +411,6 @@ const IndexContent = () => {
   );
 };
 
-const Index = () => {
-  return (
-    <CartProvider>
-      <IndexContent />
-    </CartProvider>
-  );
-};
+const Index = () => <IndexContent />;
 
 export default Index;
