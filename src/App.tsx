@@ -20,6 +20,7 @@ const AdminProducts = lazy(() => import("./pages/AdminProducts.tsx"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin.tsx"));
 const AdminHome = lazy(() => import("./pages/AdminHome.tsx"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers.tsx"));
+const AdminCustomers = lazy(() => import("./pages/AdminCustomers.tsx"));
 const AdminCoupons = lazy(() => import("./pages/AdminCoupons.tsx"));
 const AdminVisual = lazy(() => import("./pages/AdminVisual.tsx"));
 
@@ -59,6 +60,7 @@ const AppShell = () => {
             <Route path="/admin/home" element={<AdminHome />} />
             <Route path="/admin/visual" element={<AdminVisual />} />
             <Route path="/admin/usuarios" element={<AdminUsers />} />
+            <Route path="/admin/clientes" element={<AdminCustomers />} />
             <Route path="/admin/cupons" element={<AdminCoupons />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
