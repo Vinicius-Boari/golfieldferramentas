@@ -36,7 +36,7 @@ const Login = () => {
   };
 
   return (
-    <AuthLayout title="Acesse sua conta" subtitle="Área exclusiva para clientes B2B">
+    <AuthLayout title="Acesse sua conta" subtitle="Área exclusiva para clientes">
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         {banner && (
           <motion.div
