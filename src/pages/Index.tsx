@@ -13,6 +13,7 @@ import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { chatBus, emitCartReply } from "@/lib/chatBus";
 import { roundUpToMultiple } from "@/lib/qty";
 import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
+import SEO, { buildOrganizationJsonLd, buildWebSiteJsonLd, buildItemListJsonLd } from "@/components/SEO";
 import mascotGirl from "@/assets/mascot-girl.webp";
 import mascotBoy from "@/assets/mascot-boy.webp";
 
@@ -393,11 +394,18 @@ const IndexContent = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
+      <SEO
+        jsonLd={[
+          buildOrganizationJsonLd(),
+          buildWebSiteJsonLd(),
+          buildItemListJsonLd(products.slice(0, 30)),
+        ]}
+      />
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       {sortedSections.map(section => (
         <div key={section.id}>{renderSection(section.id)}</div>
       ))}
-      <CartDrawer />
+      <CartDrawer relatedProducts={products} />
       <ChatWidget />
     </div>
   );

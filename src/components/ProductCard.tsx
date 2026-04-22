@@ -1,9 +1,10 @@
 import { memo, useState } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
-import { ShoppingCart, Plus, Minus, Check } from "lucide-react";
+import { ShoppingCart, Plus, Minus, Check, Scale } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
+import { useCompare } from "@/context/CompareContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ProductCardProps {
@@ -15,6 +16,8 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
   const [qty, setQty] = useState(product.minQty);
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
+  const { toggle: toggleCompare, has: hasInCompare } = useCompare();
+  const inCompare = hasInCompare(product.id);
   const isMobile = useIsMobile();
 
   const x = useMotionValue(0);
@@ -72,6 +75,24 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
             {product.badge === "Mais Vendido" ? "⭐ " : "🆕 "}{product.badge}
           </motion.span>
         )}
+
+        {/* Botão Comparar */}
+        <motion.button
+          onClick={(e) => { e.stopPropagation(); toggleCompare(product); }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.85 }}
+          aria-label={inCompare ? "Remover do comparador" : "Adicionar ao comparador"}
+          aria-pressed={inCompare}
+          title={inCompare ? "Remover do comparador" : "Comparar este produto"}
+          className={`absolute top-3 right-3 z-10 p-2 rounded-lg backdrop-blur-sm border transition-all duration-300 ${
+            inCompare
+              ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/30"
+              : "bg-card/80 text-foreground/70 border-border/50 hover:text-primary hover:border-primary/50 opacity-0 group-hover:opacity-100"
+          } ${isMobile ? "opacity-100" : ""}`}
+        >
+          <Scale size={14} />
+        </motion.button>
+
 
         {product.mediaType === "video" ? (
           <motion.video

@@ -1,18 +1,23 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus, LogIn, Tag, Loader2, Check, AlertCircle } from "lucide-react";
+import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus, LogIn, Tag, Loader2, Check, AlertCircle, Sparkles } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useValidateCoupon } from "@/hooks/useCoupons";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { renderWhatsAppTemplate } from "@/components/admin/SystemSettingsPanel";
 import { supabase } from "@/integrations/supabase/client";
 import { formatCNPJ } from "@/lib/cnpj";
+import type { Product } from "@/data/products";
 
-const CartDrawer = () => {
-  const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart, appliedCoupon, setAppliedCoupon, finalPrice } = useCart();
+interface CartDrawerProps {
+  relatedProducts?: Product[];
+}
+
+const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
+  const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart, appliedCoupon, setAppliedCoupon, finalPrice, addItem } = useCart();
   const { isAuthenticated } = useAuth();
   const { data: homeConfig } = useHomeConfig();
   const navigate = useNavigate();
@@ -115,6 +120,26 @@ const CartDrawer = () => {
 
   const progressPercent = Math.min((totalPrice / 2000) * 100, 100);
 
+  // Cross-sell: produtos da mesma categoria dos itens no carrinho, próximos do preço médio
+  const recommendations = useMemo(() => {
+    if (!relatedProducts.length || items.length === 0) return [];
+    const cartIds = new Set(items.map(i => String(i.product.id)));
+    const cartCats = new Set(items.map(i => i.product.category));
+    const avgPrice = items.reduce((s, i) => s + i.product.price, 0) / items.length;
+    const sameCategory = relatedProducts
+      .filter(p => !cartIds.has(String(p.id)) && cartCats.has(p.category))
+      .map(p => ({ p, score: Math.abs(p.price - avgPrice) }))
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 3)
+      .map(s => s.p);
+    if (sameCategory.length < 3) {
+      const used = new Set([...cartIds, ...sameCategory.map(s => String(s.id))]);
+      const fallback = relatedProducts.filter(p => !used.has(String(p.id))).slice(0, 3 - sameCategory.length);
+      return [...sameCategory, ...fallback];
+    }
+    return sameCategory;
+  }, [items, relatedProducts]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -216,6 +241,48 @@ const CartDrawer = () => {
                     </motion.div>
                   ))}
                 </AnimatePresence>
+              )}
+
+              {/* Cross-sell recommendations */}
+              {recommendations.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="pt-4 mt-2 border-t border-border/50"
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles size={14} className="text-primary" />
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      Você também pode gostar
+                    </h3>
+                  </div>
+                  <div className="space-y-2">
+                    {recommendations.map(p => (
+                      <motion.button
+                        key={p.id}
+                        whileHover={{ x: 2 }}
+                        onClick={() => { addItem(p, p.minQty); toast.success(`${p.name} adicionado`); }}
+                        className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-secondary/20 hover:bg-secondary/40 border border-border/30 hover:border-primary/30 transition-all text-left group/rec"
+                      >
+                        <div className="w-12 h-12 shrink-0 rounded-lg bg-card p-1 flex items-center justify-center overflow-hidden">
+                          {p.mediaType === "video" ? (
+                            <video src={p.image} className="w-full h-full object-contain" muted autoPlay loop playsInline />
+                          ) : (
+                            <img src={p.image} alt={p.name} className="w-full h-full object-contain" loading="lazy" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium line-clamp-2 leading-tight group-hover/rec:text-foreground">{p.name}</p>
+                          <p className="text-xs text-primary font-bold mt-0.5">
+                            R$ {p.price.toFixed(2).replace(".", ",")} <span className="text-muted-foreground font-normal">/ un</span>
+                          </p>
+                        </div>
+                        <Plus size={14} className="text-muted-foreground shrink-0 group-hover/rec:text-primary transition-colors" />
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
               )}
             </div>
 

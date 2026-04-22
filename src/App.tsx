@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { HelmetProvider } from "react-helmet-async";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -8,6 +9,9 @@ import MaintenanceGate from "@/components/MaintenanceGate";
 import VisualEditorBridge from "@/components/VisualEditorBridge";
 import { useApplyMobileMotionClass } from "@/hooks/useMobileMotion";
 import { useApplyGlobalBackground } from "@/hooks/useGlobalBackground";
+import { CompareProvider } from "@/context/CompareContext";
+import CompareDrawer from "@/components/CompareDrawer";
+import CompareFloatingButton from "@/components/CompareFloatingButton";
 import Index from "./pages/Index.tsx";
 
 // Lazy-load secondary routes — they are not needed for the initial paint of "/".
@@ -50,39 +54,45 @@ const AppShell = () => {
       {/* Global: applies persisted visual overrides on the public site,
           and bridges live-preview messages when running inside the editor iframe. */}
       <VisualEditorBridge />
-      <MaintenanceGate>
-        <Suspense fallback={<RouteFallback />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/cadastro" element={<Register />} />
-            <Route path="/esqueci-senha" element={<ForgotPassword />} />
-            <Route path="/perfil" element={<Profile />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/produtos" element={<AdminProducts />} />
-            <Route path="/admin/home" element={<AdminHome />} />
-            <Route path="/admin/visual" element={<AdminVisual />} />
-            <Route path="/admin/usuarios" element={<AdminUsers />} />
-            <Route path="/admin/clientes" element={<AdminCustomers />} />
-            <Route path="/admin/cupons" element={<AdminCoupons />} />
-            <Route path="/admin/ia" element={<AdminAI />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </MaintenanceGate>
+      <CompareProvider>
+        <MaintenanceGate>
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/cadastro" element={<Register />} />
+              <Route path="/esqueci-senha" element={<ForgotPassword />} />
+              <Route path="/perfil" element={<Profile />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/produtos" element={<AdminProducts />} />
+              <Route path="/admin/home" element={<AdminHome />} />
+              <Route path="/admin/visual" element={<AdminVisual />} />
+              <Route path="/admin/usuarios" element={<AdminUsers />} />
+              <Route path="/admin/clientes" element={<AdminCustomers />} />
+              <Route path="/admin/cupons" element={<AdminCoupons />} />
+              <Route path="/admin/ia" element={<AdminAI />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </MaintenanceGate>
+        <CompareFloatingButton />
+        <CompareDrawer />
+      </CompareProvider>
     </BrowserRouter>
   );
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <AppShell />
-    </TooltipProvider>
-  </QueryClientProvider>
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <AppShell />
+      </TooltipProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;
