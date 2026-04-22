@@ -13,8 +13,8 @@ import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { chatBus, emitCartReply } from "@/lib/chatBus";
 import { roundUpToMultiple } from "@/lib/qty";
 import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
-import mascotGirl from "@/assets/mascot-girl.png";
-import mascotBoy from "@/assets/mascot-boy.png";
+import mascotGirl from "@/assets/mascot-girl.webp";
+import mascotBoy from "@/assets/mascot-boy.webp";
 
 const staggerContainer = {
   hidden: {},

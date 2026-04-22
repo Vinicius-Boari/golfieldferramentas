@@ -11,12 +11,12 @@ const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-import toolWrench from "@/assets/tool-wrench.png";
-import toolHammer from "@/assets/tool-hammer.png";
-import toolScrewdriver from "@/assets/tool-screwdriver.png";
-import toolPliers from "@/assets/tool-pliers.png";
-import toolTape from "@/assets/tool-tape.png";
-import toolDrillbit from "@/assets/tool-drillbit.png";
+import toolWrench from "@/assets/tool-wrench.webp";
+import toolHammer from "@/assets/tool-hammer.webp";
+import toolScrewdriver from "@/assets/tool-screwdriver.webp";
+import toolPliers from "@/assets/tool-pliers.webp";
+import toolTape from "@/assets/tool-tape.webp";
+import toolDrillbit from "@/assets/tool-drillbit.webp";
 
 export const FloatingToolVisual = ({ scrollScale }: { scrollScale?: any }) => {
   const tools = [
