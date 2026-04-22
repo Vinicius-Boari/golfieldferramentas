@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_settings: {
+        Row: {
+          enabled: boolean
+          id: number
+          monthly_budget_usd: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          enabled?: boolean
+          id?: number
+          monthly_budget_usd?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          enabled?: boolean
+          id?: number
+          monthly_budget_usd?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      ai_usage_log: {
+        Row: {
+          created_at: string
+          estimated_cost_usd: number
+          feature: string
+          id: string
+          model: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          estimated_cost_usd?: number
+          feature: string
+          id?: string
+          model?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          estimated_cost_usd?: number
+          feature?: string
+          id?: string
+          model?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       coupon_usage: {
         Row: {
           coupon_id: string
