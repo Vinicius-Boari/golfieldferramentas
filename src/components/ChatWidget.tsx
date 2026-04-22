@@ -108,8 +108,11 @@ const ChatWidget = () => {
         goHomeThen(() => chatBus.emit("chat:setSearch", q));
         break;
       }
+      // 'offer_whatsapp' não abre nada — apenas sinaliza para mostrar o botão verde
+      // (tratado em send() ao detectar a chamada pelo nome)
+      case "offer_whatsapp":
       case "open_whatsapp": {
-        window.open(WHATSAPP_URL, "_blank", "noopener,noreferrer");
+        // intencionalmente não abre o link; o botão verde aparece dentro do chat
         break;
       }
     }
@@ -243,7 +246,7 @@ const ChatWidget = () => {
       // Marca para mostrar botão WhatsApp se necessário
       const lastUserText = text;
       const lastAssistantText = assistantSoFar.toLowerCase();
-      const calledWhatsapp = calls.some((c) => c.name === "open_whatsapp");
+      const calledWhatsapp = calls.some((c) => c.name === "offer_whatsapp" || c.name === "open_whatsapp");
       const shouldShow =
         calledWhatsapp ||
         detectHumanRequest(lastUserText) ||
