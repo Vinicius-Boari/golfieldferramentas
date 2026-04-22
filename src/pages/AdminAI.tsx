@@ -290,6 +290,7 @@ const AdminAI = () => {
   const generatePrompt = async () => {
     if (!promptIdea.trim() || promptLoading) return;
     if (!guardOrToast()) return;
+    setPromptLoading(true);
     setPromptResult("");
     try {
       const { data, error } = await supabase.functions.invoke("admin-ai-prompt", {
@@ -299,6 +300,7 @@ const AdminAI = () => {
       if (data?.error) throw new Error(data.error);
       setPromptResult(data?.text || "");
       toast.success("Prompts gerados!");
+      refetchUsage();
     } catch (err: any) {
       toast.error(err.message || "Erro ao gerar prompts");
     } finally {
