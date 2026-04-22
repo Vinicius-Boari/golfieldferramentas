@@ -127,6 +127,7 @@ const AdminAI = () => {
     const text = (textOverride ?? chatInput).trim();
     if (!text || isStreaming) return;
     if (!guardOrToast()) return;
+    const userMsg: Msg = { role: "user", content: text };
     const newHistory = [...messages, userMsg];
     setMessages(newHistory);
     setChatInput("");
@@ -261,7 +262,7 @@ const AdminAI = () => {
 
   const editImage = async () => {
     if (!editPrompt.trim() || !editSourceUrl || editLoading) return;
-    setEditLoading(true);
+    if (!guardOrToast()) return;
     setEditedImg(null);
     try {
       const { data, error } = await supabase.functions.invoke("admin-ai-image", {
@@ -286,7 +287,7 @@ const AdminAI = () => {
   // ============= PROMPT GEN =============
   const generatePrompt = async () => {
     if (!promptIdea.trim() || promptLoading) return;
-    setPromptLoading(true);
+    if (!guardOrToast()) return;
     setPromptResult("");
     try {
       const { data, error } = await supabase.functions.invoke("admin-ai-prompt", {
