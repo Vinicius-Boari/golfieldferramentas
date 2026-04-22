@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AlertCircle } from "lucide-react";
 import AuthLayout from "@/components/auth/AuthLayout";
 import PasswordInput from "@/components/auth/PasswordInput";
 import { formatCNPJ, validateCNPJ } from "@/lib/cnpj";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [cnpj, setCnpj] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
