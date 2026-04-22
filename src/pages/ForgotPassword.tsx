@@ -32,6 +32,7 @@ const ForgotPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [pwErrors, setPwErrors] = useState<Record<string, string>>({});
   const [successMsg, setSuccessMsg] = useState(false);
+  const [resetId, setResetId] = useState<string>("");
 
   // Timer
   useEffect(() => {
@@ -43,7 +44,7 @@ const ForgotPassword = () => {
 
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
 
-  // Step 1 submit — envia código OTP de 6 dígitos por email (Supabase)
+  // Step 1 submit — envia código de 6 dígitos via edge function (e-mail customizado)
   const handleStep1 = async (e: React.FormEvent) => {
     e.preventDefault();
     setBanner("");
@@ -56,12 +57,11 @@ const ForgotPassword = () => {
     if (Object.keys(errs).length > 0) return;
     setLoading(true);
     try {
-      const normalizedEmail = email.trim().toLowerCase();
-      const { error } = await supabase.auth.signInWithOtp({
-        email: normalizedEmail,
-        options: { shouldCreateUser: false },
+      const { data, error } = await supabase.functions.invoke("send-reset-code", {
+        body: { cnpj, email: email.trim().toLowerCase() },
       });
       if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
       setStep(2);
       setTimer(EXPIRY_SECONDS);
     } catch (err: any) {
@@ -97,7 +97,7 @@ const ForgotPassword = () => {
     inputRefs.current[focusIdx]?.focus();
   };
 
-  // Step 2 submit — verifica o código OTP no Supabase
+  // Step 2 submit — verifica o código via edge function
   const handleStep2 = async (e: React.FormEvent) => {
     e.preventDefault();
     const full = code.join("");
@@ -105,12 +105,15 @@ const ForgotPassword = () => {
     if (timer <= 0) { setCodeError("O código expirou. Solicite um novo."); return; }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.verifyOtp({
-        email: email.trim().toLowerCase(),
-        token: full,
-        type: "email",
+      const { data, error } = await supabase.functions.invoke("verify-reset-code", {
+        body: { email: email.trim().toLowerCase(), code: full },
       });
       if (error) throw error;
+      const payload = data as { valid: boolean; resetId?: string; error?: string };
+      if (!payload?.valid || !payload.resetId) {
+        throw new Error(payload?.error || "Código inválido ou expirado.");
+      }
+      setResetId(payload.resetId);
       setStep(3);
     } catch (err: any) {
       setCodeError(err?.message || "Código inválido ou expirado.");
@@ -124,11 +127,11 @@ const ForgotPassword = () => {
     setCodeError("");
     inputRefs.current[0]?.focus();
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email: email.trim().toLowerCase(),
-        options: { shouldCreateUser: false },
+      const { data, error } = await supabase.functions.invoke("send-reset-code", {
+        body: { cnpj, email: email.trim().toLowerCase() },
       });
       if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
       setTimer(EXPIRY_SECONDS);
     } catch (err: any) {
       setCodeError(err?.message || "Não foi possível reenviar o código.");
