@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useState, forwardRef } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { ShoppingCart, Plus, Minus, Check } from "lucide-react";
 import { toast } from "sonner";
@@ -11,7 +11,7 @@ interface ProductCardProps {
   index: number;
 }
 
-const ProductCardImpl = ({ product, index }: ProductCardProps) => {
+const ProductCardImpl = forwardRef<HTMLDivElement, ProductCardProps>(({ product, index }, _ref) => {
   const [qty, setQty] = useState(product.minQty);
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
@@ -202,7 +202,8 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
       </div>
     </motion.div>
   );
-};
+});
+ProductCardImpl.displayName = "ProductCardImpl";
 
 // Memoized so cart updates / parent re-renders don't re-render every card in the grid.
 const ProductCard = memo(ProductCardImpl, (prev, next) =>
