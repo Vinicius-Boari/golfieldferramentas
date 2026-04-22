@@ -151,10 +151,15 @@ const ForgotPassword = () => {
     if (Object.keys(errs).length > 0) return;
     setLoading(true);
     try {
-      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      const { data, error } = await supabase.functions.invoke("reset-password", {
+        body: {
+          resetId,
+          email: email.trim().toLowerCase(),
+          newPassword,
+        },
+      });
       if (error) throw error;
-      // encerra a sessão temporária criada pelo OTP
-      await supabase.auth.signOut();
+      if ((data as any)?.error) throw new Error((data as any).error);
       setSuccessMsg(true);
       setTimeout(() => navigate("/login"), 3000);
     } catch (err: any) {
