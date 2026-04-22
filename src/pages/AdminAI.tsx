@@ -228,6 +228,7 @@ const AdminAI = () => {
       if (!data?.image) throw new Error("Nenhuma imagem foi retornada.");
       setGeneratedImg(data.image);
       toast.success("Imagem gerada!");
+      refetchUsage();
     } catch (err: any) {
       toast.error(err.message || "Erro ao gerar imagem");
     } finally {
