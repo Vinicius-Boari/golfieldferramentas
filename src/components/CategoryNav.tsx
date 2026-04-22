@@ -1,6 +1,30 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Layers } from "lucide-react";
+
+const isUsableImage = (url: unknown): url is string =>
+  typeof url === "string" && url.trim() !== "" && !url.includes("placeholder");
+
+// Componente de imagem com fallback automático para ícone
+const CategoryImage = ({ src, alt }: { src: string | null; alt: string }) => {
+  const [errored, setErrored] = useState(false);
+  if (!src || errored) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-secondary to-secondary/40">
+        <Layers size={28} className="text-muted-foreground" />
+      </div>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      onError={() => setErrored(true)}
+      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+    />
+  );
+};
 import { useProducts } from "@/hooks/useProducts";
 
 interface CategoryNavProps {
