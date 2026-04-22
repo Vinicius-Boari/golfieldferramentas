@@ -19,7 +19,7 @@ const CartDrawer = () => {
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const validateCoupon = useValidateCoupon();
-  const [profile, setProfile] = useState<{ nome_responsavel?: string; telefone?: string; email?: string; cnpj?: string } | null>(null);
+  const [profile, setProfile] = useState<{ nome_responsavel?: string; telefone?: string; email?: string; cnpj?: string; razao_social?: string } | null>(null);
 
   // Load profile data for template variables when authenticated
   useEffect(() => {
@@ -30,7 +30,7 @@ const CartDrawer = () => {
       if (!user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("nome_responsavel,telefone,email,cnpj")
+        .select("nome_responsavel,telefone,email,cnpj,razao_social")
         .eq("user_id", user.id)
         .maybeSingle();
       if (!cancelled) setProfile(data ?? { email: user.email ?? "" });
@@ -47,6 +47,7 @@ const CartDrawer = () => {
     if (customCfg?.enabled && customCfg.template?.trim()) {
       const data: Record<string, string> = {
         name: profile?.nome_responsavel || "",
+        razao_social: profile?.razao_social || "",
         phone: profile?.telefone || "",
         email: profile?.email || "",
         cnpj: profile?.cnpj ? formatCNPJ(profile.cnpj) : "",

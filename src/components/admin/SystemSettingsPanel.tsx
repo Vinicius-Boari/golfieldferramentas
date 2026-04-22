@@ -15,6 +15,7 @@ interface Props {
 
 const VARIABLES: { key: string; label: string; sample: string }[] = [
   { key: "{name}", label: "Nome do cliente", sample: "João Silva" },
+  { key: "{razao_social}", label: "Razão Social", sample: "Empresa Exemplo LTDA" },
   { key: "{phone}", label: "Telefone do cliente", sample: "(11) 99999-9999" },
   { key: "{email}", label: "Email do cliente", sample: "joao@empresa.com" },
   { key: "{cnpj}", label: "CNPJ do cliente", sample: "12.345.678/0001-90" },
