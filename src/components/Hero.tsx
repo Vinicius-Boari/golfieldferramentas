@@ -1,7 +1,6 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Wrench, Shield, Truck, Zap, Package } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { products } from "@/data/products";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMobileMotionEnabled } from "@/hooks/useMobileMotion";
@@ -115,7 +114,6 @@ interface HeroProps {
 
 const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroProps) => {
   const { scrollY } = useScroll();
-  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const motionEnabled = useMobileMotionEnabled();
   const parallaxY = useTransform(scrollY, [0, 600], [0, isMobile ? 40 : 120]);
@@ -218,7 +216,7 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="mb-6 md:mb-8">
               <span data-edit-id="hero.badge" className="section-badge max-w-full">
                 <motion.span animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 3, repeat: Infinity }}><Wrench size={12} /></motion.span>
-                {config?.badgeText || t("hero.badge")}
+                {config?.badgeText || "Orçamentos por Atacado"}
               </span>
             </motion.div>
 
@@ -229,14 +227,14 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
               className="text-4xl sm:text-5xl md:text-7xl lg:text-7xl xl:text-8xl font-bold leading-[0.92] mb-6 md:mb-8 tracking-tight"
               data-edit-id="hero.title"
             >
-              <motion.span data-edit-id="hero.title.line1" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.3 }} className="block text-foreground">{config?.titleLine1 || t("hero.titleLine1")}</motion.span>
-              <motion.span data-edit-id="hero.title.line2" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.45 }} className="block text-gradient-gold mt-1">{config?.titleLine2 || t("hero.titleLine2")}</motion.span>
-              <motion.span data-edit-id="hero.title.line3" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.6 }} className="block text-muted-foreground text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl mt-3 font-medium">{config?.titleLine3 || t("hero.titleLine3")}</motion.span>
+              <motion.span data-edit-id="hero.title.line1" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.3 }} className="block text-foreground">{config?.titleLine1 || "Ferramentas"}</motion.span>
+              <motion.span data-edit-id="hero.title.line2" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.45 }} className="block text-gradient-gold mt-1">{config?.titleLine2 || "Premium"}</motion.span>
+              <motion.span data-edit-id="hero.title.line3" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.6 }} className="block text-muted-foreground text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl mt-3 font-medium">{config?.titleLine3 || "para Profissionais"}</motion.span>
             </motion.h1>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }} className="space-y-4 mb-8 md:mb-10">
               <p data-edit-id="hero.description" className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-lg leading-relaxed">
-                {config?.description || t("hero.description")}
+                {config?.description || "Centenas de produtos com preços exclusivos de atacado. Monte seu orçamento online e receba atendimento personalizado."}
               </p>
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -246,7 +244,7 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
                 data-edit-id="hero.minOrder"
               >
                 <motion.span animate={{ scale: [1, 1.4, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                <span className="truncate sm:text-wrap">{config?.minOrderText || t("hero.minOrder")}</span>
+                <span className="truncate sm:text-wrap">{config?.minOrderText || "Pedido mínimo para orçamento: R$ 2.000,00"}</span>
               </motion.div>
             </motion.div>
 
@@ -268,9 +266,9 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
           data-edit-id="hero.stats"
         >
           {(config?.stats ?? [
-            { label: t("hero.statQuality"), desc: t("hero.statQualityDesc") },
-            { label: t("hero.statShipping"), desc: t("hero.statShippingDesc") },
-            { label: t("hero.statProducts", { count: products.length }), desc: t("hero.statCatalog") },
+            { label: "Qualidade Garantida", desc: "Produtos certificados" },
+            { label: "Envio Nacional", desc: "Para todo o Brasil" },
+            { label: `${products.length} Produtos`, desc: "Catálogo completo" },
           ]).map((item, i) => (
             <motion.div
               key={i}

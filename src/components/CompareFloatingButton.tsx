@@ -1,11 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Scale } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { useCompare } from "@/context/CompareContext";
 
 const CompareFloatingButton = () => {
   const { items, setIsOpen } = useCompare();
-  const { t } = useTranslation();
 
   return (
     <AnimatePresence>
@@ -19,7 +17,7 @@ const CompareFloatingButton = () => {
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
           className="fixed bottom-6 left-6 z-40 flex items-center gap-2 pl-4 pr-5 py-3 rounded-full bg-card border-2 border-primary shadow-2xl shadow-primary/30 text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-          aria-label={t("compare.floatingAria", { count: items.length })}
+          aria-label={`Comparar ${items.length} produtos`}
         >
           <div className="relative">
             <Scale size={20} />
@@ -27,7 +25,7 @@ const CompareFloatingButton = () => {
               {items.length}
             </span>
           </div>
-          <span className="text-sm font-semibold hidden sm:inline">{t("compare.floatingLabel")}</span>
+          <span className="text-sm font-semibold hidden sm:inline">Comparar</span>
         </motion.button>
       )}
     </AnimatePresence>

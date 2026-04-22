@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus, LogIn, Tag, Loader2, Check, AlertCircle, Sparkles } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +21,6 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
   const { isAuthenticated } = useAuth();
   const { data: homeConfig } = useHomeConfig();
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const validateCoupon = useValidateCoupon();
@@ -67,7 +65,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
       return encodeURIComponent(renderWhatsAppTemplate(customCfg.template, data));
     }
 
-    let msg = t("cart.waGreeting") + "\n\n" + productsText;
+    let msg = "Olá! Gostaria de fazer um orçamento:\n\n" + productsText;
     msg += `\n\n*Subtotal: R$ ${totalPrice.toFixed(2).replace('.', ',')}*`;
     if (appliedCoupon) {
       msg += `\n*Cupom: ${appliedCoupon.code} (-R$ ${appliedCoupon.discount_amount.toFixed(2).replace('.', ',')})*`;
@@ -105,19 +103,19 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
         });
         setCouponCode("");
         setCouponError("");
-        toast.success(t("cart.couponApplied"));
+        toast.success("Cupom aplicado com sucesso!");
       } else {
-        setCouponError(result.reason || t("cart.couponInvalid"));
+        setCouponError(result.reason || "Cupom inválido");
       }
     } catch {
-      setCouponError(t("cart.couponError"));
+      setCouponError("Erro ao validar cupom");
     }
   };
 
   const handleRemoveCoupon = () => {
     setAppliedCoupon(null);
     setCouponError("");
-    toast.info(t("cart.couponRemoved"));
+    toast.info("Cupom removido");
   };
 
   const progressPercent = Math.min((totalPrice / 2000) * 100, 100);
@@ -167,8 +165,8 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                   <ShoppingCart size={18} className="text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-lg font-bold tracking-tight">{t("cart.title")}</h2>
-                  <p className="text-xs text-muted-foreground">{totalItems} {totalItems === 1 ? t("cart.item") : t("cart.items")}</p>
+                  <h2 className="text-lg font-bold tracking-tight">Orçamento</h2>
+                  <p className="text-xs text-muted-foreground">{totalItems} {totalItems === 1 ? 'item' : 'itens'}</p>
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="p-2 rounded-xl hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
@@ -182,8 +180,8 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                   <div className="p-6 rounded-2xl bg-secondary/30 mb-4">
                     <ShoppingCart size={40} className="opacity-20" />
                   </div>
-                  <p className="font-semibold text-base text-center">{t("cart.empty")}</p>
-                  <p className="text-sm mt-1 text-muted-foreground/70 text-center">{t("cart.emptyHint")}</p>
+                  <p className="font-semibold text-base text-center">Seu orçamento está vazio</p>
+                  <p className="text-sm mt-1 text-muted-foreground/70 text-center">Adicione produtos para começar</p>
                 </div>
               ) : (
                 <AnimatePresence>
@@ -256,7 +254,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles size={14} className="text-primary" />
                     <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      {t("cart.recommendations")}
+                      Você também pode gostar
                     </h3>
                   </div>
                   <div className="space-y-2">
@@ -264,7 +262,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                       <motion.button
                         key={p.id}
                         whileHover={{ x: 2 }}
-                        onClick={() => { addItem(p, p.minQty); toast.success(t("cart.addedToast", { name: p.name })); }}
+                        onClick={() => { addItem(p, p.minQty); toast.success(`${p.name} adicionado`); }}
                         className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-secondary/20 hover:bg-secondary/40 border border-border/30 hover:border-primary/30 transition-all text-left group/rec"
                       >
                         <div className="w-12 h-12 shrink-0 rounded-lg bg-card p-1 flex items-center justify-center overflow-hidden">
@@ -297,12 +295,12 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                       <div className="flex items-center gap-2 min-w-0">
                         <Check size={16} className="text-primary shrink-0" />
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold text-primary truncate">{t("cart.title")} {appliedCoupon.code}</p>
+                          <p className="text-xs font-semibold text-primary truncate">Cupom {appliedCoupon.code}</p>
                           <p className="text-xs text-muted-foreground">-R$ {appliedCoupon.discount_amount.toFixed(2).replace(".", ",")}</p>
                         </div>
                       </div>
                       <button onClick={handleRemoveCoupon} className="text-xs text-muted-foreground hover:text-destructive transition-colors shrink-0 ml-2">
-                        {t("cart.remove")}
+                        Remover
                       </button>
                     </div>
                   ) : (
@@ -311,7 +309,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                         <Tag size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <input
                           type="text"
-                          placeholder={t("cart.couponPlaceholder")}
+                          placeholder="Código do cupom"
                           value={couponCode}
                           onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponError(""); }}
                           onKeyDown={e => e.key === "Enter" && handleApplyCoupon()}
@@ -325,7 +323,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                         disabled={validateCoupon.isPending || !couponCode.trim()}
                         className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold disabled:opacity-50 shrink-0"
                       >
-                        {validateCoupon.isPending ? <Loader2 size={14} className="animate-spin" /> : t("cart.apply")}
+                        {validateCoupon.isPending ? <Loader2 size={14} className="animate-spin" /> : "Aplicar"}
                       </motion.button>
                     </div>
                   )}
@@ -339,7 +337,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                 {totalPrice < 2000 && (
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs gap-3">
-                      <span className="text-muted-foreground">{t("cart.minProgress")}</span>
+                      <span className="text-muted-foreground">Progresso do pedido mínimo</span>
                       <span className="text-primary font-medium shrink-0">{progressPercent.toFixed(0)}%</span>
                     </div>
                     <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
@@ -351,24 +349,24 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                       />
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      {t("cart.minMissing", { value: `R$ ${(2000 - totalPrice).toFixed(2).replace('.', ',')}` })}
+                      Faltam <span className="text-primary font-medium">R$ {(2000 - totalPrice).toFixed(2).replace('.', ',')}</span> para enviar o orçamento
                     </p>
                   </div>
                 )}
 
                 <div className="space-y-1 py-2">
                   <div className="flex justify-between items-center gap-4">
-                    <span className="text-xs text-muted-foreground">{t("cart.subtotal")}</span>
+                    <span className="text-xs text-muted-foreground">Subtotal</span>
                     <span className="text-sm font-medium">R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
                   </div>
                   {appliedCoupon && (
                     <div className="flex justify-between items-center gap-4">
-                      <span className="text-xs text-primary">{t("cart.discount")}</span>
+                      <span className="text-xs text-primary">Desconto</span>
                       <span className="text-sm font-medium text-primary">-R$ {Math.min(appliedCoupon.discount_amount, totalPrice).toFixed(2).replace('.', ',')}</span>
                     </div>
                   )}
                   <div className="flex justify-between items-center gap-4 pt-1 border-t border-border/40">
-                    <span className="text-sm text-muted-foreground">{t("cart.total")}</span>
+                    <span className="text-sm text-muted-foreground">Total</span>
                     <span className="text-xl sm:text-2xl font-bold text-primary tracking-tight text-right">
                       R$ {finalPrice.toFixed(2).replace('.', ',')}
                     </span>
@@ -390,7 +388,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                           className="gradient-border-animated btn-golfield w-full text-center justify-center"
                         >
                           <MessageCircle size={18} />
-                          {t("cart.sendWhatsApp")}
+                          Enviar Orçamento via WhatsApp
                         </motion.a>
                       );
                     }
@@ -398,11 +396,11 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                       <div className="space-y-2">
                         <div className="rounded-xl border border-primary/30 bg-primary/5 px-3 py-2.5 text-xs text-foreground/80 flex items-start gap-2">
                           <LogIn size={14} className="text-primary shrink-0 mt-0.5" />
-                          <span>{t("cart.loginRequiredHint")}</span>
+                          <span>Para enviar o orçamento via WhatsApp, é necessário estar logado.</span>
                         </div>
                         <motion.button
                           onClick={() => {
-                            toast.error(t("cart.loginToast"));
+                            toast.error("Você precisa estar logado para enviar um orçamento.");
                             setIsOpen(false);
                             navigate("/login");
                           }}
@@ -411,7 +409,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                           className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-primary text-primary-foreground text-sm font-semibold"
                         >
                           <LogIn size={18} />
-                          {t("cart.loginButton")}
+                          Faça login para enviar orçamento
                         </motion.button>
                       </div>
                     );
@@ -422,12 +420,12 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                     className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-secondary text-muted-foreground cursor-not-allowed text-sm font-semibold"
                   >
                     <MessageCircle size={18} />
-                    {t("cart.minOrderValue")}
+                    Pedido mínimo R$ 2.000,00
                   </button>
                 )}
 
                 <button onClick={clearCart} className="w-full py-2 text-xs text-muted-foreground hover:text-destructive transition-colors">
-                  {t("cart.clear")}
+                  Limpar orçamento
                 </button>
               </div>
             )}

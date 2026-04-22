@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Wrench, LogIn, Loader2 } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { useAdmin } from "@/hooks/useAdmin";
 
@@ -17,7 +16,6 @@ const MaintenanceGate = ({ children }: Props) => {
   const { isAdmin, loading: adminLoading } = useAdmin();
   const location = useLocation();
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const [adminCheckTimedOut, setAdminCheckTimedOut] = useState(false);
 
   // Avoid blocking forever if admin check stalls
@@ -69,7 +67,7 @@ const MaintenanceGate = ({ children }: Props) => {
         {maintenance?.imageUrl ? (
           <img
             src={maintenance.imageUrl}
-            alt={t("maintenance.alt")}
+            alt="Manutenção"
             className="mx-auto max-h-56 w-auto object-contain rounded-2xl"
           />
         ) : (
@@ -83,7 +81,7 @@ const MaintenanceGate = ({ children }: Props) => {
         )}
 
         <div className="space-y-3">
-          <span className="section-badge inline-flex">{t("maintenance.badge")}</span>
+          <span className="section-badge inline-flex">Em manutenção</span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
             {maintenance?.title || "Estamos em manutenção"}
           </h1>
