@@ -349,13 +349,154 @@ const AdminAI = () => {
               </div>
             </div>
           </div>
-          {tab === "chat" && messages.length > 0 && (
-            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={clearChat}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary text-foreground text-xs font-semibold">
-              <Trash2 size={14} /> Limpar
-            </motion.button>
-          )}
+          <div className="flex items-center gap-2">
+            {/* Contador de uso + switch */}
+            <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/60 border border-border">
+              <DollarSign size={14} className={budgetReached ? "text-destructive" : "text-primary"} />
+              <div className="text-xs">
+                <span className={`font-bold ${budgetReached ? "text-destructive" : "text-foreground"}`}>
+                  ${usedUsd.toFixed(3)}
+                </span>
+                <span className="text-muted-foreground"> / ${budgetUsd.toFixed(2)}</span>
+              </div>
+              <div className="w-16 h-1.5 rounded-full bg-background overflow-hidden">
+                <div
+                  className={`h-full transition-all ${budgetReached ? "bg-destructive" : usagePct > 80 ? "bg-yellow-500" : "bg-primary"}`}
+                  style={{ width: `${usagePct}%` }}
+                />
+              </div>
+            </div>
+            <button
+              onClick={() => updateSettings.mutate({ enabled: !aiEnabled })}
+              title={aiEnabled ? "Desativar IA (não gastará créditos)" : "Ativar IA"}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                aiEnabled
+                  ? "bg-green-500/10 text-green-600 border border-green-500/30 hover:bg-green-500/20"
+                  : "bg-destructive/10 text-destructive border border-destructive/30 hover:bg-destructive/20"
+              }`}
+            >
+              <Power size={14} />
+              {aiEnabled ? "IA Ativa" : "IA Desativada"}
+            </button>
+            <button
+              onClick={() => { setBudgetDraft(budgetUsd.toFixed(2)); setShowSettings(true); }}
+              className="p-2 rounded-xl bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
+              title="Configurações"
+            >
+              <SettingsIcon size={14} />
+            </button>
+            {tab === "chat" && messages.length > 0 && (
+              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={clearChat}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary text-foreground text-xs font-semibold">
+                <Trash2 size={14} /> Limpar
+              </motion.button>
+            )}
+          </div>
         </div>
+
+        {/* Aviso quando IA desativada ou orçamento estourado */}
+        {(!aiEnabled || budgetReached) && (
+          <div className={`container mx-auto px-4 pb-3`}>
+            <div className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+              !aiEnabled
+                ? "bg-destructive/10 text-destructive border border-destructive/30"
+                : "bg-yellow-500/10 text-yellow-700 dark:text-yellow-500 border border-yellow-500/30"
+            }`}>
+              {!aiEnabled ? (
+                <><Power size={14} /> A IA está desativada. Nenhum crédito será consumido. Reative no botão acima quando quiser usar.</>
+              ) : (
+                <><DollarSign size={14} /> Orçamento mensal de ${budgetUsd.toFixed(2)} atingido. Aumente nas configurações ou aguarde o próximo mês.</>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Modal de configurações */}
+        <AnimatePresence>
+          {showSettings && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4"
+              onClick={() => setShowSettings(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95, y: 10 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 10 }}
+                onClick={(e) => e.stopPropagation()}
+                className="w-full max-w-md rounded-2xl bg-card border border-border p-6 space-y-5"
+              >
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-bold flex items-center gap-2">
+                    <SettingsIcon size={18} className="text-primary" /> Configurações da IA
+                  </h2>
+                  <button onClick={() => setShowSettings(false)} className="p-1.5 rounded-lg hover:bg-secondary">
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <div className="rounded-xl border border-border bg-secondary/30 p-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-semibold">Status</span>
+                    <button
+                      onClick={() => updateSettings.mutate({ enabled: !aiEnabled })}
+                      className={`relative w-11 h-6 rounded-full transition-colors ${aiEnabled ? "bg-primary" : "bg-muted"}`}
+                    >
+                      <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${aiEnabled ? "translate-x-5" : ""}`} />
+                    </button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {aiEnabled
+                      ? "IA ativa — chamadas consomem saldo Lovable AI."
+                      : "IA desativada — nenhum crédito será consumido."}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-sm font-semibold mb-2 block">Orçamento mensal (USD)</label>
+                  <div className="flex gap-2">
+                    <div className="flex-1 relative">
+                      <DollarSign size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                      <input
+                        type="number" step="0.10" min="0"
+                        value={budgetDraft} onChange={(e) => setBudgetDraft(e.target.value)}
+                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-secondary/50 border border-border text-sm outline-none focus:border-primary/50"
+                      />
+                    </div>
+                    <button
+                      onClick={() => {
+                        const v = Number(budgetDraft);
+                        if (!Number.isFinite(v) || v < 0) { toast.error("Valor inválido"); return; }
+                        updateSettings.mutate({ monthly_budget_usd: v });
+                      }}
+                      className="px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold"
+                    >
+                      Salvar
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-2">
+                    Limite de gasto da Lovable AI por mês. Quando atingido, a IA bloqueia novas chamadas até o próximo mês ou novo aumento. Saldo grátis Lovable: $1/mês.
+                  </p>
+                </div>
+
+                {aiUsage && (
+                  <div className="rounded-xl border border-border bg-secondary/30 p-4">
+                    <p className="text-xs font-semibold mb-2">Uso este mês ({aiUsage.count} chamadas)</p>
+                    <div className="space-y-1.5">
+                      {Object.entries(aiUsage.byFeature).map(([f, s]) => (
+                        <div key={f} className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground capitalize">{f}</span>
+                          <span className="font-mono">{s.count}× · ${s.usd.toFixed(4)}</span>
+                        </div>
+                      ))}
+                      {Object.keys(aiUsage.byFeature).length === 0 && (
+                        <p className="text-xs text-muted-foreground">Nenhum uso registrado ainda.</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Tabs */}
         <div className="container mx-auto px-4 pb-3">
