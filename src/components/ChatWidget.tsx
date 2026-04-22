@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { X, Send } from "lucide-react";
 import { chatBus, normalizeCategoryId, onCartReply, type CartReplyPayload } from "@/lib/chatBus";
+import { useCart } from "@/context/CartContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const WHATSAPP_URL = "https://wa.me/5511959409051";
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/public-chat`;
@@ -73,6 +75,11 @@ const ChatWidget = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { isOpen: cartOpen } = useCart();
+  const isMobile = useIsMobile();
+  // Em desktop, quando o carrinho está aberto, o chat se move para a esquerda
+  // para não ficar atrás do drawer. No mobile, mantém na direita (carrinho ocupa tudo).
+  const shiftLeft = cartOpen && !isMobile;
 
   // Executa uma tool call solicitada pelo modelo
   const runToolCall = useCallback((name: string, rawArgs: string) => {
@@ -318,12 +325,20 @@ const ChatWidget = () => {
 
   return (
     <>
-      {/* Botão flutuante */}
+      {/* Botão flutuante — desliza para a esquerda quando o carrinho abre (desktop) */}
       <motion.button
         onClick={() => setOpen((v) => !v)}
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 1.2, type: "spring", stiffness: 260, damping: 20 }}
+        initial={{ scale: 0, opacity: 0, x: 0 }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          x: shiftLeft ? -472 : 0,
+        }}
+        transition={{
+          scale: { delay: 1.2, type: "spring", stiffness: 260, damping: 20 },
+          opacity: { delay: 1.2, duration: 0.3 },
+          x: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 },
+        }}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
         className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-40 p-3.5 md:p-4 rounded-full shadow-xl text-white transition-shadow hover:shadow-2xl"
@@ -343,14 +358,19 @@ const ChatWidget = () => {
         </AnimatePresence>
       </motion.button>
 
-      {/* Janela de chat */}
+      {/* Janela de chat — também desliza para a esquerda quando o carrinho abre (desktop) */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
+            initial={{ opacity: 0, y: 24, scale: 0.95, x: shiftLeft ? -472 : 0 }}
+            animate={{ opacity: 1, y: 0, scale: 1, x: shiftLeft ? -472 : 0 }}
             exit={{ opacity: 0, y: 24, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 280, damping: 26 }}
+            transition={{
+              opacity: { duration: 0.25 },
+              y: { type: "spring", stiffness: 280, damping: 26 },
+              scale: { type: "spring", stiffness: 280, damping: 26 },
+              x: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 },
+            }}
             className="fixed z-40 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-200
                        bottom-20 right-4 left-4 max-h-[calc(100vh-7rem)]
                        md:bottom-24 md:right-6 md:left-auto md:w-[380px] md:h-[560px] md:max-h-[80vh]"
