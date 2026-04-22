@@ -120,6 +120,28 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
 
   const progressPercent = Math.min((totalPrice / 2000) * 100, 100);
 
+  // Cross-sell: produtos da mesma categoria dos itens no carrinho, próximos do preço médio
+  const recommendations = useMemo(() => {
+    if (!relatedProducts.length || items.length === 0) return [];
+    const cartIds = new Set(items.map(i => String(i.product.id)));
+    const cartCats = new Set(items.map(i => i.product.category));
+    const avgPrice = items.reduce((s, i) => s + i.product.price, 0) / items.length;
+    const sameCategory = relatedProducts
+      .filter(p => !cartIds.has(String(p.id)) && cartCats.has(p.category))
+      .map(p => ({ p, score: Math.abs(p.price - avgPrice) }))
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 3)
+      .map(s => s.p);
+    if (sameCategory.length < 3) {
+      const used = new Set([...cartIds, ...sameCategory.map(s => String(s.id))]);
+      const fallback = relatedProducts.filter(p => !used.has(String(p.id))).slice(0, 3 - sameCategory.length);
+      return [...sameCategory, ...fallback];
+    }
+    return sameCategory;
+  }, [items, relatedProducts]);
+
+  const { addItem } = useCart();
+
   return (
     <AnimatePresence>
       {isOpen && (
