@@ -317,15 +317,9 @@ const AdminAI = () => {
     setTimeout(() => setPromptCopied(false), 1500);
   };
 
-  if (adminLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-          className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-  if (!isAdmin) return null;
+  // Página pública — não bloqueia por loading/admin
+
+
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
