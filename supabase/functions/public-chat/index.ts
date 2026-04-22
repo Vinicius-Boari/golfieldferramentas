@@ -97,6 +97,36 @@ const tools = [
   {
     type: "function",
     function: {
+      name: "add_to_cart",
+      description: "Adiciona um produto ao carrinho do cliente para montar um orçamento. Use quando o cliente pedir para 'adicionar', 'colocar no carrinho', 'quero comprar', 'monta um orçamento', 'preciso de X unidades', etc. IMPORTANTE: cada produto tem uma quantidade mínima obrigatória — se o cliente pedir menos, o sistema ajustará automaticamente para a quantidade mínima.",
+      parameters: {
+        type: "object",
+        properties: {
+          product_query: {
+            type: "string",
+            description: "Nome ou palavra-chave do produto que o cliente quer (ex: 'martelo 25mm', 'broca concreto longa 10mm', 'disco de corte madeira 180mm 36 dentes'). Seja o mais específico possível.",
+          },
+          quantity: {
+            type: "number",
+            description: "Quantidade que o cliente pediu. Se não informou, use 1 — o sistema ajustará para a mínima.",
+          },
+        },
+        required: ["product_query", "quantity"],
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "open_cart",
+      description: "Abre o carrinho/orçamento do cliente para que ele veja o que foi montado. Use quando o cliente pedir para 'ver carrinho', 'ver orçamento', 'finalizar', 'mostrar carrinho'.",
+      parameters: { type: "object", properties: {}, additionalProperties: false },
+    },
+  },
+  {
+    type: "function",
+    function: {
       name: "offer_whatsapp",
       description: "Oferece ao cliente o botão para falar no WhatsApp. Use SEMPRE que o cliente quiser falar com humano, atendente, fizer reclamação grave, urgência, ou pedir contato direto. NUNCA tente abrir WhatsApp por conta própria — apenas chame esta ferramenta para mostrar o botão.",
       parameters: {
