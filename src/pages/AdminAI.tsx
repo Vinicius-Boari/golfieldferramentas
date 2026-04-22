@@ -159,9 +159,23 @@ const AdminAI = () => {
         signal: controller.signal,
       });
 
+      if (resp.status === 401) {
+        await supabase.auth.signOut();
+        toast.error("Sua sessão expirou. Faça login novamente.");
+        navigate("/login");
+        return;
+      }
+      if (resp.status === 423) throw new Error("A IA está desativada pelo administrador.");
       if (resp.status === 429) throw new Error("Muitas requisições. Aguarde um instante.");
       if (resp.status === 402) throw new Error("Saldo de IA esgotado este mês.");
-      if (!resp.ok || !resp.body) throw new Error("Erro ao iniciar conversa.");
+      if (!resp.ok || !resp.body) {
+        let detail = "";
+        try {
+          const errBody = await resp.json();
+          detail = errBody?.error || errBody?.message || "";
+        } catch { /* ignore */ }
+        throw new Error(detail || `Erro ao iniciar conversa (HTTP ${resp.status}).`);
+      }
 
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
