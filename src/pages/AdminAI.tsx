@@ -126,7 +126,7 @@ const AdminAI = () => {
   const sendChat = async (textOverride?: string) => {
     const text = (textOverride ?? chatInput).trim();
     if (!text || isStreaming) return;
-    const userMsg: Msg = { role: "user", content: text };
+    if (!guardOrToast()) return;
     const newHistory = [...messages, userMsg];
     setMessages(newHistory);
     setChatInput("");
@@ -212,7 +212,7 @@ const AdminAI = () => {
   const generateImage = async (promptOverride?: string) => {
     const text = (promptOverride ?? imgPrompt).trim();
     if (!text || imgLoading) return;
-    setImgLoading(true);
+    if (!guardOrToast()) return;
     setGeneratedImg(null);
     try {
       const { data: sessionData } = await supabase.auth.getSession();
