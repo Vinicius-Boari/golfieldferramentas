@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, ShoppingCart, Menu, X, Mail, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useCart } from "@/context/CartContext";
 import { useHomeConfig, DEFAULT_HEADER_BACKGROUND_COLOR } from "@/hooks/useHomeConfig";
 import UserMenu from "@/components/UserMenu";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const InstagramIcon = ({ size = 20, className }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -26,6 +28,7 @@ interface HeaderProps {
 
 const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   const { totalItems, setIsOpen } = useCart();
+  const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { data: config } = useHomeConfig();
@@ -66,7 +69,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
             </a>
           </div>
           <div className="hidden md:flex items-center gap-4 shrink-0">
-            <span className="text-primary-foreground">Seg a Sex 7h às 18h</span>
+            <span className="text-primary-foreground">{t("header.hours")}</span>
             <span className="text-border">|</span>
             <a href="https://www.instagram.com/golfield.ferramentas/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-foreground transition-colors">
               <InstagramIcon size={12} className="text-primary-foreground bg-white/0" />
@@ -107,8 +110,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
 
             <nav className="hidden md:flex items-center gap-6">
               {[
-                { label: "Sobre Nós", target: "sobre" },
-                { label: "Contato", target: "contato" },
+                { label: t("header.about"), target: "sobre" },
+                { label: t("header.contact"), target: "contato" },
               ].map((item) => (
                 <motion.button
                   key={item.target}
@@ -132,7 +135,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
               <input
                 type="text"
-                placeholder="Buscar ferramentas..."
+                placeholder={t("header.search")}
                 className="search-input pl-11 text-sm"
                 value={searchQuery}
                 onChange={e => {
@@ -172,6 +175,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 <WhatsAppIcon size={18} className="text-primary-foreground" />
               </motion.a>
 
+              <LanguageSwitcher />
+
               <UserMenu />
 
               <motion.button
@@ -196,7 +201,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               <button
                 className="md:hidden p-2 sm:p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                aria-label="Abrir menu"
+                aria-label={t("header.openMenu")}
               >
                 <motion.div animate={{ rotate: mobileMenuOpen ? 90 : 0 }} transition={{ duration: 0.3 }}>
                   {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -219,7 +224,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                     <input
                       type="text"
-                      placeholder="Buscar ferramentas..."
+                      placeholder={t("header.search")}
                       className="search-input pl-11 text-sm"
                       value={searchQuery}
                       onChange={e => onSearchChange(e.target.value)}
@@ -227,8 +232,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                   </div>
                   <div className="flex flex-col gap-1 text-sm">
                     {[
-                      { label: "Sobre Nós", target: "sobre" },
-                      { label: "Contato", target: "contato" },
+                      { label: t("header.about"), target: "sobre" },
+                      { label: t("header.contact"), target: "contato" },
                     ].map((item) => (
                       <button
                         key={item.target}

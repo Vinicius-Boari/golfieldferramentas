@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus, LogIn, Tag, Loader2, Check, AlertCircle, Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +22,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
   const { isAuthenticated } = useAuth();
   const { data: homeConfig } = useHomeConfig();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const validateCoupon = useValidateCoupon();
@@ -103,19 +105,19 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
         });
         setCouponCode("");
         setCouponError("");
-        toast.success("Cupom aplicado com sucesso!");
+        toast.success(t("cart.couponApplied"));
       } else {
-        setCouponError(result.reason || "Cupom inválido");
+        setCouponError(result.reason || t("cart.couponInvalid"));
       }
     } catch {
-      setCouponError("Erro ao validar cupom");
+      setCouponError(t("cart.couponError"));
     }
   };
 
   const handleRemoveCoupon = () => {
     setAppliedCoupon(null);
     setCouponError("");
-    toast.info("Cupom removido");
+    toast.info(t("cart.couponRemoved"));
   };
 
   const progressPercent = Math.min((totalPrice / 2000) * 100, 100);
@@ -165,8 +167,8 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                   <ShoppingCart size={18} className="text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-lg font-bold tracking-tight">Orçamento</h2>
-                  <p className="text-xs text-muted-foreground">{totalItems} {totalItems === 1 ? 'item' : 'itens'}</p>
+                  <h2 className="text-lg font-bold tracking-tight">{t("cart.title")}</h2>
+                  <p className="text-xs text-muted-foreground">{totalItems} {totalItems === 1 ? t("cart.item") : t("cart.items")}</p>
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="p-2 rounded-xl hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
@@ -180,8 +182,8 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                   <div className="p-6 rounded-2xl bg-secondary/30 mb-4">
                     <ShoppingCart size={40} className="opacity-20" />
                   </div>
-                  <p className="font-semibold text-base text-center">Seu orçamento está vazio</p>
-                  <p className="text-sm mt-1 text-muted-foreground/70 text-center">Adicione produtos para começar</p>
+                  <p className="font-semibold text-base text-center">{t("cart.empty")}</p>
+                  <p className="text-sm mt-1 text-muted-foreground/70 text-center">{t("cart.emptyHint")}</p>
                 </div>
               ) : (
                 <AnimatePresence>
@@ -254,7 +256,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles size={14} className="text-primary" />
                     <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      Você também pode gostar
+                      {t("cart.recommendations")}
                     </h3>
                   </div>
                   <div className="space-y-2">
@@ -262,7 +264,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                       <motion.button
                         key={p.id}
                         whileHover={{ x: 2 }}
-                        onClick={() => { addItem(p, p.minQty); toast.success(`${p.name} adicionado`); }}
+                        onClick={() => { addItem(p, p.minQty); toast.success(t("cart.addedToast", { name: p.name })); }}
                         className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-secondary/20 hover:bg-secondary/40 border border-border/30 hover:border-primary/30 transition-all text-left group/rec"
                       >
                         <div className="w-12 h-12 shrink-0 rounded-lg bg-card p-1 flex items-center justify-center overflow-hidden">
@@ -295,12 +297,12 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                       <div className="flex items-center gap-2 min-w-0">
                         <Check size={16} className="text-primary shrink-0" />
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold text-primary truncate">Cupom {appliedCoupon.code}</p>
+                          <p className="text-xs font-semibold text-primary truncate">{t("cart.title")} {appliedCoupon.code}</p>
                           <p className="text-xs text-muted-foreground">-R$ {appliedCoupon.discount_amount.toFixed(2).replace(".", ",")}</p>
                         </div>
                       </div>
                       <button onClick={handleRemoveCoupon} className="text-xs text-muted-foreground hover:text-destructive transition-colors shrink-0 ml-2">
-                        Remover
+                        {t("cart.remove")}
                       </button>
                     </div>
                   ) : (
@@ -309,7 +311,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                         <Tag size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <input
                           type="text"
-                          placeholder="Código do cupom"
+                          placeholder={t("cart.couponPlaceholder")}
                           value={couponCode}
                           onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponError(""); }}
                           onKeyDown={e => e.key === "Enter" && handleApplyCoupon()}
@@ -323,7 +325,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                         disabled={validateCoupon.isPending || !couponCode.trim()}
                         className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold disabled:opacity-50 shrink-0"
                       >
-                        {validateCoupon.isPending ? <Loader2 size={14} className="animate-spin" /> : "Aplicar"}
+                        {validateCoupon.isPending ? <Loader2 size={14} className="animate-spin" /> : t("cart.apply")}
                       </motion.button>
                     </div>
                   )}
@@ -337,7 +339,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                 {totalPrice < 2000 && (
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs gap-3">
-                      <span className="text-muted-foreground">Progresso do pedido mínimo</span>
+                      <span className="text-muted-foreground">{t("cart.minProgress")}</span>
                       <span className="text-primary font-medium shrink-0">{progressPercent.toFixed(0)}%</span>
                     </div>
                     <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
@@ -349,7 +351,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                       />
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Faltam <span className="text-primary font-medium">R$ {(2000 - totalPrice).toFixed(2).replace('.', ',')}</span> para enviar o orçamento
+                      {t("cart.minMissing", { value: `R$ ${(2000 - totalPrice).toFixed(2).replace('.', ',')}` })}
                     </p>
                   </div>
                 )}

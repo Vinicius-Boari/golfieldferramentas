@@ -2,6 +2,7 @@ import { memo, useState } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { ShoppingCart, Plus, Minus, Check, Scale } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useCompare } from "@/context/CompareContext";
@@ -13,6 +14,7 @@ interface ProductCardProps {
 }
 
 const ProductCardImpl = ({ product, index }: ProductCardProps) => {
+  const { t } = useTranslation();
   const [qty, setQty] = useState(product.minQty);
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
@@ -81,9 +83,9 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
           onClick={(e) => { e.stopPropagation(); toggleCompare(product); }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.85 }}
-          aria-label={inCompare ? "Remover do comparador" : "Adicionar ao comparador"}
+          aria-label={inCompare ? t("product.compareRemove") : t("product.compareAdd")}
           aria-pressed={inCompare}
-          title={inCompare ? "Remover do comparador" : "Comparar este produto"}
+          title={inCompare ? t("product.compareRemove") : t("product.compareTitle")}
           className={`absolute top-3 right-3 z-10 p-2 rounded-lg backdrop-blur-sm border transition-all duration-300 ${
             inCompare
               ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/30"
@@ -135,7 +137,7 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
           {product.name}
         </motion.h3>
         <p className="text-xs text-muted-foreground mb-4">
-          Mín. {product.minQty} un. • Atacado
+          {t("product.minQty", { qty: product.minQty })}
         </p>
 
         <div className="flex items-end justify-between mb-5">
@@ -147,7 +149,7 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
             >
               R$ {product.price.toFixed(2).replace('.', ',')}
             </motion.p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">por unidade</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{t("product.perUnit")}</p>
           </div>
         </div>
 
@@ -173,13 +175,13 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
                 const step = product.minQty;
                 if (raw < step) {
                   setQty(step);
-                  toast.info(`Quantidade mínima é ${step} un.`);
+                  toast.info(t("product.minQtyToast", { qty: step }));
                   return;
                 }
                 if (raw % step !== 0) {
                   const adjusted = raw + (step - (raw % step));
                   setQty(adjusted);
-                  toast.info(`A quantidade deve ser múltipla de ${step}. Ajustei para ${adjusted}.`);
+                  toast.info(t("product.multipleToast", { step, adjusted }));
                   return;
                 }
                 setQty(raw);
@@ -210,12 +212,12 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
                 <motion.span initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300 }}>
                   <Check size={15} />
                 </motion.span>
-                <span className="truncate">Adicionado!</span>
+                <span className="truncate">{t("product.added")}</span>
               </>
             ) : (
               <>
                 <ShoppingCart size={15} />
-                <span className="truncate">Adicionar</span>
+                <span className="truncate">{t("product.add")}</span>
               </>
             )}
           </motion.button>
