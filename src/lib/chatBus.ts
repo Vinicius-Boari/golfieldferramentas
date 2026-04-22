@@ -1,8 +1,24 @@
-// Bus simples de eventos para o assistente virtual interagir com a Index
-// (filtrar categoria, buscar produto). A Index escuta esses eventos.
+// Bus simples de eventos para o assistente virtual interagir com a Index/Cart
 type ChatBusEventMap = {
-  "chat:setCategory": string; // id normalizado da categoria (ex: "discos") ou "todos"
-  "chat:setSearch": string;   // termo de busca
+  "chat:setCategory": string;                                      // id normalizado da categoria (ex: "discos") ou "todos"
+  "chat:setSearch": string;                                        // termo de busca
+  "chat:addToCart": { query: string; quantity: number; replyId: string }; // pedir adição ao carrinho
+  "chat:openCart": void;                                           // abrir carrinho
+};
+
+// Resposta do handler do carrinho de volta para o widget
+export type CartReplyPayload =
+  | { ok: true; replyId: string; productName: string; addedQty: number; minQty: number; adjusted: boolean }
+  | { ok: false; replyId: string; reason: "not_found" | "error"; query: string };
+
+type CartReplyListener = (r: CartReplyPayload) => void;
+const cartReplyListeners = new Set<CartReplyListener>();
+export const onCartReply = (cb: CartReplyListener) => {
+  cartReplyListeners.add(cb);
+  return () => { cartReplyListeners.delete(cb); };
+};
+export const emitCartReply = (r: CartReplyPayload) => {
+  cartReplyListeners.forEach((cb) => { try { cb(r); } catch (e) { console.error(e); } });
 };
 
 type Listener<E extends keyof ChatBusEventMap> = (payload: ChatBusEventMap[E]) => void;
