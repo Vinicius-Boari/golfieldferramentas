@@ -44,19 +44,17 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
       .replace(/\s+/g, "-");
 
   const categories = useMemo(() => {
-    // Mapeia cada categoria para a primeira imagem de produto encontrada
+    // Mapeia cada categoria para a primeira imagem utilizável (qualquer media_type, desde que tenha thumbnail)
     const map = new Map<string, { label: string; image: string | null }>();
     for (const p of products) {
       const cat = (p.category ?? "").toString().trim();
       if (!cat) continue;
-      if (!map.has(cat)) {
-        const isImage = (p.media_type ?? "image") === "image";
-        map.set(cat, { label: cat, image: isImage ? p.image : null });
-      } else {
-        const cur = map.get(cat)!;
-        if (!cur.image && (p.media_type ?? "image") === "image") {
-          map.set(cat, { ...cur, image: p.image });
-        }
+      const candidate = isUsableImage(p.image) ? p.image : null;
+      const cur = map.get(cat);
+      if (!cur) {
+        map.set(cat, { label: cat, image: candidate });
+      } else if (!cur.image && candidate) {
+        map.set(cat, { ...cur, image: candidate });
       }
     }
 
@@ -68,11 +66,11 @@ const CategoryNav = ({ activeCategory, onCategoryChange }: CategoryNavProps) => 
         image: info.image,
       }));
 
-    // Imagem para "Todos": primeira imagem disponível
-    const firstImage = products.find(p => (p.media_type ?? "image") === "image")?.image ?? null;
+    // Imagem para "Todos": primeira imagem utilizável encontrada
+    const firstImage = products.find(p => isUsableImage(p.image))?.image ?? null;
 
     return [
-      { id: "todos", label: "Todos", image: firstImage },
+      { id: "todos", label: "Todos", image: firstImage ?? null },
       ...list,
     ];
   }, [products]);
