@@ -60,6 +60,7 @@ const AppShell = () => {
             <Route path="/admin/home" element={<AdminHome />} />
             <Route path="/admin/visual" element={<AdminVisual />} />
             <Route path="/admin/usuarios" element={<AdminUsers />} />
+            <Route path="/admin/clientes" element={<AdminCustomers />} />
             <Route path="/admin/cupons" element={<AdminCoupons />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
