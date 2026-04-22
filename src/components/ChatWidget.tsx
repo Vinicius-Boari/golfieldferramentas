@@ -78,12 +78,17 @@ const ChatWidget = () => {
     }
   }, [open, messages.length]);
 
-  // Auto-scroll
+  // Auto-scroll para a última mensagem (inclusive ao abrir o chat)
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages, loading]);
+    if (!open) return;
+    // pequeno delay garante que a animação de abertura terminou de medir o conteúdo
+    const id = requestAnimationFrame(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
+    });
+    return () => cancelAnimationFrame(id);
+  }, [messages, loading, open]);
 
   const detectHumanRequest = (text: string) => {
     const lower = text.toLowerCase();
