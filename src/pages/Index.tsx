@@ -394,11 +394,18 @@ const IndexContent = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
+      <SEO
+        jsonLd={[
+          buildOrganizationJsonLd(),
+          buildWebSiteJsonLd(),
+          buildItemListJsonLd(products.slice(0, 30)),
+        ]}
+      />
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       {sortedSections.map(section => (
         <div key={section.id}>{renderSection(section.id)}</div>
       ))}
-      <CartDrawer />
+      <CartDrawer relatedProducts={products} />
       <ChatWidget />
     </div>
   );
