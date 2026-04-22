@@ -15,6 +15,7 @@ const SEGMENTS = [
 ];
 
 const Register = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     cnpj: "", razaoSocial: "", nomeFantasia: "", segmento: "",
     nomeResponsavel: "", cargo: "", email: "", telefone: "",
