@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { X, Send } from "lucide-react";
-import { chatBus, normalizeCategoryId, onCartReply } from "@/lib/chatBus";
+import { chatBus, normalizeCategoryId, onCartReply, type CartReplyPayload } from "@/lib/chatBus";
 
 const WHATSAPP_URL = "https://wa.me/5511959409051";
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/public-chat`;
@@ -132,7 +132,7 @@ const ChatWidget = () => {
 
   // Escuta respostas das tentativas de adicionar ao carrinho e mostra como mensagem do assistente
   useEffect(() => {
-    const off = onCartReply((r) => {
+    const off = onCartReply((r: CartReplyPayload) => {
       let content = "";
       if (!r.ok) {
         content = r.reason === "not_found"
