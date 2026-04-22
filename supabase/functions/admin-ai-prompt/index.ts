@@ -119,10 +119,8 @@ serve(async (req) => {
     const data = await response.json();
     const text = data.choices?.[0]?.message?.content || "";
 
-    if (userId) {
-      logAiUsage({ userId, feature: "prompt", model: "google/gemini-3-flash-preview", costUsd: cost })
-        .catch((e) => console.error(e));
-    }
+    logAiUsage({ userId, feature: "prompt", model: "google/gemini-3-flash-preview", costUsd: cost })
+      .catch((e) => console.error(e));
 
     return new Response(JSON.stringify({ text }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -79,9 +79,9 @@ export async function checkAiBudget(estimatedCost: number): Promise<AiCheckResul
   };
 }
 
-/** Registra uma chamada de IA no log de uso */
+/** Registra uma chamada de IA no log de uso. userId pode ser null (uso anônimo). */
 export async function logAiUsage(params: {
-  userId: string;
+  userId: string | null;
   feature: string;
   model?: string;
   costUsd: number;

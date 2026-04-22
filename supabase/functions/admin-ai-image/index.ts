@@ -98,15 +98,13 @@ serve(async (req) => {
       });
     }
 
-    // Loga uso só após sucesso
-    if (userId) {
-      logAiUsage({
-        userId,
-        feature: imageUrl ? "edit" : "image",
-        model: chosenModel,
-        costUsd: cost,
-      }).catch((e) => console.error(e));
-    }
+    // Loga uso só após sucesso (userId null se anônimo)
+    logAiUsage({
+      userId,
+      feature: imageUrl ? "edit" : "image",
+      model: chosenModel,
+      costUsd: cost,
+    }).catch((e) => console.error(e));
 
     return new Response(JSON.stringify({ image: generated, text }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

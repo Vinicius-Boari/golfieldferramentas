@@ -1,0 +1,2 @@
+CREATE POLICY "Public can read ai usage" ON public.ai_usage_log FOR SELECT TO anon, authenticated USING (true);
+CREATE POLICY "Public can read ai settings" ON public.ai_settings FOR SELECT TO anon, authenticated USING (true);
