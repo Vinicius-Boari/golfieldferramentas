@@ -242,6 +242,48 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                   ))}
                 </AnimatePresence>
               )}
+
+              {/* Cross-sell recommendations */}
+              {recommendations.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="pt-4 mt-2 border-t border-border/50"
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles size={14} className="text-primary" />
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      Você também pode gostar
+                    </h3>
+                  </div>
+                  <div className="space-y-2">
+                    {recommendations.map(p => (
+                      <motion.button
+                        key={p.id}
+                        whileHover={{ x: 2 }}
+                        onClick={() => { addItem(p, p.minQty); toast.success(`${p.name} adicionado`); }}
+                        className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-secondary/20 hover:bg-secondary/40 border border-border/30 hover:border-primary/30 transition-all text-left group/rec"
+                      >
+                        <div className="w-12 h-12 shrink-0 rounded-lg bg-card p-1 flex items-center justify-center overflow-hidden">
+                          {p.mediaType === "video" ? (
+                            <video src={p.image} className="w-full h-full object-contain" muted autoPlay loop playsInline />
+                          ) : (
+                            <img src={p.image} alt={p.name} className="w-full h-full object-contain" loading="lazy" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium line-clamp-2 leading-tight group-hover/rec:text-foreground">{p.name}</p>
+                          <p className="text-xs text-primary font-bold mt-0.5">
+                            R$ {p.price.toFixed(2).replace(".", ",")} <span className="text-muted-foreground font-normal">/ un</span>
+                          </p>
+                        </div>
+                        <Plus size={14} className="text-muted-foreground shrink-0 group-hover/rec:text-primary transition-colors" />
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             {items.length > 0 && (
