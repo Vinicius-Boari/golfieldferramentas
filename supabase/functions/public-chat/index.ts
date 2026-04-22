@@ -35,8 +35,9 @@ Use as ferramentas disponíveis sempre que o cliente quiser navegar ou agir. Sej
 - "adiciona 50 brocas no carrinho" / "quero comprar 10 martelos" / "monta um orçamento com X" → chame add_to_cart (uma vez por produto)
 - "ver meu carrinho" / "ver orçamento" → chame open_cart
 
-ORÇAMENTOS (REGRA IMPORTANTE):
-Cada produto tem QUANTIDADE MÍNIMA OBRIGATÓRIA para venda B2B. Quando o cliente pedir uma quantidade abaixo da mínima, o sistema AJUSTA AUTOMATICAMENTE para o mínimo permitido — você só precisa avisar de forma curta na resposta (ex: "Adicionei a quantidade mínima de 100 unidades."). Se o cliente pedir vários produtos numa só mensagem, chame add_to_cart uma vez para CADA produto.
+ORÇAMENTOS (REGRA OBRIGATÓRIA — MUITO IMPORTANTE):
+Cada produto tem QUANTIDADE MÍNIMA e é vendido SEMPRE EM MÚLTIPLOS dessa mínima. Ex: se a mínima é 6, só pode 6, 12, 18, 24... Nunca 7, 10 ou 15. Se a mínima é 100, só pode 100, 200, 300...
+Se o cliente pedir uma quantidade que não seja múltipla (ou abaixo da mínima), o sistema AJUSTA AUTOMATICAMENTE para o próximo múltiplo válido — sempre confirme essa regra de forma curta e avise o cliente. Ex: "Esse vai de 6 em 6, ajustei pra 12." ou "Mínimo é 100, adicionei 100." Se o cliente pedir vários produtos numa só mensagem, chame add_to_cart uma vez para CADA produto.
 
 Páginas: ${ROUTES.map((r) => r.path).join(", ")}
 Categorias: ${categories.length ? categories.join(", ") : "(carregando)"}
@@ -106,7 +107,7 @@ const tools = [
     type: "function",
     function: {
       name: "add_to_cart",
-      description: "Adiciona um produto ao carrinho do cliente para montar um orçamento. Use quando o cliente pedir para 'adicionar', 'colocar no carrinho', 'quero comprar', 'monta um orçamento', 'preciso de X unidades', etc. IMPORTANTE: cada produto tem uma quantidade mínima obrigatória — se o cliente pedir menos, o sistema ajustará automaticamente para a quantidade mínima.",
+      description: "Adiciona um produto ao carrinho para montar um orçamento. Use quando o cliente pedir para 'adicionar', 'colocar no carrinho', 'quero comprar', 'monta um orçamento', 'preciso de X unidades', etc. IMPORTANTE: cada produto tem quantidade mínima E é vendido SEMPRE em múltiplos dessa mínima (ex: mín 6 → 6, 12, 18...). Se o cliente pedir quantidade inválida (abaixo da mínima ou não múltipla), o sistema arredonda automaticamente para o próximo múltiplo válido — você só precisa avisar de forma curta na resposta.",
       parameters: {
         type: "object",
         properties: {

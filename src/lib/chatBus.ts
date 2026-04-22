@@ -8,7 +8,16 @@ type ChatBusEventMap = {
 
 // Resposta do handler do carrinho de volta para o widget
 export type CartReplyPayload =
-  | { ok: true; replyId: string; productName: string; addedQty: number; minQty: number; adjusted: boolean }
+  | {
+      ok: true;
+      replyId: string;
+      productName: string;
+      requestedQty: number;        // quanto o cliente pediu
+      addedQty: number;            // quanto realmente foi adicionado (já múltiplo do minQty)
+      minQty: number;              // mínimo / passo do produto
+      adjusted: boolean;           // true se tivemos que mexer na quantidade
+      adjustReason?: "below_min" | "not_multiple"; // motivo do ajuste
+    }
   | { ok: false; replyId: string; reason: "not_found" | "error"; query: string };
 
 type CartReplyListener = (r: CartReplyPayload) => void;
