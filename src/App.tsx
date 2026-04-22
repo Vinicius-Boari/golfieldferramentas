@@ -15,6 +15,7 @@ import Index from "./pages/Index.tsx";
 const Login = lazy(() => import("./pages/Login.tsx"));
 const Register = lazy(() => import("./pages/Register.tsx"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword.tsx"));
+const Profile = lazy(() => import("./pages/Profile.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 const AdminProducts = lazy(() => import("./pages/AdminProducts.tsx"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin.tsx"));
@@ -55,6 +56,7 @@ const AppShell = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/cadastro" element={<Register />} />
             <Route path="/esqueci-senha" element={<ForgotPassword />} />
+            <Route path="/perfil" element={<Profile />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/produtos" element={<AdminProducts />} />
             <Route path="/admin/home" element={<AdminHome />} />
