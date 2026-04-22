@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { X, Send } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { chatBus, normalizeCategoryId, onCartReply, type CartReplyPayload } from "@/lib/chatBus";
 import { useCart } from "@/context/CartContext";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -46,25 +47,28 @@ const TypingDots = () => (
   </div>
 );
 
-const WhatsAppButton = () => (
-  <motion.a
-    href={WHATSAPP_URL}
-    target="_blank"
-    rel="noopener noreferrer"
-    initial={{ opacity: 0, y: 6 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366] text-white font-medium text-xs shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
-  >
-    <motion.span
-      className="absolute inset-0 rounded-lg"
-      style={{ boxShadow: "0 0 0 0 rgba(37,211,102,0.7)" }}
-      animate={{ boxShadow: ["0 0 0 0 rgba(37,211,102,0.7)", "0 0 0 8px rgba(37,211,102,0)"] }}
-      transition={{ duration: 1.6, repeat: Infinity }}
-    />
-    <WhatsAppIcon size={14} />
-    <span className="relative">Falar no WhatsApp</span>
-  </motion.a>
-);
+const WhatsAppButton = () => {
+  const { t } = useTranslation();
+  return (
+    <motion.a
+      href={WHATSAPP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366] text-white font-medium text-xs shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
+    >
+      <motion.span
+        className="absolute inset-0 rounded-lg"
+        style={{ boxShadow: "0 0 0 0 rgba(37,211,102,0.7)" }}
+        animate={{ boxShadow: ["0 0 0 0 rgba(37,211,102,0.7)", "0 0 0 8px rgba(37,211,102,0)"] }}
+        transition={{ duration: 1.6, repeat: Infinity }}
+      />
+      <WhatsAppIcon size={14} />
+      <span className="relative">{t("chat.talkWhatsApp")}</span>
+    </motion.a>
+  );
+};
 
 const ChatWidget = () => {
   const [open, setOpen] = useState(false);
@@ -73,6 +77,7 @@ const ChatWidget = () => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { isOpen: cartOpen } = useCart();
@@ -343,7 +348,7 @@ const ChatWidget = () => {
         whileTap={{ scale: 0.92 }}
         className={`fixed bottom-4 right-4 md:bottom-6 md:right-6 ${cartOpen ? "z-[60]" : "z-40"} p-3.5 md:p-4 rounded-full shadow-xl text-white transition-shadow hover:shadow-2xl`}
         style={{ background: "#2563EB", boxShadow: "0 10px 30px -8px rgba(37,99,235,0.55)" }}
-        aria-label="Abrir chat com assistente virtual"
+        aria-label={t("chat.openChat")}
       >
         <AnimatePresence mode="wait" initial={false}>
           {open ? (
@@ -386,16 +391,16 @@ const ChatWidget = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-[15px] leading-tight">GolField</div>
-                <div className="text-[10px] uppercase tracking-wider text-white/70">Assistente Virtual</div>
+                <div className="text-[10px] uppercase tracking-wider text-white/70">{t("chat.assistant")}</div>
                 <div className="text-xs text-white/80 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
-                  Online agora
+                  Online
                 </div>
               </div>
               <button
                 onClick={() => setOpen(false)}
                 className="p-1.5 rounded-lg hover:bg-white/15 transition-colors"
-                aria-label="Fechar chat"
+                aria-label={t("chat.closeChat")}
               >
                 <X size={18} />
               </button>
@@ -436,7 +441,7 @@ const ChatWidget = () => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={onKey}
                 disabled={loading}
-                placeholder="Digite sua mensagem..."
+                placeholder={t("chat.typeMessage")}
                 className="flex-1 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 bg-slate-100 rounded-full outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/40 transition-all disabled:opacity-60"
               />
               <button
@@ -444,7 +449,7 @@ const ChatWidget = () => {
                 disabled={!input.trim() || loading}
                 className="w-10 h-10 flex items-center justify-center rounded-full text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
                 style={{ background: "#2563EB" }}
-                aria-label="Enviar mensagem"
+                aria-label={t("chat.sendMessage")}
               >
                 <Send size={16} />
               </button>
