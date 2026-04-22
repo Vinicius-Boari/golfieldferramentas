@@ -7,7 +7,7 @@ import ProductCard from "@/components/ProductCard";
 import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
-import { CartProvider, useCart } from "@/context/CartContext";
+import { useCart } from "@/context/CartContext";
 import { useProducts } from "@/hooks/useProducts";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { chatBus, emitCartReply } from "@/lib/chatBus";
@@ -411,12 +411,6 @@ const IndexContent = () => {
   );
 };
 
-const Index = () => {
-  return (
-    <CartProvider>
-      <IndexContent />
-    </CartProvider>
-  );
-};
+const Index = () => <IndexContent />;
 
 export default Index;
