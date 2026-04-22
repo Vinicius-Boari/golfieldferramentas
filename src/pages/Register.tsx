@@ -102,15 +102,15 @@ const Register = () => {
 
   if (success) {
     return (
-      <AuthLayout title="Cadastro enviado!" subtitle="">
+      <AuthLayout title="Conta criada!" subtitle="">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center space-y-5">
           <div className="mx-auto w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center">
             <CheckCircle2 className="text-green-500" size={36} />
           </div>
           <p className="text-muted-foreground text-sm">
-            Seu cadastro foi enviado com sucesso. Nossa equipe irá analisar seus dados e entraremos em contato em breve.
+            Sua conta foi criada com sucesso! Você já pode aproveitar a plataforma.
           </p>
-          <Link to="/login" className="btn-golfield inline-flex">Voltar ao Login</Link>
+          <Link to="/" className="btn-golfield inline-flex">Ir para a loja</Link>
         </motion.div>
       </AuthLayout>
     );
