@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Pencil, Trash2, Search, Tag, LogOut, Save, X, ArrowLeft,
-  Eye, EyeOff, Copy, Package, Home, Users, Loader2, BarChart3,
+  Eye, EyeOff, Copy, Package, Home, Users, UserRound, Loader2, BarChart3,
   Calendar, Percent, DollarSign, Filter
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -204,9 +204,14 @@ const AdminCoupons = () => {
               <Home size={16} /> Home
             </motion.button>
             {isOwner && (
-              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => navigate("/admin/usuarios")} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold">
-                <Users size={16} /> Usuários
-              </motion.button>
+              <>
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => navigate("/admin/clientes")} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold">
+                  <UserRound size={16} /> Clientes
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => navigate("/admin/usuarios")} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm font-semibold">
+                  <Users size={16} /> Usuários
+                </motion.button>
+              </>
             )}
             <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={openNew} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold">
               <Plus size={16} /> Novo Cupom
