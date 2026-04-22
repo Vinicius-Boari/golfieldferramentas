@@ -15,7 +15,7 @@ interface CompareCtx {
 
 const CompareContext = createContext<CompareCtx | null>(null);
 const STORAGE_KEY = "golfield:compare:v1";
-const MAX_ITEMS = 4;
+const MAX_ITEMS = 10;
 
 export const CompareProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<Product[]>(() => {

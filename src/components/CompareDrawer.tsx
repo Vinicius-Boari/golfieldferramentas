@@ -4,7 +4,7 @@ import { useCompare } from "@/context/CompareContext";
 import { useCart } from "@/context/CartContext";
 
 const CompareDrawer = () => {
-  const { items, isOpen, setIsOpen, remove, clear } = useCompare();
+  const { items, isOpen, setIsOpen, remove, clear, max } = useCompare();
   const { addItem } = useCart();
 
   // Calcula valores min/max para destacar melhor preço/menor mínimo
@@ -39,7 +39,7 @@ const CompareDrawer = () => {
                 <div>
                   <h2 className="text-lg sm:text-xl font-bold">Comparar Produtos</h2>
                   <p className="text-xs text-muted-foreground">
-                    {items.length} de 4 produtos selecionados
+                    {items.length} de {max} produtos selecionados
                   </p>
                 </div>
               </div>
@@ -71,11 +71,11 @@ const CompareDrawer = () => {
                   </div>
                   <h3 className="text-lg font-semibold mb-2">Nenhum produto para comparar</h3>
                   <p className="text-sm text-muted-foreground max-w-sm">
-                    Clique no ícone de balança nos produtos para adicioná-los à comparação (até 4).
+                    Clique no ícone de balança nos produtos para adicioná-los à comparação (até {max}).
                   </p>
                 </div>
               ) : (
-                <div className={`grid gap-4 ${items.length === 1 ? "grid-cols-1 max-w-sm mx-auto" : items.length === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-2 lg:grid-cols-4"}`}>
+                <div className={`grid gap-4 ${items.length === 1 ? "grid-cols-1 max-w-sm mx-auto" : items.length === 2 ? "grid-cols-1 sm:grid-cols-2" : items.length <= 4 ? "grid-cols-2 lg:grid-cols-4" : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"}`}>
                   {items.map((p, idx) => {
                     const isBestPrice = items.length > 1 && p.price === minPrice;
                     const isLowestMinQty = items.length > 1 && p.minQty === minMinQty;
