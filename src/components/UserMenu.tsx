@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { UserCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile, getInitials } from "@/hooks/useProfile";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -8,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 const UserMenu = () => {
   const { isAuthenticated, loading } = useAuth();
   const { data: profile } = useProfile();
+  const { t } = useTranslation();
 
   if (loading) {
     // Render a placeholder so layout doesn't shift
@@ -33,7 +35,7 @@ const UserMenu = () => {
               <Link
                 to="/perfil"
                 className="relative p-1 sm:p-1.5 rounded-full inline-flex group"
-                aria-label="Meu perfil"
+                aria-label={t("user.profile")}
               >
                 <motion.div
                   whileHover={{ scale: 1.08 }}
@@ -43,7 +45,7 @@ const UserMenu = () => {
                   {profile?.avatar_url ? (
                     <img
                       src={profile.avatar_url}
-                      alt={profile.nome_responsavel || "Perfil"}
+                      alt={profile.nome_responsavel || t("user.profileAlt")}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -57,7 +59,7 @@ const UserMenu = () => {
               </Link>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="text-xs">
-              {profile?.nome_responsavel || "Meu perfil"}
+              {profile?.nome_responsavel || t("user.profile")}
             </TooltipContent>
           </Tooltip>
         </motion.div>
@@ -73,7 +75,7 @@ const UserMenu = () => {
         >
           <Link
             to="/login"
-            aria-label="Entrar"
+            aria-label={t("user.login")}
             className="p-2 sm:p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300 inline-flex"
           >
             <UserCircle2 size={20} className="text-primary-foreground" />

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const WhatsAppIcon = () => (
   <svg width={26} height={26} viewBox="0 0 24 24" fill="currentColor">
@@ -7,6 +8,7 @@ const WhatsAppIcon = () => (
 );
 
 const WhatsAppFloat = () => {
+  const { t } = useTranslation();
   return (
     <motion.a
       href="https://wa.me/5511959409051"
@@ -18,7 +20,7 @@ const WhatsAppFloat = () => {
       whileHover={{ scale: 1.12 }}
       whileTap={{ scale: 0.9 }}
       className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-40 p-3.5 md:p-4 rounded-2xl bg-[hsl(142,70%,45%)] text-primary-foreground shadow-xl transition-shadow duration-300 hover:shadow-2xl hover:shadow-[hsl(142,70%,45%,0.3)]"
-      aria-label="WhatsApp"
+      aria-label={t("whatsapp.label")}
     >
       <WhatsAppIcon />
     </motion.a>
