@@ -134,14 +134,14 @@ const ChatWidget = () => {
   useEffect(() => {
     const off = onCartReply((r) => {
       let content = "";
-      if (r.ok) {
-        content = r.adjusted
-          ? `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento (mínimo do produto: ${r.minQty}).`
-          : `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento.`;
-      } else if (r.reason === "not_found") {
-        content = `Não encontrei nenhum produto correspondente a "${r.query}". Pode tentar com um nome mais específico?`;
+      if (!r.ok) {
+        content = r.reason === "not_found"
+          ? `Não encontrei nenhum produto correspondente a "${r.query}". Pode tentar com um nome mais específico?`
+          : `Não consegui adicionar "${r.query}" agora. Tente novamente em instantes.`;
+      } else if (r.adjusted) {
+        content = `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento (mínimo do produto: ${r.minQty}).`;
       } else {
-        content = `Não consegui adicionar "${r.query}" agora. Tente novamente em instantes.`;
+        content = `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento.`;
       }
       setMessages((prev) => [...prev, { role: "assistant", content }]);
     });
