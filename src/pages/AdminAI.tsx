@@ -219,11 +219,8 @@ const AdminAI = () => {
     if (!text || imgLoading) return;
     if (!guardOrToast()) return;
     setGeneratedImg(null);
+    setImgLoading(true);
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const accessToken = sessionData.session?.access_token;
-      if (!accessToken) throw new Error("Sessão expirada.");
-
       const { data, error } = await supabase.functions.invoke("admin-ai-image", {
         body: { prompt: text, model: QUALITY_MODELS[imgQuality].id },
       });
