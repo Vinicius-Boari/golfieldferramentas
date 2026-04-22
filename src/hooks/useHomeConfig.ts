@@ -155,6 +155,7 @@ export interface HomeConfig {
 }
 
 export const DEFAULT_WHATSAPP_TEMPLATE = `Olá! Meu nome é {name}.
+Razão Social: {razao_social}
 
 Gostaria de fazer um orçamento dos seguintes produtos:
 
