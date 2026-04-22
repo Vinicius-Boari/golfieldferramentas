@@ -67,7 +67,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
       return encodeURIComponent(renderWhatsAppTemplate(customCfg.template, data));
     }
 
-    let msg = "Olá! Gostaria de fazer um orçamento:\n\n" + productsText;
+    let msg = t("cart.waGreeting") + "\n\n" + productsText;
     msg += `\n\n*Subtotal: R$ ${totalPrice.toFixed(2).replace('.', ',')}*`;
     if (appliedCoupon) {
       msg += `\n*Cupom: ${appliedCoupon.code} (-R$ ${appliedCoupon.discount_amount.toFixed(2).replace('.', ',')})*`;
@@ -358,17 +358,17 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
 
                 <div className="space-y-1 py-2">
                   <div className="flex justify-between items-center gap-4">
-                    <span className="text-xs text-muted-foreground">Subtotal</span>
+                    <span className="text-xs text-muted-foreground">{t("cart.subtotal")}</span>
                     <span className="text-sm font-medium">R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
                   </div>
                   {appliedCoupon && (
                     <div className="flex justify-between items-center gap-4">
-                      <span className="text-xs text-primary">Desconto</span>
+                      <span className="text-xs text-primary">{t("cart.discount")}</span>
                       <span className="text-sm font-medium text-primary">-R$ {Math.min(appliedCoupon.discount_amount, totalPrice).toFixed(2).replace('.', ',')}</span>
                     </div>
                   )}
                   <div className="flex justify-between items-center gap-4 pt-1 border-t border-border/40">
-                    <span className="text-sm text-muted-foreground">Total</span>
+                    <span className="text-sm text-muted-foreground">{t("cart.total")}</span>
                     <span className="text-xl sm:text-2xl font-bold text-primary tracking-tight text-right">
                       R$ {finalPrice.toFixed(2).replace('.', ',')}
                     </span>
@@ -390,7 +390,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                           className="gradient-border-animated btn-golfield w-full text-center justify-center"
                         >
                           <MessageCircle size={18} />
-                          Enviar Orçamento via WhatsApp
+                          {t("cart.sendWhatsApp")}
                         </motion.a>
                       );
                     }
@@ -398,11 +398,11 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                       <div className="space-y-2">
                         <div className="rounded-xl border border-primary/30 bg-primary/5 px-3 py-2.5 text-xs text-foreground/80 flex items-start gap-2">
                           <LogIn size={14} className="text-primary shrink-0 mt-0.5" />
-                          <span>Para enviar o orçamento via WhatsApp, é necessário estar logado.</span>
+                          <span>{t("cart.loginRequiredHint")}</span>
                         </div>
                         <motion.button
                           onClick={() => {
-                            toast.error("Você precisa estar logado para enviar um orçamento.");
+                            toast.error(t("cart.loginToast"));
                             setIsOpen(false);
                             navigate("/login");
                           }}
@@ -411,7 +411,7 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                           className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-primary text-primary-foreground text-sm font-semibold"
                         >
                           <LogIn size={18} />
-                          Faça login para enviar orçamento
+                          {t("cart.loginButton")}
                         </motion.button>
                       </div>
                     );
@@ -422,12 +422,12 @@ const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
                     className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-secondary text-muted-foreground cursor-not-allowed text-sm font-semibold"
                   >
                     <MessageCircle size={18} />
-                    Pedido mínimo R$ 2.000,00
+                    {t("cart.minOrderValue")}
                   </button>
                 )}
 
                 <button onClick={clearCart} className="w-full py-2 text-xs text-muted-foreground hover:text-destructive transition-colors">
-                  Limpar orçamento
+                  {t("cart.clear")}
                 </button>
               </div>
             )}

@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import Header from "@/components/Header";
 import Hero, { FloatingToolVisual } from "@/components/Hero";
 import CategoryNav from "@/components/CategoryNav";
@@ -41,6 +42,7 @@ const trustIcons = [Star, TrendingUp, Sparkles];
 const aboutIcons = [Calendar, Globe, Lightbulb, Sparkles];
 
 const IndexContent = () => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("todos");
   const [showAll, setShowAll] = useState(false);
@@ -227,11 +229,11 @@ const IndexContent = () => {
             />
             <div className="container mx-auto px-4">
               <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12 sm:mb-16">
-                <motion.span data-edit-id="products.badge" variants={scaleIn} className="section-badge mb-6 inline-flex">{pc?.badge}</motion.span>
+                <motion.span data-edit-id="products.badge" variants={scaleIn} className="section-badge mb-6 inline-flex">{pc?.badge || t("productsSection.badge")}</motion.span>
                 <motion.h2 data-edit-id="products.title" variants={fadeSlideUp} className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-4">
-                  {pc?.title}{" "}<span className="text-gradient-gold">{pc?.titleHighlight}</span>
+                  {pc?.title || t("productsSection.title")}{" "}<span className="text-gradient-gold">{pc?.titleHighlight || t("productsSection.titleHighlight")}</span>
                 </motion.h2>
-                <motion.p data-edit-id="products.subtitle" variants={fadeSlideUp} className="text-muted-foreground max-w-md mx-auto text-base px-2">{pc?.subtitle}</motion.p>
+                <motion.p data-edit-id="products.subtitle" variants={fadeSlideUp} className="text-muted-foreground max-w-md mx-auto text-base px-2">{pc?.subtitle || t("productsSection.subtitle")}</motion.p>
               </motion.div>
 
               <motion.div initial={{ opacity: 0, y: 20, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }}
@@ -239,7 +241,7 @@ const IndexContent = () => {
                 <div className="relative group">
                   <motion.div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/5 to-primary/20 rounded-2xl blur-lg opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground z-10" size={18} />
-                  <input type="text" placeholder="Buscar ferramentas..." value={searchQuery} onChange={e => {
+                  <input type="text" placeholder={t("productsSection.searchPlaceholder")} value={searchQuery} onChange={e => {
                     setSearchQuery(e.target.value);
                     if (e.target.value.trim() !== "") {
                       const el = document.getElementById("produtos");
@@ -262,8 +264,8 @@ const IndexContent = () => {
                   {displayProducts.length === 0 ? (
                     <motion.div key="empty" initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: -20 }} className="text-center py-20 sm:py-24 text-muted-foreground">
                       <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity }}><Search size={48} className="mx-auto mb-4 opacity-20" /></motion.div>
-                      <p className="text-2xl font-semibold mb-2">Nenhum produto encontrado</p>
-                      <p className="text-sm">Tente outra busca ou categoria</p>
+                      <p className="text-2xl font-semibold mb-2">{t("productsSection.noResults")}</p>
+                      <p className="text-sm">{t("productsSection.tryAnother")}</p>
                     </motion.div>
                   ) : (
                     <motion.div key={activeCategory + searchQuery} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
@@ -276,7 +278,7 @@ const IndexContent = () => {
                 {isHomepage && filteredProducts.length > 20 && (
                   <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mt-12 sm:mt-14">
                     <motion.button onClick={() => setShowAll(true)} whileHover={{ scale: 1.06, y: -3, boxShadow: "0 15px 40px -10px hsl(0,78%,52%,0.3)" }} whileTap={{ scale: 0.97 }} className="gradient-border-animated gradient-border-thin btn-outline-golfield">
-                      {pc?.showAllButtonText || "Ver todos os"} {filteredProducts.length} produtos
+                      {pc?.showAllButtonText || t("productsSection.viewAll", { count: filteredProducts.length })}
                       <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity }}><ArrowRight size={16} /></motion.span>
                     </motion.button>
                   </motion.div>
@@ -284,7 +286,7 @@ const IndexContent = () => {
               </div>
 
               <motion.p data-edit-id="products.disclaimer" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}
-                className="text-center text-xs text-muted-foreground mt-12 sm:mt-16">{pc?.disclaimerText}</motion.p>
+                className="text-center text-xs text-muted-foreground mt-12 sm:mt-16">{pc?.disclaimerText || t("productsSection.disclaimer")}</motion.p>
             </div>
           </section>
         ) : null;
