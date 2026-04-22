@@ -1,17 +1,22 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus, LogIn, Tag, Loader2, Check, AlertCircle } from "lucide-react";
+import { X, Trash2, ShoppingCart, MessageCircle, Minus, Plus, LogIn, Tag, Loader2, Check, AlertCircle, Sparkles } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useValidateCoupon } from "@/hooks/useCoupons";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { renderWhatsAppTemplate } from "@/components/admin/SystemSettingsPanel";
 import { supabase } from "@/integrations/supabase/client";
 import { formatCNPJ } from "@/lib/cnpj";
+import type { Product } from "@/data/products";
 
-const CartDrawer = () => {
+interface CartDrawerProps {
+  relatedProducts?: Product[];
+}
+
+const CartDrawer = ({ relatedProducts = [] }: CartDrawerProps) => {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart, appliedCoupon, setAppliedCoupon, finalPrice } = useCart();
   const { isAuthenticated } = useAuth();
   const { data: homeConfig } = useHomeConfig();
