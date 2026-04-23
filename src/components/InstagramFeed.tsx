@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Play, Heart, MessageCircle, ExternalLink, ImageOff, Camera } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -45,6 +45,154 @@ const cardVariant = {
     transition: { delay: i * 0.05, duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
   }),
 };
+
+interface InstagramCardProps {
+  post: BeholdPost;
+  index: number;
+  isVideo: boolean;
+  thumb?: string;
+  handle: string;
+  onOpen: () => void;
+}
+
+/**
+ * Single Instagram post card.
+ *
+ * Behavior:
+ *  - Image posts: clicking the card opens the lightbox.
+ *  - Video posts: hovering plays the video inline (muted, no zoom). The play
+ *    button in the corner is the only element that opens the lightbox; the
+ *    rest of the card is non-interactive while the preview is playing so the
+ *    user can simply watch it.
+ */
+const InstagramCard = ({ post, index, isVideo, thumb, handle, onOpen }: InstagramCardProps) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [hovered, setHovered] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+
+  // Pause + reset on hover-out so the next hover starts from the beginning.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (hovered) {
+      v.play().catch(() => {
+        // Autoplay can fail on some browsers; the static thumb stays visible.
+      });
+    } else {
+      v.pause();
+      try {
+        v.currentTime = 0;
+      } catch {
+        /* noop */
+      }
+    }
+  }, [hovered]);
+
+  const handlePlayClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onOpen();
+  };
+
+  // For images: whole card opens lightbox.
+  // For videos: card itself does NOT open lightbox — only the play button does.
+  const cardClickProps = isVideo
+    ? {}
+    : { onClick: onOpen, role: "button" as const, tabIndex: 0, onKeyDown: (e: React.KeyboardEvent) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onOpen(); }
+      } };
+
+  return (
+    <motion.div
+      custom={index}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-40px" }}
+      variants={cardVariant}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className={`group relative aspect-square overflow-hidden rounded-xl border border-border bg-card text-left shadow-md shadow-black/30 transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-black/40 ${isVideo ? "" : "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"}`}
+      aria-label={`Postagem ${index + 1} de @${handle}`}
+      {...cardClickProps}
+    >
+      {/* Static thumbnail (always rendered; for videos it stays as poster fallback) */}
+      {thumb ? (
+        <img
+          src={thumb}
+          alt={post.prunedCaption || `Post de @${handle}`}
+          loading="lazy"
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+            isVideo && hovered && videoReady ? "opacity-0" : "opacity-100"
+          } ${isVideo ? "" : "group-hover:brightness-90"}`}
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+          }}
+        />
+      ) : (
+        <div className="w-full h-full grid place-items-center text-muted-foreground">
+          <ImageOff size={28} />
+        </div>
+      )}
+
+      {/* Inline video preview — only mounted for video posts, plays on hover */}
+      {isVideo && (
+        <video
+          ref={videoRef}
+          src={post.mediaUrl}
+          poster={thumb}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          onCanPlay={() => setVideoReady(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+            hovered && videoReady ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        />
+      )}
+
+      {/* Play button — only for videos, opens the lightbox (zoom) */}
+      {isVideo && (
+        <button
+          type="button"
+          onClick={handlePlayClick}
+          aria-label="Abrir vídeo em tela maior"
+          className="absolute top-3 right-3 w-10 h-10 rounded-full bg-background/70 backdrop-blur-md grid place-items-center shadow-lg z-20 transition-transform duration-200 hover:scale-110 hover:bg-background/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
+          <Play size={16} className="text-primary fill-primary ml-0.5" />
+        </button>
+      )}
+
+      {/* Hover overlay with likes/comments — hidden while video preview is playing
+          so it doesn't cover the action */}
+      <div
+        className={`absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent transition-opacity duration-300 flex flex-col justify-end p-4 pointer-events-none ${
+          hovered && !(isVideo && videoReady) ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="flex items-center gap-4 text-white text-sm font-semibold">
+          {typeof post.likes === "number" && (
+            <span className="flex items-center gap-1.5">
+              <Heart size={16} className="fill-white" />
+              {formatCount(post.likes)}
+            </span>
+          )}
+          {typeof post.comments === "number" && (
+            <span className="flex items-center gap-1.5">
+              <MessageCircle size={16} />
+              {formatCount(post.comments)}
+            </span>
+          )}
+          {typeof post.likes !== "number" && typeof post.comments !== "number" && post.prunedCaption && (
+            <span className="line-clamp-2 text-white/90 font-normal">
+              {post.prunedCaption}
+            </span>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 
 const InstagramFeed = ({
   feedId,
@@ -163,64 +311,15 @@ const InstagramFeed = ({
                   post.mediaUrl;
 
                 return (
-                  <motion.button
+                  <InstagramCard
                     key={post.id}
-                    type="button"
-                    onClick={() => setOpenPost(post)}
-                    custom={i}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-40px" }}
-                    variants={cardVariant}
-                    className="group relative aspect-square overflow-hidden rounded-xl border border-border bg-card text-left shadow-md shadow-black/30 transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                    aria-label={`Ver postagem ${i + 1} de @${handle}`}
-                  >
-                    {thumb ? (
-                      <img
-                        src={thumb}
-                        alt={post.prunedCaption || `Post de @${handle}`}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:brightness-90"
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).style.display = "none";
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full grid place-items-center text-muted-foreground">
-                        <ImageOff size={28} />
-                      </div>
-                    )}
-
-                    {/* Video play badge */}
-                    {isVideo && (
-                      <div className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/70 backdrop-blur-md grid place-items-center shadow-lg">
-                        <Play size={14} className="text-primary fill-primary ml-0.5" />
-                      </div>
-                    )}
-
-                    {/* Hover overlay with likes/comments */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                      <div className="flex items-center gap-4 text-white text-sm font-semibold">
-                        {typeof post.likes === "number" && (
-                          <span className="flex items-center gap-1.5">
-                            <Heart size={16} className="fill-white" />
-                            {formatCount(post.likes)}
-                          </span>
-                        )}
-                        {typeof post.comments === "number" && (
-                          <span className="flex items-center gap-1.5">
-                            <MessageCircle size={16} />
-                            {formatCount(post.comments)}
-                          </span>
-                        )}
-                        {typeof post.likes !== "number" && typeof post.comments !== "number" && post.prunedCaption && (
-                          <span className="line-clamp-2 text-white/90 font-normal">
-                            {post.prunedCaption}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </motion.button>
+                    post={post}
+                    index={i}
+                    isVideo={isVideo}
+                    thumb={thumb}
+                    handle={handle}
+                    onOpen={() => setOpenPost(post)}
+                  />
                 );
               })}
             </div>
