@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import {
   ArrowLeft, Save, LogOut, Home, Type, Image, Palette, LayoutGrid,
   ChevronUp, ChevronDown, Eye, EyeOff, Plus, Trash2, Upload, Link2, Loader2, GripVertical,
-  Film, Volume2, VolumeX, Repeat, Settings, MousePointer2
+  Film, Volume2, VolumeX, Repeat, Settings, MousePointer2,
+  Star, TrendingUp, Sparkles, Calendar, Globe, Lightbulb, Shield, Truck, Wrench, Package, Zap, Heart, Award, Users
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
