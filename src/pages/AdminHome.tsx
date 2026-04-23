@@ -492,6 +492,36 @@ const AdminHome = () => {
                   </div>
                   <InputField label="Título" value={config.instagramSection.title}
                     onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, title: v } }))} />
+
+                  {/* Card size */}
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Tamanho dos cards</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {([
+                        { id: "small", label: "Pequeno", desc: "4-5 colunas" },
+                        { id: "medium", label: "Médio", desc: "3 colunas" },
+                        { id: "large", label: "Grande", desc: "2 colunas" },
+                      ] as const).map(opt => {
+                        const active = config.instagramSection.cardSize === opt.id;
+                        return (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            onClick={() => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, cardSize: opt.id } }))}
+                            className={`px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all ${
+                              active
+                                ? "bg-primary text-primary-foreground border-primary"
+                                : "bg-secondary/50 text-muted-foreground border-border/50 hover:border-primary/40 hover:text-foreground"
+                            }`}
+                          >
+                            <div>{opt.label}</div>
+                            <div className={`text-[10px] mt-0.5 font-normal ${active ? "text-primary-foreground/80" : "text-muted-foreground/70"}`}>{opt.desc}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Quantidade de posts (3 a 12)</label>
                     <input
@@ -503,6 +533,13 @@ const AdminHome = () => {
                       className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50 transition-colors"
                     />
                   </div>
+
+                  {/* Favorites selector */}
+                  <InstagramFavoritesPicker
+                    feedId={config.instagramSection.beholdFeedId}
+                    favoriteIds={config.instagramSection.favoritePostIds}
+                    onChange={(ids) => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, favoritePostIds: ids } }))}
+                  />
                 </div>
               )}
 
