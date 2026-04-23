@@ -56,6 +56,7 @@ interface InstagramCardProps {
   post: BeholdPost;
   index: number;
   isVideo: boolean;
+  isFavorite?: boolean;
   thumb?: string;
   handle: string;
   onOpen: () => void;
@@ -391,6 +392,7 @@ const InstagramFeed = ({
                     post={post}
                     index={i}
                     isVideo={isVideo}
+                    isFavorite={(favoritePostIds ?? []).includes(post.id)}
                     thumb={thumb}
                     handle={handle}
                     onOpen={() => setOpenPost(post)}
