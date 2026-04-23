@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Play, Heart, MessageCircle, ExternalLink, ImageOff, Instagram } from "lucide-react";
+import { Play, Heart, MessageCircle, ExternalLink, ImageOff, Camera } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
@@ -135,7 +135,7 @@ const InstagramFeed = ({
         {/* Error / not configured */}
         {!loading && (error || !posts || posts.length === 0) && (
           <div className="max-w-xl mx-auto text-center py-10 px-6 rounded-xl border border-border/40 bg-card">
-            <Instagram size={36} className="mx-auto mb-4 text-primary/70" />
+            <Camera size={36} className="mx-auto mb-4 text-primary/70" />
             <p className="text-foreground font-semibold mb-2">
               {error === "not-configured"
                 ? "Feed do Instagram em configuração"
