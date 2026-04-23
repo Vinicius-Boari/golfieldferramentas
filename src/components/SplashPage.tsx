@@ -10,6 +10,7 @@ import {
 } from "@/hooks/useSplashConfig";
 import SplashRotatingText from "@/components/SplashRotatingText";
 import SplashInstagramStrip from "@/components/SplashInstagramStrip";
+import SplashLocation from "@/components/SplashLocation";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 
 /** Width preset → max width in px (or full screen). */
@@ -412,6 +413,9 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
                     ctaText={ig.ctaText || "Ver mais no Instagram"}
                   />
                 )}
+
+                {/* Physical store location — mini map + address + directions CTA */}
+                <SplashLocation />
               </div>
             </div>
           </div>
