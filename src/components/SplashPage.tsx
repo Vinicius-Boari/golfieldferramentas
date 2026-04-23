@@ -230,7 +230,7 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.97 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden border shadow-2xl"
+          className="relative overflow-hidden border shadow-2xl flex flex-col"
           style={{ ...cardStyle, borderColor: "#2A2A2A" }}
         >
           {/* Background media */}
@@ -277,7 +277,7 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
           )}
 
           <div
-            className={`relative z-10 flex ${
+            className={`relative z-10 flex flex-1 min-h-0 overflow-y-auto ${
               showMediaLeft ? "flex-col sm:flex-row" : showMediaRight ? "flex-col sm:flex-row-reverse" : "flex-col"
             }`}
           >
