@@ -175,7 +175,15 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
   const showMediaLeft = cfg.media.kind !== "none" && cfg.media.position === "left";
   const showMediaRight = cfg.media.kind !== "none" && cfg.media.position === "right";
 
-  const MediaEl = () => renderMedia(cfg.media);
+  // Auto-close when video ends, if enabled and not in preview mode.
+  const handleMediaEnded = () => {
+    if (!isPreview && cfg.autoCloseOnEnd) close();
+  };
+  const handlePhrasesEnded = () => {
+    if (!isPreview && cfg.autoCloseOnEnd) close();
+  };
+
+  const MediaEl = () => renderMedia(cfg.media, handleMediaEnded);
 
   return (
     <AnimatePresence>
@@ -360,7 +368,7 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
 };
 
 /** Render the configured media (image or video). */
-const renderMedia = (media: SplashConfig["media"]) => {
+const renderMedia = (media: SplashConfig["media"], onEnded?: () => void) => {
   if (media.kind === "image" && media.url) {
     return <img src={media.url} alt="" className="w-full h-full object-cover" />;
   }
@@ -412,6 +420,7 @@ const renderMedia = (media: SplashConfig["media"]) => {
         loop={media.loop}
         muted={media.muted}
         playsInline
+        onEnded={onEnded}
         className="w-full h-full object-cover"
       />
     );
