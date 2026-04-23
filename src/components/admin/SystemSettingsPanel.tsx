@@ -116,7 +116,7 @@ const SystemSettingsPanel = ({ value, onChange, userId }: Props) => {
     setResetStatus(null);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/esqueci-senha`,
+        redirectTo: `${window.location.origin}/redefinir-senha`,
       });
       if (error) throw error;
       setResetStatus({ type: "success", message: `Email de reset enviado para ${email} (se cadastrado).` });
