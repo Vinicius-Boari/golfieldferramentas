@@ -28,29 +28,41 @@ const InstagramFavoritesPicker = ({ feedId, favoriteIds, onChange }: Props) => {
 
   useEffect(() => {
     let cancelled = false;
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+
     if (!feedId) {
       setPosts(null);
       return;
     }
-    setLoading(true);
-    setError(null);
-    fetch(`https://feeds.behold.so/${feedId}`)
-      .then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
-      .then(data => {
-        if (cancelled) return;
-        setPosts(Array.isArray(data?.posts) ? data.posts : []);
-      })
-      .catch(e => {
-        if (cancelled) return;
-        console.error("[FavoritesPicker] fetch failed:", e);
-        setError("fetch-failed");
-      })
-      .finally(() => !cancelled && setLoading(false));
+
+    const load = (showSpinner: boolean) => {
+      if (showSpinner) setLoading(true);
+      setError(null);
+      fetch(`https://feeds.behold.so/${feedId}?_=${Date.now()}`)
+        .then(r => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        })
+        .then(data => {
+          if (cancelled) return;
+          setPosts(Array.isArray(data?.posts) ? data.posts : []);
+        })
+        .catch(e => {
+          if (cancelled) return;
+          console.error("[FavoritesPicker] fetch failed:", e);
+          if (showSpinner) setError("fetch-failed");
+        })
+        .finally(() => !cancelled && showSpinner && setLoading(false));
+    };
+
+    load(true);
+    // Auto-refresh the admin picker every 60s so newly published posts show up
+    // without requiring the admin to reload the page.
+    intervalId = setInterval(() => load(false), 60_000);
+
     return () => {
       cancelled = true;
+      if (intervalId) clearInterval(intervalId);
     };
   }, [feedId]);
 
