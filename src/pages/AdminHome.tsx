@@ -5,7 +5,7 @@ import {
   ArrowLeft, Save, LogOut, Home, Type, Image, Palette, LayoutGrid,
   ChevronUp, ChevronDown, Eye, EyeOff, Plus, Trash2, Upload, Link2, Loader2, GripVertical,
   Film, Volume2, VolumeX, Repeat, Settings, MousePointer2,
-  Star, TrendingUp, Sparkles, Calendar, Globe, Lightbulb, Shield, Truck, Wrench, Package, Zap, Heart, Award, Users
+  Star, TrendingUp, Sparkles, Calendar, Globe, Lightbulb, Shield, Truck, Wrench, Package, Zap, Heart, Award, Users, Bot
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -15,7 +15,9 @@ import SystemSettingsPanel from "@/components/admin/SystemSettingsPanel";
 import AppearancePanel from "@/components/admin/AppearancePanel";
 import InstagramFavoritesPicker from "@/components/admin/InstagramFavoritesPicker";
 import SplashPagePanel from "@/components/admin/SplashPagePanel";
+import AssistantPanel from "@/components/admin/AssistantPanel";
 import { useSplashConfig, useSaveSplashConfig, defaultSplashConfig, type SplashConfig } from "@/hooks/useSplashConfig";
+import { useAssistantConfig, useSaveAssistantConfig, defaultAssistantConfig, type AssistantConfig } from "@/hooks/useAssistantConfig";
 import { toast } from "sonner";
 
 const sectionLabels: Record<string, string> = {
@@ -38,6 +40,7 @@ const tabs = [
   { id: "about", label: "Sobre", icon: Type },
   { id: "instagram", label: "Instagram", icon: Image },
   { id: "splash", label: "Splash Page", icon: Sparkles },
+  { id: "assistant", label: "Assistente", icon: Bot },
   { id: "footer", label: "Rodapé", icon: Type },
   { id: "system", label: "Sistema", icon: Settings },
   { id: "appearance", label: "Aparência", icon: Palette },
@@ -181,6 +184,51 @@ const Toggle = ({ label, value, onChange, hint }: { label: string; value: boolea
     </button>
   </div>
 );
+
+/** Assistant tab — owns its own save button (config lives in a separate table). */
+const AssistantSection = ({ userId }: { userId?: string }) => {
+  const { data: saved } = useAssistantConfig();
+  const saveMutation = useSaveAssistantConfig();
+  const [draft, setDraft] = useState<AssistantConfig>(defaultAssistantConfig);
+  const [dirty, setDirty] = useState(false);
+
+  useEffect(() => {
+    if (saved) setDraft(saved);
+  }, [saved]);
+
+  const handleChange = (next: AssistantConfig) => {
+    setDraft(next);
+    setDirty(true);
+  };
+
+  const handleSave = async () => {
+    try {
+      await saveMutation.mutateAsync(draft);
+      toast.success("Configurações do assistente salvas!");
+      setDirty(false);
+    } catch (e: any) {
+      toast.error(e?.message || "Erro ao salvar");
+    }
+  };
+
+  return (
+    <div className="space-y-5">
+      <AssistantPanel value={draft} onChange={handleChange} userId={userId} />
+      <div className="flex justify-end pt-2 border-t border-border/40">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleSave}
+          disabled={!dirty || saveMutation.isPending}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50 transition-colors"
+        >
+          <Save size={14} />
+          {saveMutation.isPending ? "Salvando..." : "Salvar configurações"}
+        </motion.button>
+      </div>
+    </div>
+  );
+};
 
 const AdminHome = () => {
   const navigate = useNavigate();
@@ -648,6 +696,11 @@ const AdminHome = () => {
                   onChange={setSplashConfig}
                   userId={user?.id}
                 />
+              )}
+
+              {/* ASSISTANT TAB */}
+              {activeTab === "assistant" && (
+                <AssistantSection userId={user?.id} />
               )}
 
 
