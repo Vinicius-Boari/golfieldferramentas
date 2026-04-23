@@ -209,7 +209,7 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
                   className="absolute -inset-5 md:-inset-8 bg-gradient-to-br from-primary/15 via-gold/10 to-primary/15 rounded-[2rem] blur-[40px]"
                 />
                 <div className="absolute -inset-[2px] bg-gradient-to-br from-primary/20 via-transparent to-gold/15 rounded-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
-                <img data-edit-id="hero.logo" src={config?.logoImage || "/images/bb415772-a3bf-433b-bd51-77e20e6dbf5f.png"} alt="Golfield" className="relative h-28 sm:h-32 md:h-52 lg:h-64 w-auto max-w-full rounded-2xl object-contain shadow-2xl shadow-primary/10 bg-card/40 p-3 sm:p-4 md:p-6 backdrop-blur-sm transition-transform duration-500 group-hover:scale-[1.03]" />
+                <img data-edit-id="hero.logo" src={config?.logoImage || "/images/bb415772-a3bf-433b-bd51-77e20e6dbf5f.png"} alt="Golfield" width={512} height={512} fetchPriority="high" decoding="async" className="relative h-28 sm:h-32 md:h-52 lg:h-64 w-auto max-w-full rounded-2xl object-contain shadow-2xl shadow-primary/10 bg-card/40 p-3 sm:p-4 md:p-6 backdrop-blur-sm transition-transform duration-500 group-hover:scale-[1.03]" />
               </div>
             </motion.div>
 

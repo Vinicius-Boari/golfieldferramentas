@@ -1,13 +1,9 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, lazy, Suspense } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
 import Hero, { FloatingToolVisual } from "@/components/Hero";
 import CategoryNav from "@/components/CategoryNav";
 import ProductCard from "@/components/ProductCard";
-import CartDrawer from "@/components/CartDrawer";
-import Footer from "@/components/Footer";
-import ChatWidget from "@/components/ChatWidget";
-import InstagramFeed from "@/components/InstagramFeed";
 import { useCart } from "@/context/CartContext";
 import { useProducts } from "@/hooks/useProducts";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
@@ -17,6 +13,13 @@ import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRi
 import SEO, { buildOrganizationJsonLd, buildWebSiteJsonLd, buildItemListJsonLd } from "@/components/SEO";
 import mascotGirl from "@/assets/mascot-girl.webp";
 import mascotBoy from "@/assets/mascot-boy.webp";
+
+// Lazy-load below-the-fold / interaction-only chunks. The homepage's first
+// paint doesn't need cart drawer, chat, instagram feed or footer JS at all.
+const CartDrawer = lazy(() => import("@/components/CartDrawer"));
+const ChatWidget = lazy(() => import("@/components/ChatWidget"));
+const InstagramFeed = lazy(() => import("@/components/InstagramFeed"));
+const Footer = lazy(() => import("@/components/Footer"));
 
 /** Map icon ids saved in config to Lucide components. */
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -333,6 +336,10 @@ const IndexContent = () => {
                   src={mascotGirl}
                   alt=""
                   aria-hidden="true"
+                  width={288}
+                  height={400}
+                  loading="lazy"
+                  decoding="async"
                   initial={{ opacity: 0, x: -40, y: 20 }}
                   whileInView={{ opacity: 1, x: 0, y: 0 }}
                   viewport={{ once: true }}
@@ -345,6 +352,10 @@ const IndexContent = () => {
                   src={mascotBoy}
                   alt=""
                   aria-hidden="true"
+                  width={288}
+                  height={400}
+                  loading="lazy"
+                  decoding="async"
                   initial={{ opacity: 0, x: 40, y: 20 }}
                   whileInView={{ opacity: 1, x: 0, y: 0 }}
                   viewport={{ once: true }}
@@ -403,23 +414,28 @@ const IndexContent = () => {
 
       case "instagram":
         return isSectionEnabled("instagram") ? (
-          <InstagramFeed
-            key="instagram"
-            feedId={config?.instagramSection?.beholdFeedId}
-            handle={config?.instagramSection?.handle}
-            title={config?.instagramSection?.title}
-            badge={config?.instagramSection?.badge}
-            maxPosts={config?.instagramSection?.maxPosts ?? 9}
-            cardSize={config?.instagramSection?.cardSize ?? "medium"}
-            favoritePostIds={config?.instagramSection?.favoritePostIds ?? []}
-            ctaText={config?.instagramSection?.ctaText}
-            subtitle={config?.instagramSection?.subtitle}
-            showLiveIndicator={config?.instagramSection?.showLiveIndicator}
-          />
+          <Suspense key="instagram" fallback={null}>
+            <InstagramFeed
+              feedId={config?.instagramSection?.beholdFeedId}
+              handle={config?.instagramSection?.handle}
+              title={config?.instagramSection?.title}
+              badge={config?.instagramSection?.badge}
+              maxPosts={config?.instagramSection?.maxPosts ?? 9}
+              cardSize={config?.instagramSection?.cardSize ?? "medium"}
+              favoritePostIds={config?.instagramSection?.favoritePostIds ?? []}
+              ctaText={config?.instagramSection?.ctaText}
+              subtitle={config?.instagramSection?.subtitle}
+              showLiveIndicator={config?.instagramSection?.showLiveIndicator}
+            />
+          </Suspense>
         ) : null;
 
       case "footer":
-        return isSectionEnabled("footer") ? <Footer key="footer" config={config?.footer} /> : null;
+        return isSectionEnabled("footer") ? (
+          <Suspense key="footer" fallback={null}>
+            <Footer config={config?.footer} />
+          </Suspense>
+        ) : null;
 
       default:
         return null;
@@ -439,8 +455,10 @@ const IndexContent = () => {
       {sortedSections.map(section => (
         <div key={section.id}>{renderSection(section.id)}</div>
       ))}
-      <CartDrawer relatedProducts={products} />
-      <ChatWidget />
+      <Suspense fallback={null}>
+        <CartDrawer relatedProducts={products} />
+        <ChatWidget />
+      </Suspense>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, ShoppingCart, Menu, X, Mail, ChevronRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
@@ -32,9 +32,23 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   const headerBg = config?.appearance?.headerBackgroundColor || DEFAULT_HEADER_BACKGROUND_COLOR;
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    let ticking = false;
+    let lastScrolled = scrolled;
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const next = window.scrollY > 20;
+        if (next !== lastScrolled) {
+          lastScrolled = next;
+          setScrolled(next);
+        }
+        ticking = false;
+      });
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const hexToRgba = (hex: string, alpha: number) => {
@@ -100,7 +114,11 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               <img
                 src="/images/golfield-logo.jpeg"
                 alt="Golfield"
-                className="h-11 sm:h-12 md:h-14 rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
+                width="200"
+                height="56"
+                fetchPriority="high"
+                decoding="async"
+                className="h-11 sm:h-12 md:h-14 w-auto rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
                 data-edit-id="header.logo"
               />
             </motion.a>
@@ -266,4 +284,4 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   );
 };
 
-export default Header;
+export default memo(Header);
