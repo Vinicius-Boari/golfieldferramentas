@@ -196,7 +196,8 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const body = await req.json();
+    const { messages, assistant } = body as { messages: any; assistant?: AssistantHints };
     if (!Array.isArray(messages)) {
       return new Response(JSON.stringify({ error: "messages inválido" }), {
         status: 400,
@@ -239,7 +240,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: buildSystemPrompt(categories, catalog) },
+          { role: "system", content: buildSystemPrompt(categories, catalog, assistant ?? {}) },
           ...messages,
         ],
         tools,
