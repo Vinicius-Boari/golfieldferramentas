@@ -13,6 +13,7 @@ import { CompareProvider } from "@/context/CompareContext";
 import { CartProvider } from "@/context/CartContext";
 import CompareDrawer from "@/components/CompareDrawer";
 import CompareFloatingButton from "@/components/CompareFloatingButton";
+import SplashPage from "@/components/SplashPage";
 import Index from "./pages/Index.tsx";
 
 // Lazy-load secondary routes — they are not needed for the initial paint of "/".

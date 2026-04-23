@@ -641,7 +641,16 @@ const AdminHome = () => {
                 </div>
               )}
 
-              {/* FOOTER TAB */}
+              {/* SPLASH PAGE TAB */}
+              {activeTab === "splash" && (
+                <SplashPagePanel
+                  value={splashConfig}
+                  onChange={setSplashConfig}
+                  userId={user?.id}
+                />
+              )}
+
+
               {activeTab === "footer" && (
                 <div className="space-y-5">
                   <h2 className="text-lg font-bold mb-1">Rodapé</h2>
