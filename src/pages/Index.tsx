@@ -412,6 +412,9 @@ const IndexContent = () => {
             maxPosts={config?.instagramSection?.maxPosts ?? 9}
             cardSize={config?.instagramSection?.cardSize ?? "medium"}
             favoritePostIds={config?.instagramSection?.favoritePostIds ?? []}
+            ctaText={config?.instagramSection?.ctaText}
+            subtitle={config?.instagramSection?.subtitle}
+            showLiveIndicator={config?.instagramSection?.showLiveIndicator}
           />
         ) : null;
 
