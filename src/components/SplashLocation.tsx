@@ -41,7 +41,7 @@ const SplashLocation = ({
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Abrir mapa no Google Maps"
-          className="relative block sm:w-1/2 w-full aspect-video sm:aspect-auto sm:min-h-[160px] bg-black/40 group"
+          className="relative block sm:w-1/2 w-full h-32 sm:h-auto sm:min-h-[140px] bg-black/40 group"
         >
           <iframe
             src={osmEmbed}
@@ -64,7 +64,7 @@ const SplashLocation = ({
         </a>
 
         {/* Address + CTA */}
-        <div className="flex-1 p-4 sm:p-5 flex flex-col justify-between gap-3 text-left">
+        <div className="flex-1 p-3 sm:p-4 flex flex-col justify-between gap-2 text-left">
           <div>
             <div className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "#E84A25" }}>
               Golfield Ferramentas
