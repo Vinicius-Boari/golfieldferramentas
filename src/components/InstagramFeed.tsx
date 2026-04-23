@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Play, Heart, MessageCircle, ExternalLink, ImageOff, Camera } from "lucide-react";
+import { Play, Heart, MessageCircle, ExternalLink, ImageOff, Camera, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
