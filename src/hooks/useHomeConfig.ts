@@ -158,6 +158,7 @@ export interface HomeConfig {
   productsSection: ProductsSectionConfig;
   ctaSection: CtaSectionConfig;
   aboutSection: AboutSectionConfig;
+  instagramSection: InstagramSectionConfig;
   footer: FooterConfig;
   systemSettings: SystemSettingsConfig;
   appearance: AppearanceConfig;
