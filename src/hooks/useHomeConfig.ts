@@ -188,7 +188,8 @@ export const defaultHomeConfig: HomeConfig = {
     { id: "products", enabled: true, order: 2 },
     { id: "cta", enabled: true, order: 3 },
     { id: "about", enabled: true, order: 4 },
-    { id: "footer", enabled: true, order: 5 },
+    { id: "instagram", enabled: true, order: 5 },
+    { id: "footer", enabled: true, order: 6 },
   ],
   hero: {
     logoImage: "/images/bb415772-a3bf-433b-bd51-77e20e6dbf5f.png",
