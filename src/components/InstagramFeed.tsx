@@ -217,49 +217,74 @@ const InstagramFeed = ({
 
   const igUrl = profileUrl || `https://www.instagram.com/${handle}`;
 
+  // Polling interval to fetch new posts in (near) real-time.
+  // Behold caches its CDN aggressively but we still re-fetch every 60s and
+  // also when the user returns to the tab so the feed never feels stale.
+  const REFRESH_INTERVAL_MS = 60_000;
+
   useEffect(() => {
     let cancelled = false;
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+
     if (!feedId) {
       setLoading(false);
       setError("not-configured");
       return;
     }
-    setLoading(true);
-    setError(null);
 
-    fetch(`https://feeds.behold.so/${feedId}`)
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
-      .then((data) => {
-        if (cancelled) return;
-        const list: BeholdPost[] = Array.isArray(data?.posts) ? data.posts : [];
+    const load = (showSpinner: boolean) => {
+      if (showSpinner) setLoading(true);
+      setError(null);
 
-        // Re-order: favorites first (in admin-defined order), then the rest
-        // (which Behold already returns newest-first).
-        const favIds = favoritePostIds ?? [];
-        const favSet = new Set(favIds);
-        const byId = new Map(list.map((p) => [p.id, p]));
-        const pinned = favIds
-          .map((id) => byId.get(id))
-          .filter((p): p is BeholdPost => Boolean(p));
-        const rest = list.filter((p) => !favSet.has(p.id));
-        const ordered = [...pinned, ...rest];
+      // Cache-bust query string forces a fresh response from Behold's CDN.
+      fetch(`https://feeds.behold.so/${feedId}?_=${Date.now()}`)
+        .then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        })
+        .then((data) => {
+          if (cancelled) return;
+          const list: BeholdPost[] = Array.isArray(data?.posts) ? data.posts : [];
 
-        setPosts(ordered.slice(0, maxPosts));
-      })
-      .catch((e) => {
-        if (cancelled) return;
-        console.error("[InstagramFeed] fetch error:", e);
-        setError("fetch-failed");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+          // Re-order: favorites first (in admin-defined order), then the rest
+          // (which Behold already returns newest-first).
+          const favIds = favoritePostIds ?? [];
+          const favSet = new Set(favIds);
+          const byId = new Map(list.map((p) => [p.id, p]));
+          const pinned = favIds
+            .map((id) => byId.get(id))
+            .filter((p): p is BeholdPost => Boolean(p));
+          const rest = list.filter((p) => !favSet.has(p.id));
+          const ordered = [...pinned, ...rest];
+
+          setPosts(ordered.slice(0, maxPosts));
+        })
+        .catch((e) => {
+          if (cancelled) return;
+          console.error("[InstagramFeed] fetch error:", e);
+          if (showSpinner) setError("fetch-failed");
+        })
+        .finally(() => {
+          if (!cancelled && showSpinner) setLoading(false);
+        });
+    };
+
+    // Initial load with spinner
+    load(true);
+
+    // Background refresh — silent (no skeleton flash)
+    intervalId = setInterval(() => load(false), REFRESH_INTERVAL_MS);
+
+    // Refresh when the tab regains focus
+    const onVisible = () => {
+      if (document.visibilityState === "visible") load(false);
+    };
+    document.addEventListener("visibilitychange", onVisible);
 
     return () => {
       cancelled = true;
+      if (intervalId) clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [feedId, maxPosts, favoritePostIds]);
 
