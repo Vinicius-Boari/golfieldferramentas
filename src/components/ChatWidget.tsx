@@ -640,7 +640,7 @@ const ChatWidget = () => {
                   exit={{ opacity: 0 }}
                   className="flex justify-start"
                 >
-                  <div className="bg-white border border-slate-200 rounded-2xl rounded-bl-md px-3 shadow-sm">
+                  <div className="bg-slate-100 border border-slate-200 rounded-2xl rounded-bl-md px-3">
                     <TypingDots />
                   </div>
                 </motion.div>
