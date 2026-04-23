@@ -336,6 +336,10 @@ const IndexContent = () => {
                   src={mascotGirl}
                   alt=""
                   aria-hidden="true"
+                  width={288}
+                  height={400}
+                  loading="lazy"
+                  decoding="async"
                   initial={{ opacity: 0, x: -40, y: 20 }}
                   whileInView={{ opacity: 1, x: 0, y: 0 }}
                   viewport={{ once: true }}
@@ -348,6 +352,10 @@ const IndexContent = () => {
                   src={mascotBoy}
                   alt=""
                   aria-hidden="true"
+                  width={288}
+                  height={400}
+                  loading="lazy"
+                  decoding="async"
                   initial={{ opacity: 0, x: 40, y: 20 }}
                   whileInView={{ opacity: 1, x: 0, y: 0 }}
                   viewport={{ once: true }}
