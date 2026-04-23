@@ -253,8 +253,8 @@ export const defaultHomeConfig: HomeConfig = {
     ],
   },
   instagramSection: {
-    badge: "Nossa Galeria",
-    title: "Siga a gente no Instagram",
+    badge: "Instagram",
+    title: "Acompanhe a Golfield",
     handle: "golfield.ferramentas",
     beholdFeedId: "",
     maxPosts: 9,
