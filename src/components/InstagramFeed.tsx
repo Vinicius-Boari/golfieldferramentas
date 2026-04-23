@@ -163,64 +163,15 @@ const InstagramFeed = ({
                   post.mediaUrl;
 
                 return (
-                  <motion.button
+                  <InstagramCard
                     key={post.id}
-                    type="button"
-                    onClick={() => setOpenPost(post)}
-                    custom={i}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-40px" }}
-                    variants={cardVariant}
-                    className="group relative aspect-square overflow-hidden rounded-xl border border-border bg-card text-left shadow-md shadow-black/30 transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                    aria-label={`Ver postagem ${i + 1} de @${handle}`}
-                  >
-                    {thumb ? (
-                      <img
-                        src={thumb}
-                        alt={post.prunedCaption || `Post de @${handle}`}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:brightness-90"
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).style.display = "none";
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full grid place-items-center text-muted-foreground">
-                        <ImageOff size={28} />
-                      </div>
-                    )}
-
-                    {/* Video play badge */}
-                    {isVideo && (
-                      <div className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/70 backdrop-blur-md grid place-items-center shadow-lg">
-                        <Play size={14} className="text-primary fill-primary ml-0.5" />
-                      </div>
-                    )}
-
-                    {/* Hover overlay with likes/comments */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                      <div className="flex items-center gap-4 text-white text-sm font-semibold">
-                        {typeof post.likes === "number" && (
-                          <span className="flex items-center gap-1.5">
-                            <Heart size={16} className="fill-white" />
-                            {formatCount(post.likes)}
-                          </span>
-                        )}
-                        {typeof post.comments === "number" && (
-                          <span className="flex items-center gap-1.5">
-                            <MessageCircle size={16} />
-                            {formatCount(post.comments)}
-                          </span>
-                        )}
-                        {typeof post.likes !== "number" && typeof post.comments !== "number" && post.prunedCaption && (
-                          <span className="line-clamp-2 text-white/90 font-normal">
-                            {post.prunedCaption}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </motion.button>
+                    post={post}
+                    index={i}
+                    isVideo={isVideo}
+                    thumb={thumb}
+                    handle={handle}
+                    onOpen={() => setOpenPost(post)}
+                  />
                 );
               })}
             </div>
