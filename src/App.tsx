@@ -92,9 +92,11 @@ const AppShell = () => {
             </Routes>
           </Suspense>
         </MaintenanceGate>
-        <CompareFloatingButton />
-        <CompareDrawer />
-        <PublicSplashGate />
+        <Suspense fallback={null}>
+          <CompareFloatingButton />
+          <CompareDrawer />
+          <PublicSplashGate />
+        </Suspense>
       </CompareProvider>
       </CartProvider>
     </BrowserRouter>
