@@ -130,6 +130,7 @@ export const defaultSplashConfig: SplashConfig = {
   enabled: false,
   frequency: "daily",
   customHours: 24,
+  autoCloseOnEnd: false,
   media: {
     kind: "none",
     url: "",
