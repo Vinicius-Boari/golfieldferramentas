@@ -1,13 +1,9 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, lazy, Suspense } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
 import Hero, { FloatingToolVisual } from "@/components/Hero";
 import CategoryNav from "@/components/CategoryNav";
 import ProductCard from "@/components/ProductCard";
-import CartDrawer from "@/components/CartDrawer";
-import Footer from "@/components/Footer";
-import ChatWidget from "@/components/ChatWidget";
-import InstagramFeed from "@/components/InstagramFeed";
 import { useCart } from "@/context/CartContext";
 import { useProducts } from "@/hooks/useProducts";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
@@ -17,6 +13,13 @@ import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRi
 import SEO, { buildOrganizationJsonLd, buildWebSiteJsonLd, buildItemListJsonLd } from "@/components/SEO";
 import mascotGirl from "@/assets/mascot-girl.webp";
 import mascotBoy from "@/assets/mascot-boy.webp";
+
+// Lazy-load below-the-fold / interaction-only chunks. The homepage's first
+// paint doesn't need cart drawer, chat, instagram feed or footer JS at all.
+const CartDrawer = lazy(() => import("@/components/CartDrawer"));
+const ChatWidget = lazy(() => import("@/components/ChatWidget"));
+const InstagramFeed = lazy(() => import("@/components/InstagramFeed"));
+const Footer = lazy(() => import("@/components/Footer"));
 
 /** Map icon ids saved in config to Lucide components. */
 const ICON_MAP: Record<string, LucideIcon> = {
