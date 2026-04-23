@@ -362,7 +362,7 @@ const IndexContent = () => {
               <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-start">
                 <motion.div variants={fadeSlideRight}>
                   <span data-edit-id="about.badge" className="section-badge mb-6 inline-flex">{about?.badge}</span>
-                  <h2 data-edit-id="about.title" className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-6">
+                  <h2 data-edit-id="about.title" className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6">
                     {about?.title} <span className="text-gradient-gold">{about?.titleHighlight}</span>
                   </h2>
                   <p data-edit-id="about.paragraph1" className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-6">{about?.paragraph1}</p>
