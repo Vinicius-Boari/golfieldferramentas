@@ -1,10 +1,19 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { X, Send } from "lucide-react";
+import { X, Send, MessageCircle } from "lucide-react";
 import { chatBus, normalizeCategoryId, onCartReply, type CartReplyPayload } from "@/lib/chatBus";
 import { useCart } from "@/context/CartContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  useAssistantConfig,
+  isWithinSchedule,
+  computeTypingDelay,
+  interMessageDelay,
+  readingDelay,
+  welcomeDelay,
+  defaultAssistantConfig,
+} from "@/hooks/useAssistantConfig";
 
 const WHATSAPP_URL = "https://wa.me/5511959409051";
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/public-chat`;
@@ -12,27 +21,7 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/public-chat`
 type Msg = { role: "user" | "assistant"; content: string; showWhatsApp?: boolean };
 type ToolCallAcc = { id?: string; name: string; args: string };
 
-const RobotIcon = ({ size = 28 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    {/* antena */}
-    <line x1="12" y1="2" x2="12" y2="5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <circle cx="12" cy="2" r="1.2" fill="currentColor" />
-    {/* corpo / cabeça */}
-    <rect x="4" y="5" width="16" height="14" rx="4" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="2" />
-    {/* olhos */}
-    <circle cx="9" cy="12" r="1.6" fill="currentColor" />
-    <circle cx="15" cy="12" r="1.6" fill="currentColor" />
-    {/* sorriso */}
-    <path d="M9.5 15.5 Q12 17 14.5 15.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-  </svg>
-);
-
-const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-  </svg>
-);
-
+/** Animated 3-dots — the WhatsApp "typing..." indicator. */
 const TypingDots = () => (
   <div className="flex gap-1 items-center px-1 py-2">
     {[0, 1, 2].map((i) => (
@@ -44,6 +33,12 @@ const TypingDots = () => (
       />
     ))}
   </div>
+);
+
+const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+  </svg>
 );
 
 const WhatsAppButton = () => (
@@ -66,136 +61,337 @@ const WhatsAppButton = () => (
   </motion.a>
 );
 
+/** Default human-looking avatar (initials) when admin hasn't uploaded one. */
+const InitialsAvatar = ({ name, size = 40 }: { name: string; size?: number }) => {
+  const initial = (name?.trim()?.[0] || "A").toUpperCase();
+  // Pick a stable warm color from the name — feels more like a real photo placeholder.
+  const palette = ["#F59E0B", "#EC4899", "#10B981", "#6366F1", "#EF4444", "#06B6D4"];
+  const idx = (name?.charCodeAt(0) || 0) % palette.length;
+  return (
+    <div
+      className="rounded-full flex items-center justify-center font-semibold text-white shrink-0"
+      style={{ width: size, height: size, background: palette[idx], fontSize: size * 0.42 }}
+    >
+      {initial}
+    </div>
+  );
+};
+
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/** Split a long bot response into 2-3 shorter chat-style messages. */
+const splitForChat = (text: string): string[] => {
+  const trimmed = text.trim();
+  if (!trimmed) return [];
+  // Respect explicit double newlines from the model.
+  const explicit = trimmed
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  if (explicit.length > 1) return explicit;
+
+  // For short messages, leave as-is.
+  if (trimmed.length < 160) return [trimmed];
+
+  // Otherwise split on sentence boundaries while keeping chunks reasonable.
+  const sentences = trimmed.match(/[^.!?\n]+[.!?]?/g) || [trimmed];
+  const out: string[] = [];
+  let buf = "";
+  for (const s of sentences) {
+    const candidate = (buf ? buf + " " : "") + s.trim();
+    if (candidate.length > 140 && buf) {
+      out.push(buf.trim());
+      buf = s.trim();
+    } else {
+      buf = candidate;
+    }
+    if (out.length >= 2) break;
+  }
+  if (buf) out.push(buf.trim());
+  return out.slice(0, 3);
+};
+
+/** Strip a bot message of formal/robotic openings — just in case the model slips. */
+const dehumanizeFix = (text: string): string =>
+  text
+    .replace(/^Olá!?\s*Sou\s+(o|a)\s+assistente[^.]*\.?\s*/i, "")
+    .replace(/^Como posso (ajudá-?lo|ajudá-?la|ajudar)[^?]*\??\s*/i, "")
+    .replace(/Atenciosamente[\s\S]*$/i, "")
+    .replace(/^[*•\-]\s+/gm, "") // strip bullets
+    .trim();
+
+/** A small set of common typo pairs used to simulate a human mistake-then-fix. */
+const TYPO_PAIRS: Array<[string, string]> = [
+  ["verificar", "verfiicar"],
+  ["então", "entao"],
+  ["obrigado", "obirgado"],
+  ["produto", "prudoto"],
+  ["agora", "agroa"],
+  ["entrega", "entreaga"],
+  ["quanto", "qaunto"],
+  ["pedido", "peddio"],
+  ["estoque", "estouqe"],
+  ["enviar", "envair"],
+];
+
+/** With low probability, return a typo'd version + corrected follow-up. */
+const maybeMakeTypo = (text: string): { typo: string; correction: string } | null => {
+  if (Math.random() > 0.08) return null; // ~8% chance
+  for (const [right, wrong] of TYPO_PAIRS) {
+    const re = new RegExp(`\\b${right}\\b`, "i");
+    if (re.test(text)) {
+      const typo = text.replace(re, wrong);
+      const correction = `${right}* 😅`;
+      return { typo, correction };
+    }
+  }
+  return null;
+};
+
+/** Detect simple intents to trigger empathy / acknowledgment. */
+const detectIntent = (text: string): "frustration" | "thanks" | null => {
+  const lower = text.toLowerCase();
+  if (/(demora|demorou|problema|errado|n[aã]o funciona|p[ée]ssimo|ruim|chato|reclama)/.test(lower))
+    return "frustration";
+  if (/^(obrigad[oa]|valeu|brigad[oa]|thanks|ty)\b/.test(lower) || /(muito obrigad)/.test(lower))
+    return "thanks";
+  return null;
+};
+
+/** Try to extract the user's first name when they introduce themselves. */
+const extractName = (text: string): string | null => {
+  const m =
+    text.match(/\bmeu nome (?:é|eh)\s+([A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]+)/i) ||
+    text.match(/\bme chamo\s+([A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]+)/i) ||
+    text.match(/\bsou (?:o|a)\s+([A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]+)/i);
+  return m ? m[1] : null;
+};
+
 const ChatWidget = () => {
+  const { data: rawAssistant } = useAssistantConfig();
+  // Always-defined config so the component never crashes during the first render.
+  const assistant = rawAssistant ?? defaultAssistantConfig;
+
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const userNameRef = useRef<string | null>(null);
+  const welcomeShownRef = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { isOpen: cartOpen } = useCart();
   const isMobile = useIsMobile();
-  // Em desktop, quando o carrinho está aberto, o chat se move para a esquerda
-  // para não ficar atrás do drawer. No mobile, mantém na direita (carrinho ocupa tudo).
   const shiftLeft = cartOpen && !isMobile;
 
-  // Executa uma tool call solicitada pelo modelo
-  const runToolCall = useCallback((name: string, rawArgs: string) => {
-    let args: any = {};
-    try { args = rawArgs ? JSON.parse(rawArgs) : {}; } catch { args = {}; }
+  const online = useMemo(() => isWithinSchedule(assistant), [assistant]);
 
-    const goHomeThen = (cb: () => void) => {
-      if (location.pathname !== "/") {
-        navigate("/");
-        // espera a Index montar e registrar listeners do bus
-        setTimeout(cb, 350);
-      } else {
-        cb();
-      }
-    };
+  // Push a single bot message with humanized typing delay.
+  const pushBotMessage = useCallback(
+    async (content: string, opts: { showWhatsApp?: boolean } = {}) => {
+      const cleaned = dehumanizeFix(content);
+      if (!cleaned) return;
+      setIsTyping(true);
+      await sleep(computeTypingDelay(cleaned, assistant.typingSpeed));
+      setIsTyping(false);
+      setMessages((prev) => [...prev, { role: "assistant", content: cleaned, ...opts }]);
+    },
+    [assistant.typingSpeed]
+  );
 
-    switch (name) {
-      case "navigate_to_page": {
-        const path = typeof args.path === "string" ? args.path : "/";
-        navigate(path);
-        break;
-      }
-      case "filter_by_category": {
-        const cat = String(args.category ?? "").trim();
-        if (!cat) return;
-        const id = cat.toLowerCase() === "todos" ? "todos" : normalizeCategoryId(cat);
-        goHomeThen(() => chatBus.emit("chat:setCategory", id));
-        break;
-      }
-      case "search_products": {
-        const q = String(args.query ?? "").trim();
-        if (!q) return;
-        goHomeThen(() => chatBus.emit("chat:setSearch", q));
-        break;
-      }
-      case "add_to_cart": {
-        const q = String(args.product_query ?? "").trim();
-        const qty = Math.max(1, Math.floor(Number(args.quantity) || 1));
-        if (!q) return;
-        const replyId = `cart-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-        goHomeThen(() => chatBus.emit("chat:addToCart", { query: q, quantity: qty, replyId }));
-        break;
-      }
-      case "open_cart": {
-        goHomeThen(() => chatBus.emit("chat:openCart", undefined as any));
-        break;
-      }
-      // 'offer_whatsapp' não abre nada — apenas sinaliza para mostrar o botão verde
-      // (tratado em send() ao detectar a chamada pelo nome)
-      case "offer_whatsapp":
-      case "open_whatsapp": {
-        // intencionalmente não abre o link; o botão verde aparece dentro do chat
-        break;
-      }
-    }
-  }, [navigate, location.pathname]);
+  // Push a multi-message reply (chat-style), with realistic gaps between bubbles.
+  const pushBotReply = useCallback(
+    async (rawText: string, opts: { showWhatsApp?: boolean } = {}) => {
+      const parts = splitForChat(dehumanizeFix(rawText));
+      if (parts.length === 0) return;
 
-  // Escuta respostas das tentativas de adicionar ao carrinho e mostra como mensagem do assistente
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        const isLast = i === parts.length - 1;
+
+        // Optionally simulate a typo on this chunk
+        if (assistant.simulateTypos) {
+          const typo = maybeMakeTypo(part);
+          if (typo) {
+            await pushBotMessage(typo.typo);
+            await sleep(700 + Math.random() * 200);
+            await pushBotMessage(typo.correction);
+            await sleep(interMessageDelay());
+            continue;
+          }
+        }
+
+        await pushBotMessage(part, isLast ? opts : {});
+        if (!isLast) await sleep(interMessageDelay());
+      }
+    },
+    [assistant.simulateTypos, pushBotMessage]
+  );
+
+  /** Tool-call execution from the model. */
+  const runToolCall = useCallback(
+    (name: string, rawArgs: string) => {
+      let args: any = {};
+      try {
+        args = rawArgs ? JSON.parse(rawArgs) : {};
+      } catch {
+        args = {};
+      }
+
+      const goHomeThen = (cb: () => void) => {
+        if (location.pathname !== "/") {
+          navigate("/");
+          setTimeout(cb, 350);
+        } else {
+          cb();
+        }
+      };
+
+      switch (name) {
+        case "navigate_to_page": {
+          const path = typeof args.path === "string" ? args.path : "/";
+          navigate(path);
+          break;
+        }
+        case "filter_by_category": {
+          const cat = String(args.category ?? "").trim();
+          if (!cat) return;
+          const id = cat.toLowerCase() === "todos" ? "todos" : normalizeCategoryId(cat);
+          goHomeThen(() => chatBus.emit("chat:setCategory", id));
+          break;
+        }
+        case "search_products": {
+          const q = String(args.query ?? "").trim();
+          if (!q) return;
+          goHomeThen(() => chatBus.emit("chat:setSearch", q));
+          break;
+        }
+        case "add_to_cart": {
+          const q = String(args.product_query ?? "").trim();
+          const qty = Math.max(1, Math.floor(Number(args.quantity) || 1));
+          if (!q) return;
+          const replyId = `cart-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+          goHomeThen(() => chatBus.emit("chat:addToCart", { query: q, quantity: qty, replyId }));
+          break;
+        }
+        case "open_cart": {
+          goHomeThen(() => chatBus.emit("chat:openCart", undefined as any));
+          break;
+        }
+        case "offer_whatsapp":
+        case "open_whatsapp": {
+          break;
+        }
+      }
+    },
+    [navigate, location.pathname]
+  );
+
+  // Cart reply messages — also routed through the humanized pipeline.
   useEffect(() => {
     const off = onCartReply((r: CartReplyPayload) => {
       let content = "";
       if (r.ok === false) {
         const reason = r.reason;
         const query = r.query;
-        content = reason === "not_found"
-          ? `Não encontrei nenhum produto correspondente a "${query}". Pode tentar com um nome mais específico?`
-          : `Não consegui adicionar "${query}" agora. Tente novamente em instantes.`;
+        content =
+          reason === "not_found"
+            ? `não encontrei nada parecido com "${query}" 😕\npode tentar com um nome um pouco mais específico?`
+            : `não consegui adicionar "${query}" agora\ntenta de novo em instantes?`;
       } else {
         if (!r.adjusted) {
-          content = `🛒 Adicionei ${r.addedQty}× "${r.productName}" ao orçamento.`;
+          content = `pronto! adicionei ${r.addedQty}× "${r.productName}" no orçamento 🛒`;
         } else if (r.adjustReason === "below_min") {
-          content = `⚠️ "${r.productName}" tem mínimo de ${r.minQty} un. (vendido em múltiplos de ${r.minQty}). Você pediu ${r.requestedQty}, ajustei para ${r.addedQty}.`;
+          content = `o "${r.productName}" tem mínimo de ${r.minQty} un.\ncomo é vendido em múltiplos de ${r.minQty}, ajustei pra ${r.addedQty}`;
         } else {
-          content = `⚠️ "${r.productName}" é vendido em múltiplos de ${r.minQty} un. Você pediu ${r.requestedQty}, ajustei para ${r.addedQty}.`;
+          content = `o "${r.productName}" é vendido em múltiplos de ${r.minQty}\nvocê pediu ${r.requestedQty}, ajustei pra ${r.addedQty}`;
         }
       }
-      setMessages((prev) => [...prev, { role: "assistant", content }]);
+      void pushBotReply(content);
     });
     return off;
-  }, []);
+  }, [pushBotReply]);
 
-  // Mensagem inicial ao abrir pela primeira vez
+  // Welcome flow — runs the first time the user opens the chat.
   useEffect(() => {
-    if (open && messages.length === 0) {
-      setMessages([
-        { role: "assistant", content: "Olá! 👋 Eu sou a GolField, sua assistente virtual. Como posso te ajudar hoje?" },
-      ]);
-    }
-  }, [open, messages.length]);
+    if (!open || welcomeShownRef.current) return;
+    welcomeShownRef.current = true;
 
-  // Auto-scroll para a última mensagem (inclusive ao abrir o chat)
+    let cancelled = false;
+    (async () => {
+      // initial pause as if the attendant just noticed someone arrived
+      await sleep(welcomeDelay());
+      if (cancelled) return;
+
+      if (!online) {
+        await pushBotReply(assistant.awayMessage);
+        return;
+      }
+      await pushBotReply(assistant.welcomeMessage);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, online, assistant.awayMessage, assistant.welcomeMessage]);
+
+  // Auto-scroll to the latest message / typing indicator.
   useEffect(() => {
     if (!open) return;
-    // pequeno delay garante que a animação de abertura terminou de medir o conteúdo
     const id = requestAnimationFrame(() => {
       if (scrollRef.current) {
         scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       }
     });
     return () => cancelAnimationFrame(id);
-  }, [messages, loading, open]);
+  }, [messages, isTyping, loading, open]);
 
   const detectHumanRequest = (text: string) => {
     const lower = text.toLowerCase();
-    return /(falar com atendente|atendente humano|humano|urgente|reclama|n[aã]o resolveu|whats|whatsapp)/i.test(lower);
+    return /(falar com atendente|atendente humano|humano|urgente|reclama|n[aã]o resolveu|whats|whatsapp)/i.test(
+      lower
+    );
   };
 
   const send = useCallback(async () => {
     const text = input.trim();
-    if (!text || loading) return;
+    if (!text || loading || isTyping) return;
+
+    // Capture user name if introduced
+    const maybeName = extractName(text);
+    if (maybeName && !userNameRef.current) userNameRef.current = maybeName;
 
     const userMsg: Msg = { role: "user", content: text };
     const next = [...messages, userMsg];
     setMessages(next);
     setInput("");
     setLoading(true);
+
+    // Human "reading" pause before any reaction
+    await sleep(readingDelay());
+
+    // Out of office → respond with the away message and stop.
+    if (!online) {
+      setLoading(false);
+      await pushBotReply(assistant.awayMessage);
+      inputRef.current?.focus();
+      return;
+    }
+
+    // Empathy / thanks — micro-acknowledgment BEFORE the actual answer.
+    const intent = detectIntent(text);
+    if (intent === "frustration") {
+      await pushBotReply("poxa, me desculpa por isso 😕\nvamos resolver agora");
+    } else if (intent === "thanks") {
+      await pushBotReply("imagina! 😊\nqualquer coisa tô por aqui");
+      setLoading(false);
+      inputRef.current?.focus();
+      return; // no need to call the model
+    }
 
     try {
       const resp = await fetch(CHAT_URL, {
@@ -206,32 +402,25 @@ const ChatWidget = () => {
         },
         body: JSON.stringify({
           messages: next.map((m) => ({ role: m.role, content: m.content })),
+          assistant: {
+            name: assistant.attendantName,
+            tone: assistant.tone,
+            userName: userNameRef.current,
+          },
         }),
       });
 
-      if (!resp.ok || !resp.body) {
-        throw new Error("Falha na resposta");
-      }
+      if (!resp.ok || !resp.body) throw new Error("Falha na resposta");
 
+      // We collect the WHOLE stream first, then reveal it through the
+      // humanized typing pipeline — this way the user sees "..." dots
+      // and gradual messages instead of an instant reply.
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
       let textBuffer = "";
       let assistantSoFar = "";
-      let started = false;
       let streamDone = false;
-      // tool calls vêm fragmentados por índice em deltas separados
       const toolAcc: Record<number, ToolCallAcc> = {};
-
-      const upsertAssistant = (chunk: string) => {
-        assistantSoFar += chunk;
-        setMessages((prev) => {
-          if (started) {
-            return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: assistantSoFar } : m));
-          }
-          started = true;
-          return [...prev, { role: "assistant", content: assistantSoFar }];
-        });
-      };
 
       while (!streamDone) {
         const { done, value } = await reader.read();
@@ -254,7 +443,7 @@ const ChatWidget = () => {
             const parsed = JSON.parse(jsonStr);
             const delta = parsed.choices?.[0]?.delta;
             const content = delta?.content as string | undefined;
-            if (content) upsertAssistant(content);
+            if (content) assistantSoFar += content;
 
             const tcs = delta?.tool_calls as Array<any> | undefined;
             if (Array.isArray(tcs)) {
@@ -275,46 +464,52 @@ const ChatWidget = () => {
         }
       }
 
-      // Executa todas as tool_calls que o modelo pediu
       const calls = Object.values(toolAcc).filter((c) => c.name);
-      for (const c of calls) {
-        runToolCall(c.name, c.args);
-      }
+      for (const c of calls) runToolCall(c.name, c.args);
 
-      // Se a IA chamou tool mas não escreveu texto, mostra um placeholder amigável
-      if (calls.length > 0 && !assistantSoFar) {
-        upsertAssistant("Pronto! ✅");
-      }
+      let finalText = assistantSoFar;
+      if (calls.length > 0 && !finalText) finalText = "pronto ✅";
 
-      // Marca para mostrar botão WhatsApp se necessário
-      const lastUserText = text;
-      const lastAssistantText = assistantSoFar.toLowerCase();
-      const calledWhatsapp = calls.some((c) => c.name === "offer_whatsapp" || c.name === "open_whatsapp");
-      const shouldShow =
-        calledWhatsapp ||
-        detectHumanRequest(lastUserText) ||
-        /whatsapp|atendente|nossa equipe|redirecion/i.test(lastAssistantText);
-
-      if (shouldShow) {
-        setMessages((prev) =>
-          prev.map((m, i) => (i === prev.length - 1 ? { ...m, showWhatsApp: true } : m)),
+      // Personalize with user's first name if known
+      if (userNameRef.current && finalText && Math.random() < 0.5) {
+        finalText = finalText.replace(
+          /^([a-zà-ú])/,
+          (c) => `${userNameRef.current!.split(" ")[0]}, ${c}`
         );
       }
+
+      const lastUserText = text;
+      const calledWhatsapp = calls.some(
+        (c) => c.name === "offer_whatsapp" || c.name === "open_whatsapp"
+      );
+      const shouldShowWhatsapp =
+        calledWhatsapp ||
+        detectHumanRequest(lastUserText) ||
+        /whatsapp|atendente|nossa equipe|redirecion/i.test(finalText.toLowerCase());
+
+      await pushBotReply(finalText, { showWhatsApp: shouldShowWhatsapp });
     } catch (err) {
       console.error("chat error:", err);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "Desculpe, tive um problema técnico. Tente novamente ou fale conosco pelo WhatsApp.",
-          showWhatsApp: true,
-        },
-      ]);
+      await pushBotReply(
+        "desculpa, deu um problemaa aqui 😕\ntenta de novo, ou se preferir fala comigo no WhatsApp",
+        { showWhatsApp: true }
+      );
     } finally {
       setLoading(false);
       inputRef.current?.focus();
     }
-  }, [input, loading, messages, runToolCall]);
+  }, [
+    input,
+    loading,
+    isTyping,
+    messages,
+    online,
+    runToolCall,
+    pushBotReply,
+    assistant.awayMessage,
+    assistant.attendantName,
+    assistant.tone,
+  ]);
 
   const onKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -323,17 +518,15 @@ const ChatWidget = () => {
     }
   };
 
+  // If the chat is disabled in admin, render nothing at all.
+  if (!assistant.enabled) return null;
+
   return (
     <>
-      {/* Botão flutuante — desliza para a esquerda quando o carrinho abre (desktop) */}
       <motion.button
         onClick={() => setOpen((v) => !v)}
         initial={{ scale: 0, opacity: 0, x: 0 }}
-        animate={{
-          scale: 1,
-          opacity: 1,
-          x: shiftLeft ? -472 : 0,
-        }}
+        animate={{ scale: 1, opacity: 1, x: shiftLeft ? -472 : 0 }}
         transition={{
           scale: { delay: 1.2, type: "spring", stiffness: 260, damping: 20 },
           opacity: { delay: 1.2, duration: 0.3 },
@@ -343,7 +536,7 @@ const ChatWidget = () => {
         whileTap={{ scale: 0.92 }}
         className={`fixed bottom-4 right-4 md:bottom-6 md:right-6 ${cartOpen ? "z-[60]" : "z-40"} p-3.5 md:p-4 rounded-full shadow-xl text-white transition-shadow hover:shadow-2xl`}
         style={{ background: "#2563EB", boxShadow: "0 10px 30px -8px rgba(37,99,235,0.55)" }}
-        aria-label="Abrir chat com assistente virtual"
+        aria-label="Abrir conversa"
       >
         <AnimatePresence mode="wait" initial={false}>
           {open ? (
@@ -351,14 +544,13 @@ const ChatWidget = () => {
               <X size={26} />
             </motion.span>
           ) : (
-            <motion.span key="bot" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} className="block">
-              <RobotIcon size={26} />
+            <motion.span key="msg" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} className="block">
+              <MessageCircle size={26} />
             </motion.span>
           )}
         </AnimatePresence>
       </motion.button>
 
-      {/* Janela de chat — também desliza para a esquerda quando o carrinho abre (desktop) */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -381,50 +573,77 @@ const ChatWidget = () => {
               className="flex items-center gap-3 px-4 py-3.5 text-white"
               style={{ background: "linear-gradient(135deg, #2563EB, #1d4ed8)" }}
             >
-              <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
-                <RobotIcon size={24} />
-              </div>
+              {assistant.avatarUrl ? (
+                <img
+                  src={assistant.avatarUrl}
+                  alt={assistant.attendantName}
+                  className="w-10 h-10 rounded-full object-cover border-2 border-white/40"
+                />
+              ) : (
+                <InitialsAvatar name={assistant.attendantName} size={40} />
+              )}
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-[15px] leading-tight">GolField</div>
-                <div className="text-[10px] uppercase tracking-wider text-white/70">Assistente Virtual</div>
-                <div className="text-xs text-white/80 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
-                  Online agora
+                <div className="font-semibold text-[15px] leading-tight truncate">
+                  {assistant.attendantName}
+                </div>
+                {assistant.companyLabel && (
+                  <div className="text-[10px] uppercase tracking-wider text-white/70 truncate">
+                    {assistant.companyLabel}
+                  </div>
+                )}
+                <div className="text-xs text-white/85 flex items-center gap-1.5">
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full inline-block ${online ? "bg-green-400" : "bg-red-400"}`}
+                  />
+                  {online ? "Online agora" : "Ausente no momento"}
                 </div>
               </div>
               <button
                 onClick={() => setOpen(false)}
                 className="p-1.5 rounded-lg hover:bg-white/15 transition-colors"
-                aria-label="Fechar chat"
+                aria-label="Fechar conversa"
               >
                 <X size={18} />
               </button>
             </div>
 
-            {/* Mensagens */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-4 space-y-3 bg-slate-50">
-              {messages.map((m, i) => (
-                <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[85%] flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
-                    <div
-                      className={`px-3.5 py-2.5 text-sm rounded-2xl whitespace-pre-wrap break-words ${
-                        m.role === "user"
-                          ? "bg-[#1d4ed8] text-white rounded-br-md"
-                          : "bg-blue-50 text-slate-800 rounded-bl-md border border-blue-100"
-                      }`}
-                    >
-                      {m.content || <span className="opacity-50">…</span>}
+            {/* Messages */}
+            <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-slate-50">
+              {messages.map((m, i) => {
+                const prev = messages[i - 1];
+                const grouped = prev && prev.role === m.role;
+                return (
+                  <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[85%] flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: 0.18 }}
+                        className={`px-3.5 py-2 text-sm rounded-2xl whitespace-pre-wrap break-words ${
+                          m.role === "user"
+                            ? "bg-[#1d4ed8] text-white rounded-br-md"
+                            : "bg-white text-slate-800 rounded-bl-md border border-slate-200 shadow-sm"
+                        } ${grouped ? "mt-0.5" : "mt-1.5"}`}
+                      >
+                        {m.content || <span className="opacity-50">…</span>}
+                      </motion.div>
+                      {m.showWhatsApp && <WhatsAppButton />}
                     </div>
-                    {m.showWhatsApp && <WhatsAppButton />}
                   </div>
-                </div>
-              ))}
-              {loading && messages[messages.length - 1]?.role === "user" && (
-                <div className="flex justify-start">
-                  <div className="bg-blue-50 border border-blue-100 rounded-2xl rounded-bl-md px-3">
+                );
+              })}
+
+              {isTyping && (
+                <motion.div
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex justify-start"
+                >
+                  <div className="bg-white border border-slate-200 rounded-2xl rounded-bl-md px-3 shadow-sm">
                     <TypingDots />
                   </div>
-                </div>
+                </motion.div>
               )}
             </div>
 
@@ -441,7 +660,7 @@ const ChatWidget = () => {
               />
               <button
                 onClick={send}
-                disabled={!input.trim() || loading}
+                disabled={!input.trim() || loading || isTyping}
                 className="w-10 h-10 flex items-center justify-center rounded-full text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
                 style={{ background: "#2563EB" }}
                 aria-label="Enviar mensagem"
