@@ -284,4 +284,4 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   );
 };
 
-export default Header;
+export default memo(Header);
