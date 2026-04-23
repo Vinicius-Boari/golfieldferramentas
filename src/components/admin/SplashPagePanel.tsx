@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   ChevronDown, Settings, Image as ImageIcon, Type, MousePointer2,
@@ -241,13 +241,41 @@ const MediaUploadField = ({ label, value, onChange, accept, kind, userId }: {
   );
 };
 
+const normalizeSplashConfig = (value: SplashConfig): SplashConfig => ({
+  ...defaultSplashConfig,
+  ...value,
+  media: { ...defaultSplashConfig.media, ...(value.media ?? {}) },
+  texts: {
+    ...defaultSplashConfig.texts,
+    ...(value.texts ?? {}),
+    titleRotating: {
+      ...defaultSplashConfig.texts.titleRotating,
+      ...(value.texts?.titleRotating ?? {}),
+    },
+    subtitleRotating: {
+      ...defaultSplashConfig.texts.subtitleRotating,
+      ...(value.texts?.subtitleRotating ?? {}),
+    },
+    rotating: {
+      ...defaultSplashConfig.texts.rotating,
+      ...(value.texts?.rotating ?? {}),
+    },
+  },
+  primaryButton: { ...defaultSplashConfig.primaryButton, ...(value.primaryButton ?? {}) },
+  secondaryButton: { ...defaultSplashConfig.secondaryButton, ...(value.secondaryButton ?? {}) },
+  audio: { ...defaultSplashConfig.audio, ...(value.audio ?? {}) },
+  countdown: { ...defaultSplashConfig.countdown, ...(value.countdown ?? {}) },
+  appearance: { ...defaultSplashConfig.appearance, ...(value.appearance ?? {}) },
+});
+
 /** ─── Main panel ─────────────────────────────────────────────────────────── */
 
-const SplashPagePanel = ({ value, onChange, userId }: Props) => {
+const SplashPagePanel = ({ value: incomingValue, onChange, userId }: Props) => {
   const [previewing, setPreviewing] = useState<SplashConfig | null>(null);
   const saveMutation = useSaveSplashConfig();
+  const value = useMemo(() => normalizeSplashConfig(incomingValue), [incomingValue]);
 
-  const update = (updater: (prev: SplashConfig) => SplashConfig) => onChange(updater(value));
+  const update = (updater: (prev: SplashConfig) => SplashConfig) => onChange(normalizeSplashConfig(updater(value)));
 
   const handleSave = async () => {
     try {
