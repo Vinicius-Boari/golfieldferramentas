@@ -14,6 +14,8 @@ import HeroVideoPanel from "@/components/admin/HeroVideoPanel";
 import SystemSettingsPanel from "@/components/admin/SystemSettingsPanel";
 import AppearancePanel from "@/components/admin/AppearancePanel";
 import InstagramFavoritesPicker from "@/components/admin/InstagramFavoritesPicker";
+import SplashPagePanel from "@/components/admin/SplashPagePanel";
+import { useSplashConfig, useSaveSplashConfig, defaultSplashConfig, type SplashConfig } from "@/hooks/useSplashConfig";
 import { toast } from "sonner";
 
 const sectionLabels: Record<string, string> = {
@@ -35,6 +37,7 @@ const tabs = [
   { id: "cta", label: "CTA", icon: Type },
   { id: "about", label: "Sobre", icon: Type },
   { id: "instagram", label: "Instagram", icon: Image },
+  { id: "splash", label: "Splash Page", icon: Sparkles },
   { id: "footer", label: "Rodapé", icon: Type },
   { id: "system", label: "Sistema", icon: Settings },
   { id: "appearance", label: "Aparência", icon: Palette },
