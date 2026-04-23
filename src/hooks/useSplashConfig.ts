@@ -14,7 +14,8 @@ export type SplashFrequency =
 export type SplashMediaKind = "none" | "image" | "video";
 export type SplashMediaPosition = "background" | "top" | "left" | "right";
 export type SplashTextAlign = "left" | "center" | "right";
-export type SplashWidth = "small" | "medium" | "large" | "full";
+export type SplashWidth = "small" | "medium" | "large" | "full" | "custom";
+export type SplashSizeUnit = "px" | "%" | "vw" | "vh";
 export type SplashSecondaryAction = "close" | "redirect";
 export type SplashCountdownAction = "hide" | "close" | "message";
 
@@ -94,6 +95,12 @@ export interface SplashConfig {
     borderRadius: number;
     /** Card width preset. */
     width: SplashWidth;
+    /** Custom width (used when width === "custom"). */
+    customWidth: number;
+    customWidthUnit: SplashSizeUnit;
+    /** Custom height (used when width === "custom" or "full"). 0 = auto. */
+    customHeight: number;
+    customHeightUnit: SplashSizeUnit;
     /** Click outside the card closes it. */
     closeOnBackdrop: boolean;
     /** ESC key closes it. */
@@ -156,6 +163,10 @@ export const defaultSplashConfig: SplashConfig = {
     overlayOpacity: 0.85,
     borderRadius: 16,
     width: "medium",
+    customWidth: 800,
+    customWidthUnit: "px",
+    customHeight: 0,
+    customHeightUnit: "px",
     closeOnBackdrop: true,
     closeOnEsc: true,
   },

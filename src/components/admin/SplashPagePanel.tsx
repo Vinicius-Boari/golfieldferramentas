@@ -470,18 +470,89 @@ const SplashPagePanel = ({ value, onChange, userId }: Props) => {
           min={0} max={48} step={1} suffix="px"
           onChange={(v) => update((c) => ({ ...c, appearance: { ...c.appearance, borderRadius: v } }))} />
         <div>
-          <label className="text-xs font-medium text-muted-foreground mb-2 block">Largura máxima</label>
-          <SegButton<SplashConfig["appearance"]["width"]>
-            value={value.appearance.width}
-            onChange={(v) => update((c) => ({ ...c, appearance: { ...c.appearance, width: v } }))}
-            options={[
+          <label className="text-xs font-medium text-muted-foreground mb-2 block">Tamanho do card</label>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            {([
               { id: "small", label: "Pequeno", hint: "400px" },
               { id: "medium", label: "Médio", hint: "600px" },
               { id: "large", label: "Grande", hint: "800px" },
-              { id: "full", label: "Tela cheia" },
-            ]}
-          />
+              { id: "full", label: "Tela cheia", hint: "100% site" },
+              { id: "custom", label: "Personalizado", hint: "px / %" },
+            ] as { id: SplashConfig["appearance"]["width"]; label: string; hint?: string }[]).map((opt) => {
+              const active = opt.id === value.appearance.width;
+              return (
+                <button key={opt.id} type="button"
+                  onClick={() => update((c) => ({ ...c, appearance: { ...c.appearance, width: opt.id } }))}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all text-center ${active
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-secondary/50 text-muted-foreground border-border/50 hover:border-primary/40 hover:text-foreground"}`}>
+                  <div>{opt.label}</div>
+                  {opt.hint && <div className={`text-[10px] mt-0.5 font-normal ${active ? "text-primary-foreground/80" : "text-muted-foreground/70"}`}>{opt.hint}</div>}
+                </button>
+              );
+            })}
+          </div>
         </div>
+
+        {(value.appearance.width === "custom" || value.appearance.width === "full") && (
+          <div className="rounded-xl border border-border/50 bg-secondary/30 p-3 space-y-3">
+            <p className="text-[11px] text-muted-foreground">
+              {value.appearance.width === "full"
+                ? "Em tela cheia, o card cobre 100% da largura. Defina uma altura personalizada se quiser limitar (deixe 0 para 100vh)."
+                : "Defina exatamente a largura e altura do card. Use % ou vw/vh para cobrir todo o site."}
+            </p>
+
+            {value.appearance.width === "custom" && (
+              <div>
+                <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Largura</label>
+                <div className="flex gap-2">
+                  <input type="number" min={0} value={value.appearance.customWidth}
+                    onChange={(e) => update((c) => ({ ...c, appearance: { ...c.appearance, customWidth: Number(e.target.value) || 0 } }))}
+                    className="flex-1 px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
+                  <select value={value.appearance.customWidthUnit}
+                    onChange={(e) => update((c) => ({ ...c, appearance: { ...c.appearance, customWidthUnit: e.target.value as any } }))}
+                    className="px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50">
+                    <option value="px">px</option>
+                    <option value="%">%</option>
+                    <option value="vw">vw</option>
+                  </select>
+                </div>
+              </div>
+            )}
+
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                Altura {value.appearance.customHeight === 0 && <span className="text-[10px]">(0 = automática)</span>}
+              </label>
+              <div className="flex gap-2">
+                <input type="number" min={0} value={value.appearance.customHeight}
+                  onChange={(e) => update((c) => ({ ...c, appearance: { ...c.appearance, customHeight: Number(e.target.value) || 0 } }))}
+                  className="flex-1 px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
+                <select value={value.appearance.customHeightUnit}
+                  onChange={(e) => update((c) => ({ ...c, appearance: { ...c.appearance, customHeightUnit: e.target.value as any } }))}
+                  className="px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50">
+                  <option value="px">px</option>
+                  <option value="%">%</option>
+                  <option value="vh">vh</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="button"
+              onClick={() => update((c) => ({
+                ...c,
+                appearance: {
+                  ...c.appearance,
+                  width: "custom",
+                  customWidth: 100, customWidthUnit: "vw",
+                  customHeight: 100, customHeightUnit: "vh",
+                },
+              }))}
+              className="w-full px-3 py-2 rounded-lg text-xs font-semibold bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+              Cobrir todo o site (100vw × 100vh)
+            </button>
+          </div>
+        )}
         <Toggle label="Fechar ao clicar fora do card" value={value.appearance.closeOnBackdrop}
           onChange={(v) => update((c) => ({ ...c, appearance: { ...c.appearance, closeOnBackdrop: v } }))} />
         <Toggle label="Fechar com tecla ESC" value={value.appearance.closeOnEsc}
