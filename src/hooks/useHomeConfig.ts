@@ -252,7 +252,13 @@ export const defaultHomeConfig: HomeConfig = {
       { title: "Parceria", desc: "Relação próxima para gerar recorrência e confiança" },
     ],
   },
-  footer: {
+  instagramSection: {
+    badge: "Nossa Galeria",
+    title: "Siga a gente no Instagram",
+    handle: "golfield.ferramentas",
+    beholdFeedId: "",
+    maxPosts: 9,
+  },
     description: "Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado.",
     phone: "(11) 95940-9051",
     email: "paula.profield@hotmail.com",
