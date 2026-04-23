@@ -71,7 +71,13 @@ const SplashRotatingText = ({ config, align, onAllShown }: Props) => {
       }
     } else if (phase === "holding") {
       const isLast = index >= phrases.length - 1;
-      if (isLast && !config.loop) return; // stop at the end
+      if (isLast && !config.loop) {
+        if (!firedRef.current) {
+          firedRef.current = true;
+          timerRef.current = window.setTimeout(() => onAllShown?.(), Math.max(600, config.holdMs));
+        }
+        return; // stop at the end
+      }
       timerRef.current = window.setTimeout(() => setPhase("deleting"), Math.max(400, config.holdMs));
     } else if (phase === "deleting") {
       if (displayed.length > 0) {
