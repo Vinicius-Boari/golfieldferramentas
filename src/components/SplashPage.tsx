@@ -10,6 +10,7 @@ import {
 } from "@/hooks/useSplashConfig";
 import SplashRotatingText from "@/components/SplashRotatingText";
 import SplashInstagramStrip from "@/components/SplashInstagramStrip";
+import SplashLocation from "@/components/SplashLocation";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 
 /** Width preset → max width in px (or full screen). */
