@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +13,7 @@ import { CompareProvider } from "@/context/CompareContext";
 import { CartProvider } from "@/context/CartContext";
 import CompareDrawer from "@/components/CompareDrawer";
 import CompareFloatingButton from "@/components/CompareFloatingButton";
+import SplashPage from "@/components/SplashPage";
 import Index from "./pages/Index.tsx";
 
 // Lazy-load secondary routes — they are not needed for the initial paint of "/".
@@ -48,6 +49,13 @@ const queryClient = new QueryClient({
 // Minimal fallback (no spinner -> no layout flash). Background matches theme.
 const RouteFallback = () => <div className="min-h-screen bg-background" />;
 
+// Renders the public splash only outside admin routes.
+const PublicSplashGate = () => {
+  const { pathname } = useLocation();
+  if (pathname.startsWith("/admin")) return null;
+  return <SplashPage />;
+};
+
 const AppShell = () => {
   useApplyMobileMotionClass();
   useApplyGlobalBackground();
@@ -82,6 +90,7 @@ const AppShell = () => {
         </MaintenanceGate>
         <CompareFloatingButton />
         <CompareDrawer />
+        <PublicSplashGate />
       </CompareProvider>
       </CartProvider>
     </BrowserRouter>

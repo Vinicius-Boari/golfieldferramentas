@@ -14,6 +14,8 @@ import HeroVideoPanel from "@/components/admin/HeroVideoPanel";
 import SystemSettingsPanel from "@/components/admin/SystemSettingsPanel";
 import AppearancePanel from "@/components/admin/AppearancePanel";
 import InstagramFavoritesPicker from "@/components/admin/InstagramFavoritesPicker";
+import SplashPagePanel from "@/components/admin/SplashPagePanel";
+import { useSplashConfig, useSaveSplashConfig, defaultSplashConfig, type SplashConfig } from "@/hooks/useSplashConfig";
 import { toast } from "sonner";
 
 const sectionLabels: Record<string, string> = {
@@ -35,6 +37,7 @@ const tabs = [
   { id: "cta", label: "CTA", icon: Type },
   { id: "about", label: "Sobre", icon: Type },
   { id: "instagram", label: "Instagram", icon: Image },
+  { id: "splash", label: "Splash Page", icon: Sparkles },
   { id: "footer", label: "Rodapé", icon: Type },
   { id: "system", label: "Sistema", icon: Settings },
   { id: "appearance", label: "Aparência", icon: Palette },
@@ -184,7 +187,9 @@ const AdminHome = () => {
   const { isAdmin, loading: adminLoading, user } = useAdmin();
   const { data: savedConfig, isLoading } = useHomeConfig();
   const saveConfigMutation = useSaveHomeConfig();
+  const { data: savedSplash } = useSplashConfig();
   const [config, setConfig] = useState<HomeConfig>(defaultHomeConfig);
+  const [splashConfig, setSplashConfig] = useState<SplashConfig>(defaultSplashConfig);
   const [activeTab, setActiveTab] = useState("sections");
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -200,6 +205,10 @@ const AdminHome = () => {
       setConfig(savedConfig);
     }
   }, [savedConfig]);
+
+  useEffect(() => {
+    if (savedSplash) setSplashConfig(savedSplash);
+  }, [savedSplash]);
 
   const updateConfig = (updater: (prev: HomeConfig) => HomeConfig) => {
     setConfig(prev => {
@@ -632,7 +641,16 @@ const AdminHome = () => {
                 </div>
               )}
 
-              {/* FOOTER TAB */}
+              {/* SPLASH PAGE TAB */}
+              {activeTab === "splash" && (
+                <SplashPagePanel
+                  value={splashConfig}
+                  onChange={setSplashConfig}
+                  userId={user?.id}
+                />
+              )}
+
+
               {activeTab === "footer" && (
                 <div className="space-y-5">
                   <h2 className="text-lg font-bold mb-1">Rodapé</h2>
