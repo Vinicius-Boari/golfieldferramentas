@@ -8,6 +8,7 @@ import {
   useSplashConfig,
   type SplashConfig,
 } from "@/hooks/useSplashConfig";
+import SplashRotatingText from "@/components/SplashRotatingText";
 
 /** Width preset → max width in px (or full screen). */
 const WIDTH_PX: Record<SplashConfig["appearance"]["width"], string> = {
@@ -280,6 +281,10 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
                   <p className="text-sm sm:text-base leading-relaxed whitespace-pre-line" style={{ color: cfg.texts.subtitleColor }}>
                     {cfg.texts.subtitle}
                   </p>
+                )}
+
+                {cfg.texts.rotating?.enabled && cfg.texts.rotating.phrases.length > 0 && (
+                  <SplashRotatingText config={cfg.texts.rotating} align={cfg.texts.align} />
                 )}
 
                 {cfg.countdown.enabled && (
