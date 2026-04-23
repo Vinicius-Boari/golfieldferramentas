@@ -345,6 +345,87 @@ const SplashPagePanel = ({ value, onChange, userId }: Props) => {
             ]}
           />
         </div>
+
+        <div className="border-t border-border/50 my-2" />
+
+        <Toggle
+          label="Frases rotativas (estilo legenda Instagram)"
+          hint="Exibe várias frases que se alternam suavemente abaixo do subtítulo."
+          value={value.texts.rotating.enabled}
+          onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, enabled: v } } }))}
+        />
+
+        {value.texts.rotating.enabled && (
+          <div className="rounded-xl border border-border/50 bg-secondary/30 p-3 space-y-3">
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block">Efeito de transição</label>
+              <SegButton<SplashConfig["texts"]["rotating"]["effect"]>
+                value={value.texts.rotating.effect}
+                onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, effect: v } } }))}
+                options={[
+                  { id: "typewriter", label: "Digitando", hint: "Letra por letra" },
+                  { id: "fade", label: "Fade", hint: "Suave" },
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                Frases (uma por linha)
+              </label>
+              <textarea
+                value={value.texts.rotating.phrases.join("\n")}
+                onChange={(e) =>
+                  update((c) => ({
+                    ...c,
+                    texts: {
+                      ...c.texts,
+                      rotating: {
+                        ...c.texts.rotating,
+                        phrases: e.target.value.split("\n"),
+                      },
+                    },
+                  }))
+                }
+                rows={4}
+                placeholder={"Ferramentas premium\nEntrega rápida\nAtacado exclusivo"}
+                className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50 resize-none"
+              />
+              <p className="text-[11px] text-muted-foreground mt-1">
+                {value.texts.rotating.phrases.filter((p) => p.trim()).length} frase(s) ativas.
+              </p>
+            </div>
+
+            <ColorInput
+              label="Cor do texto rotativo"
+              value={value.texts.rotating.color}
+              onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, color: v } } }))}
+            />
+
+            {value.texts.rotating.effect === "typewriter" && (
+              <Slider
+                label="Velocidade da digitação"
+                value={value.texts.rotating.typeSpeedMs}
+                min={20} max={200} step={5} suffix=" ms/letra"
+                onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, typeSpeedMs: v } } }))}
+              />
+            )}
+
+            <Slider
+              label="Tempo exibindo cada frase"
+              value={value.texts.rotating.holdMs}
+              min={500} max={6000} step={100} suffix=" ms"
+              onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, holdMs: v } } }))}
+            />
+
+            <Toggle
+              label="Repetir em loop"
+              hint="Ao terminar a última frase, recomeça da primeira."
+              value={value.texts.rotating.loop}
+              onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, loop: v } } }))}
+            />
+          </div>
+        )}
       </Section>
 
       {/* BOTÕES */}
