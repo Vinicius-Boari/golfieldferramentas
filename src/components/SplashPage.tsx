@@ -101,6 +101,24 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, cfg.countdown.enabled, remaining, cfg.countdown.onEnd]);
 
+  /* ── Image auto-close fallback (images have no onEnded event) ──────────── */
+  useEffect(() => {
+    if (!open || !cfg.autoCloseOnEnd) return;
+    if (cfg.media.kind !== "image") return;
+    const hasRotating =
+      (cfg.texts.titleEnabled && cfg.texts.titleRotating?.enabled && cfg.texts.titleRotating.phrases.some((p) => p.trim())) ||
+      (cfg.texts.subtitleEnabled && cfg.texts.subtitleRotating?.enabled && cfg.texts.subtitleRotating.phrases.some((p) => p.trim())) ||
+      (cfg.texts.rotating?.enabled && cfg.texts.rotating.phrases.some((p) => p.trim()));
+    if (hasRotating) return; // let the phrases drive the close
+    const t = window.setTimeout(() => {
+      setOpen(false);
+      if (isPreview) onPreviewClose?.();
+      else if (liveConfig) markSplashSeen(liveConfig);
+    }, 5000);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, cfg.autoCloseOnEnd, cfg.media.kind]);
+
   const close = () => {
     setOpen(false);
     if (isPreview) {
