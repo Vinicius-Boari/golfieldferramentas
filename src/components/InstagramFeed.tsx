@@ -72,7 +72,7 @@ interface InstagramCardProps {
  *    rest of the card is non-interactive while the preview is playing so the
  *    user can simply watch it.
  */
-const InstagramCard = ({ post, index, isVideo, thumb, handle, onOpen }: InstagramCardProps) => {
+const InstagramCard = ({ post, index, isVideo, isFavorite, thumb, handle, onOpen }: InstagramCardProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [hovered, setHovered] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
@@ -117,7 +117,12 @@ const InstagramCard = ({ post, index, isVideo, thumb, handle, onOpen }: Instagra
       variants={cardVariant}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`group relative aspect-square overflow-hidden rounded-xl border border-border bg-card text-left shadow-md shadow-black/30 transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-black/40 ${isVideo ? "" : "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"}`}
+      whileHover={{ y: -6 }}
+      className={`group relative aspect-square overflow-hidden rounded-xl border bg-card text-left transition-all duration-300 ${
+        isFavorite
+          ? "border-primary/60 shadow-[0_0_0_1px_hsl(var(--primary)/0.3),0_15px_40px_-10px_hsl(var(--primary)/0.45)]"
+          : "border-border shadow-md shadow-black/30 hover:border-primary hover:shadow-lg hover:shadow-primary/20"
+      } ${isVideo ? "" : "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"}`}
       aria-label={`Postagem ${index + 1} de @${handle}`}
       {...cardClickProps}
     >
@@ -127,9 +132,9 @@ const InstagramCard = ({ post, index, isVideo, thumb, handle, onOpen }: Instagra
           src={thumb}
           alt={post.prunedCaption || `Post de @${handle}`}
           loading="lazy"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+          className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${
             isVideo && hovered && videoReady ? "opacity-0" : "opacity-100"
-          } ${isVideo ? "" : "group-hover:brightness-90"}`}
+          } ${isVideo ? "" : "group-hover:scale-[1.04] group-hover:brightness-95"}`}
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).style.display = "none";
           }}
@@ -157,22 +162,41 @@ const InstagramCard = ({ post, index, isVideo, thumb, handle, onOpen }: Instagra
         />
       )}
 
-      {/* Play button — only for videos, opens the lightbox (zoom) */}
+      {/* Favorite ribbon — top-left */}
+      {isFavorite && (
+        <div className="absolute top-2 left-2 z-20 flex items-center gap-1 px-2 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider shadow-lg shadow-primary/30">
+          <Star size={10} className="fill-primary-foreground" />
+          Destaque
+        </div>
+      )}
+
+      {/* REEL badge — for videos. Always visible, looks like Instagram's badge
+          but in the site's primary palette so the section stays cohesive. */}
+      {isVideo && (
+        <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/65 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider shadow-lg pointer-events-none">
+          <Play size={10} className="fill-primary text-primary" />
+          Reel
+        </div>
+      )}
+
+      {/* Play button — only for videos, opens the lightbox (zoom).
+          Pulsing ring while idle to signal "click to expand". */}
       {isVideo && (
         <button
           type="button"
           onClick={handlePlayClick}
           aria-label="Abrir vídeo em tela maior"
-          className="absolute top-3 right-3 w-10 h-10 rounded-full bg-background/70 backdrop-blur-md grid place-items-center shadow-lg z-20 transition-transform duration-200 hover:scale-110 hover:bg-background/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="absolute top-3 right-3 z-20 w-11 h-11 rounded-full bg-background/75 backdrop-blur-md grid place-items-center shadow-xl transition-all duration-200 hover:scale-110 hover:bg-primary/90 hover:shadow-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary group/play"
         >
-          <Play size={16} className="text-primary fill-primary ml-0.5" />
+          <span className="absolute inset-0 rounded-full ring-2 ring-primary/40 animate-ping opacity-60" aria-hidden="true" />
+          <Play size={16} className="text-primary fill-primary ml-0.5 transition-colors group-hover/play:text-primary-foreground group-hover/play:fill-primary-foreground relative z-10" />
         </button>
       )}
 
       {/* Hover overlay with likes/comments — hidden while video preview is playing
           so it doesn't cover the action */}
       <div
-        className={`absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent transition-opacity duration-300 flex flex-col justify-end p-4 pointer-events-none ${
+        className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent transition-opacity duration-300 flex flex-col justify-end p-4 pointer-events-none ${
           hovered && !(isVideo && videoReady) ? "opacity-100" : "opacity-0"
         }`}
       >
