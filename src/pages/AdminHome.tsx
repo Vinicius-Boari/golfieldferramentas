@@ -12,6 +12,7 @@ import { useHomeConfig, useSaveHomeConfig, defaultHomeConfig, type HomeConfig } 
 import HeroVideoPanel from "@/components/admin/HeroVideoPanel";
 import SystemSettingsPanel from "@/components/admin/SystemSettingsPanel";
 import AppearancePanel from "@/components/admin/AppearancePanel";
+import InstagramFavoritesPicker from "@/components/admin/InstagramFavoritesPicker";
 import { toast } from "sonner";
 
 const sectionLabels: Record<string, string> = {
