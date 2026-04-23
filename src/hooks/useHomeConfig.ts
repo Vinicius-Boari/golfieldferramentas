@@ -74,6 +74,15 @@ export interface FooterConfig {
   categories: string[];
 }
 
+export interface InstagramSectionConfig {
+  badge: string;
+  title: string;
+  handle: string;
+  /** Behold.so feed ID — get one free at https://behold.so */
+  beholdFeedId: string;
+  maxPosts: number;
+}
+
 export interface WhatsAppMessageConfig {
   enabled: boolean;
   template: string;
