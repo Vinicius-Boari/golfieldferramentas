@@ -405,7 +405,7 @@ const InstagramFeed = ({
               Enquanto isso, visite nosso perfil para ver as novidades.
             </p>
             <a href={igUrl} target="_blank" rel="noopener noreferrer" className="btn-golfield">
-              Ver mais no Instagram
+              {ctaText}
             </a>
           </div>
         )}
@@ -450,7 +450,7 @@ const InstagramFeed = ({
                 rel="noopener noreferrer"
                 className="btn-golfield"
               >
-                Ver mais no Instagram
+                {ctaText}
               </a>
             </motion.div>
           </>
