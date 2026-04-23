@@ -571,7 +571,7 @@ const ChatWidget = () => {
             {/* Header */}
             <div
               className="flex items-center gap-3 px-4 py-3.5 text-white"
-              style={{ background: "linear-gradient(135deg, #2563EB, #1d4ed8)" }}
+              style={{ background: "linear-gradient(135deg, #3b82f6, #2563EB)" }}
             >
               {assistant.avatarUrl ? (
                 <img
