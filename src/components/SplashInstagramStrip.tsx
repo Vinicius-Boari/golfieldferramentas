@@ -84,8 +84,11 @@ const SplashInstagramStrip = ({
           href={igUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold border transition-all hover:scale-105"
-          style={{ borderColor: "#2A2A2A", color: "#FFFFFF", backgroundColor: "rgba(255,255,255,0.05)" }}
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-bold uppercase tracking-wide transition-all hover:scale-105 hover:brightness-110 shadow-[0_8px_24px_-4px_rgba(232,74,37,0.6)] ring-1 ring-white/20"
+          style={{
+            background: "linear-gradient(135deg, #FF5A2C 0%, #E84A25 50%, #C13A18 100%)",
+            color: "#FFFFFF",
+          }}
         >
           <Camera size={14} />
           {ctaText}
@@ -116,11 +119,10 @@ const SplashInstagramStrip = ({
           href={igUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold border transition-all hover:scale-105"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-bold uppercase tracking-wide transition-all hover:scale-105 hover:brightness-110 shadow-[0_8px_24px_-4px_rgba(232,74,37,0.6)] ring-1 ring-white/20"
           style={{
-            borderColor: "rgba(232,74,37,0.5)",
+            background: "linear-gradient(135deg, #FF5A2C 0%, #E84A25 50%, #C13A18 100%)",
             color: "#FFFFFF",
-            background: "linear-gradient(135deg, rgba(232,74,37,0.15), rgba(232,74,37,0.05))",
           }}
         >
           <Camera size={14} />

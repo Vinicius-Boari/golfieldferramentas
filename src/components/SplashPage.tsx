@@ -201,7 +201,7 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
   // 2s delay so the user sees the final frame/phrase before the splash dismisses.
   const handleEnded = () => {
     if (!cfg.autoCloseOnEnd) return;
-    window.setTimeout(() => close(), 2000);
+    window.setTimeout(() => close(), 4000);
   };
 
   const MediaEl = () => renderMedia(cfg.media, handleEnded);
