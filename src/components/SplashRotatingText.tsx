@@ -94,7 +94,7 @@ const SplashRotatingText = ({ config, align, onAllShown }: Props) => {
     return () => {
       if (timerRef.current) window.clearTimeout(timerRef.current);
     };
-  }, [config.effect, config.typeSpeedMs, config.holdMs, config.loop, displayed, index, phase, phrases]);
+  }, [config.effect, config.typeSpeedMs, config.holdMs, config.loop, displayed, index, phase, phrases, onAllShown]);
 
   if (phrases.length === 0) return null;
 
