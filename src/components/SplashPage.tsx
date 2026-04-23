@@ -276,19 +276,35 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
                 className="px-6 sm:px-8 py-8 sm:py-10 space-y-4"
                 style={{ textAlign: cfg.texts.align }}
               >
-                {cfg.texts.titleEnabled && cfg.texts.title && (
-                  <h2
-                    className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight"
-                    style={{ color: cfg.texts.titleColor }}
-                  >
-                    {cfg.texts.title}
-                  </h2>
+                {cfg.texts.titleEnabled && (
+                  cfg.texts.titleRotating?.enabled && cfg.texts.titleRotating.phrases.length > 0 ? (
+                    <SplashRotatingText
+                      config={cfg.texts.titleRotating}
+                      align={cfg.texts.align}
+                      variant="title"
+                    />
+                  ) : cfg.texts.title ? (
+                    <h2
+                      className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight"
+                      style={{ color: cfg.texts.titleColor }}
+                    >
+                      {cfg.texts.title}
+                    </h2>
+                  ) : null
                 )}
 
-                {cfg.texts.subtitleEnabled && cfg.texts.subtitle && (
-                  <p className="text-sm sm:text-base leading-relaxed whitespace-pre-line" style={{ color: cfg.texts.subtitleColor }}>
-                    {cfg.texts.subtitle}
-                  </p>
+                {cfg.texts.subtitleEnabled && (
+                  cfg.texts.subtitleRotating?.enabled && cfg.texts.subtitleRotating.phrases.length > 0 ? (
+                    <SplashRotatingText
+                      config={cfg.texts.subtitleRotating}
+                      align={cfg.texts.align}
+                      variant="subtitle"
+                    />
+                  ) : cfg.texts.subtitle ? (
+                    <p className="text-sm sm:text-base leading-relaxed whitespace-pre-line" style={{ color: cfg.texts.subtitleColor }}>
+                      {cfg.texts.subtitle}
+                    </p>
+                  ) : null
                 )}
 
                 {cfg.texts.rotating?.enabled && cfg.texts.rotating.phrases.length > 0 && (
