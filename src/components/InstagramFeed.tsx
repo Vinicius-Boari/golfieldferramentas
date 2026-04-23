@@ -132,7 +132,7 @@ const InstagramFeed = ({
           className="text-center mb-10 sm:mb-14"
         >
           <span className="section-badge mb-6 inline-flex items-center gap-2">
-            <Instagram size={14} />
+            <InstagramIcon size={14} />
             {badge}
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-3">
@@ -160,7 +160,7 @@ const InstagramFeed = ({
         {/* Error / not configured */}
         {!loading && (error || !posts || posts.length === 0) && (
           <div className="max-w-xl mx-auto text-center py-10 px-6 rounded-2xl border border-border/40 bg-card/40">
-            <Instagram size={36} className="mx-auto mb-4 text-primary/70" />
+            <InstagramIcon size={36} className="mx-auto mb-4 text-primary/70" />
             <p className="text-foreground font-semibold mb-2">
               {error === "not-configured"
                 ? "Feed do Instagram em configuração"
@@ -170,7 +170,7 @@ const InstagramFeed = ({
               Enquanto isso, visite nosso perfil para ver as novidades.
             </p>
             <a href={igUrl} target="_blank" rel="noopener noreferrer" className="btn-golfield">
-              <Instagram size={18} />
+              <InstagramIcon size={18} />
               Abrir @{handle}
             </a>
           </div>
@@ -265,7 +265,7 @@ const InstagramFeed = ({
                 rel="noopener noreferrer"
                 className="btn-golfield"
               >
-                <Instagram size={18} />
+                <InstagramIcon size={18} />
                 Ver mais no Instagram
               </a>
             </motion.div>
