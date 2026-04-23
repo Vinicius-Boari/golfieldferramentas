@@ -5,6 +5,9 @@ import type { SplashConfig } from "@/hooks/useSplashConfig";
 interface Props {
   config: SplashConfig["texts"]["rotating"];
   align: SplashConfig["texts"]["align"];
+  /** Called once after the last phrase has been fully shown
+   *  (only fires when loop is OFF). */
+  onAllShown?: () => void;
 }
 
 /**
@@ -12,7 +15,8 @@ interface Props {
  * effect (character-by-character, like an Instagram caption being typed) or
  * a smooth fade transition between phrases.
  */
-const SplashRotatingText = ({ config, align }: Props) => {
+const SplashRotatingText = ({ config, align, onAllShown }: Props) => {
+  const firedRef = useRef(false);
   const phrases = (config.phrases || []).filter((p) => p.trim().length > 0);
   const [index, setIndex] = useState(0);
   const [displayed, setDisplayed] = useState("");
@@ -24,6 +28,7 @@ const SplashRotatingText = ({ config, align }: Props) => {
     setIndex(0);
     setDisplayed("");
     setPhase("typing");
+    firedRef.current = false;
   }, [phrases.length, config.effect, config.typeSpeedMs, config.holdMs]);
 
   /** Fade effect: switch the whole phrase every (holdMs + 600ms transition). */
