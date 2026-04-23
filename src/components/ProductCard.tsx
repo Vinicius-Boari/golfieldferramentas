@@ -111,6 +111,8 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
           <motion.img
             src={product.image}
             alt={product.name}
+            width={400}
+            height={400}
             className="w-full h-full object-contain p-4 sm:p-6"
             loading="lazy"
             decoding="async"
