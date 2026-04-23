@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import {
   ArrowLeft, Save, LogOut, Home, Type, Image, Palette, LayoutGrid,
   ChevronUp, ChevronDown, Eye, EyeOff, Plus, Trash2, Upload, Link2, Loader2, GripVertical,
-  Film, Volume2, VolumeX, Repeat, Settings, MousePointer2
+  Film, Volume2, VolumeX, Repeat, Settings, MousePointer2,
+  Star, TrendingUp, Sparkles, Calendar, Globe, Lightbulb, Shield, Truck, Wrench, Package, Zap, Heart, Award, Users
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -128,6 +129,55 @@ const ImageField = ({ label, value, onChange, userId }: {
     </div>
   );
 };
+
+/** Icon options exposed to admin in icon-pickers. The id matches IconId in useHomeConfig. */
+const ICON_OPTIONS = [
+  { id: "star", Icon: Star }, { id: "trendingUp", Icon: TrendingUp }, { id: "sparkles", Icon: Sparkles },
+  { id: "calendar", Icon: Calendar }, { id: "globe", Icon: Globe }, { id: "lightbulb", Icon: Lightbulb },
+  { id: "shield", Icon: Shield }, { id: "truck", Icon: Truck }, { id: "wrench", Icon: Wrench },
+  { id: "package", Icon: Package }, { id: "zap", Icon: Zap }, { id: "heart", Icon: Heart },
+  { id: "award", Icon: Award }, { id: "users", Icon: Users },
+] as const;
+
+const IconPicker = ({ value, onChange }: { value?: string; onChange: (v: string) => void }) => (
+  <div className="flex flex-wrap gap-1.5 p-2 rounded-xl bg-secondary/30 border border-border/40">
+    {ICON_OPTIONS.map(({ id, Icon }) => {
+      const active = value === id;
+      return (
+        <button
+          key={id}
+          type="button"
+          title={id}
+          onClick={() => onChange(id)}
+          className={`p-2 rounded-lg border transition-all ${
+            active
+              ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/30"
+              : "bg-background/50 text-muted-foreground border-border/40 hover:border-primary/40 hover:text-foreground"
+          }`}
+        >
+          <Icon size={14} />
+        </button>
+      );
+    })}
+  </div>
+);
+
+const Toggle = ({ label, value, onChange, hint }: { label: string; value: boolean; onChange: (v: boolean) => void; hint?: string }) => (
+  <div className="flex items-start justify-between gap-4 p-3 rounded-xl bg-secondary/30 border border-border/40">
+    <div>
+      <p className="text-sm font-medium">{label}</p>
+      {hint && <p className="text-xs text-muted-foreground mt-0.5">{hint}</p>}
+    </div>
+    <button
+      type="button"
+      onClick={() => onChange(!value)}
+      className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${value ? "bg-primary" : "bg-secondary"}`}
+      aria-pressed={value}
+    >
+      <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-background shadow transition-transform ${value ? "translate-x-5" : ""}`} />
+    </button>
+  </div>
+);
 
 const AdminHome = () => {
   const navigate = useNavigate();
@@ -374,17 +424,23 @@ const AdminHome = () => {
               {activeTab === "trust" && (
                 <div className="space-y-5">
                   <h2 className="text-lg font-bold mb-1">Selos de Confiança</h2>
-                  <div className="space-y-3">
+                  <p className="text-xs text-muted-foreground -mt-3">Escolha texto e ícone para cada selo exibido logo abaixo do Hero.</p>
+                  <div className="space-y-4">
                     {config.trustBadges.items.map((item, i) => (
-                      <div key={i} className="flex gap-3 items-center">
-                        <input value={item.text} onChange={e => updateConfig(c => {
-                          const items = [...c.trustBadges.items]; items[i] = { text: e.target.value }; return { ...c, trustBadges: { ...c.trustBadges, items } };
-                        })} className="flex-1 px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
-                        <button onClick={() => updateConfig(c => ({ ...c, trustBadges: { ...c.trustBadges, items: c.trustBadges.items.filter((_, j) => j !== i) } }))}
-                          className="p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"><Trash2 size={14} /></button>
+                      <div key={i} className="space-y-2 p-3 rounded-xl bg-secondary/20 border border-border/40">
+                        <div className="flex gap-3 items-center">
+                          <input value={item.text} onChange={e => updateConfig(c => {
+                            const items = [...c.trustBadges.items]; items[i] = { ...items[i], text: e.target.value }; return { ...c, trustBadges: { ...c.trustBadges, items } };
+                          })} className="flex-1 px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" placeholder="Texto do selo" />
+                          <button onClick={() => updateConfig(c => ({ ...c, trustBadges: { ...c.trustBadges, items: c.trustBadges.items.filter((_, j) => j !== i) } }))}
+                            className="p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"><Trash2 size={14} /></button>
+                        </div>
+                        <IconPicker value={item.icon} onChange={(iconId) => updateConfig(c => {
+                          const items = [...c.trustBadges.items]; items[i] = { ...items[i], icon: iconId as any }; return { ...c, trustBadges: { ...c.trustBadges, items } };
+                        })} />
                       </div>
                     ))}
-                    <button onClick={() => updateConfig(c => ({ ...c, trustBadges: { ...c.trustBadges, items: [...c.trustBadges.items, { text: "" }] } }))}
+                    <button onClick={() => updateConfig(c => ({ ...c, trustBadges: { ...c.trustBadges, items: [...c.trustBadges.items, { text: "", icon: "star" }] } }))}
                       className="flex items-center gap-2 text-xs text-primary hover:underline"><Plus size={12} /> Adicionar selo</button>
                   </div>
                 </div>
@@ -425,6 +481,21 @@ const AdminHome = () => {
                     <InputField label="Link do botão" value={config.ctaSection.buttonLink}
                       onChange={v => updateConfig(c => ({ ...c, ctaSection: { ...c.ctaSection, buttonLink: v } }))} />
                   </div>
+                  <div className="space-y-3 pt-2">
+                    <label className="text-xs font-medium text-muted-foreground block">Elementos visuais</label>
+                    <Toggle
+                      label="Ferramentas flutuantes animadas"
+                      hint="Ícones decorativos de ferramentas que flutuam atrás do CTA (apenas desktop)."
+                      value={config.ctaSection.showFloatingTools ?? true}
+                      onChange={v => updateConfig(c => ({ ...c, ctaSection: { ...c.ctaSection, showFloatingTools: v } }))}
+                    />
+                    <Toggle
+                      label="Mascotes (menino e menina)"
+                      hint="Personagens nas laterais inferiores da seção (apenas desktop)."
+                      value={config.ctaSection.showMascots ?? true}
+                      onChange={v => updateConfig(c => ({ ...c, ctaSection: { ...c.ctaSection, showMascots: v } }))}
+                    />
+                  </div>
                 </div>
               )}
 
@@ -446,22 +517,27 @@ const AdminHome = () => {
                     onChange={v => updateConfig(c => ({ ...c, aboutSection: { ...c.aboutSection, paragraph2: v } }))} rows={3} />
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-2 block">Cards de Diferenciais</label>
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {config.aboutSection.features.map((feat, i) => (
-                        <div key={i} className="flex gap-3 items-start">
-                          <div className="flex-1 grid grid-cols-2 gap-2">
-                            <input value={feat.title} onChange={e => updateConfig(c => {
-                              const features = [...c.aboutSection.features]; features[i] = { ...features[i], title: e.target.value }; return { ...c, aboutSection: { ...c.aboutSection, features } };
-                            })} placeholder="Título" className="px-3 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
-                            <input value={feat.desc} onChange={e => updateConfig(c => {
-                              const features = [...c.aboutSection.features]; features[i] = { ...features[i], desc: e.target.value }; return { ...c, aboutSection: { ...c.aboutSection, features } };
-                            })} placeholder="Descrição" className="px-3 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
+                        <div key={i} className="space-y-2 p-3 rounded-xl bg-secondary/20 border border-border/40">
+                          <div className="flex gap-3 items-start">
+                            <div className="flex-1 grid grid-cols-2 gap-2">
+                              <input value={feat.title} onChange={e => updateConfig(c => {
+                                const features = [...c.aboutSection.features]; features[i] = { ...features[i], title: e.target.value }; return { ...c, aboutSection: { ...c.aboutSection, features } };
+                              })} placeholder="Título" className="px-3 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
+                              <input value={feat.desc} onChange={e => updateConfig(c => {
+                                const features = [...c.aboutSection.features]; features[i] = { ...features[i], desc: e.target.value }; return { ...c, aboutSection: { ...c.aboutSection, features } };
+                              })} placeholder="Descrição" className="px-3 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
+                            </div>
+                            <button onClick={() => updateConfig(c => ({ ...c, aboutSection: { ...c.aboutSection, features: c.aboutSection.features.filter((_, j) => j !== i) } }))}
+                              className="p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"><Trash2 size={14} /></button>
                           </div>
-                          <button onClick={() => updateConfig(c => ({ ...c, aboutSection: { ...c.aboutSection, features: c.aboutSection.features.filter((_, j) => j !== i) } }))}
-                            className="p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"><Trash2 size={14} /></button>
+                          <IconPicker value={(feat as any).icon} onChange={(iconId) => updateConfig(c => {
+                            const features = [...c.aboutSection.features]; features[i] = { ...features[i], icon: iconId as any }; return { ...c, aboutSection: { ...c.aboutSection, features } };
+                          })} />
                         </div>
                       ))}
-                      <button onClick={() => updateConfig(c => ({ ...c, aboutSection: { ...c.aboutSection, features: [...c.aboutSection.features, { title: "", desc: "" }] } }))}
+                      <button onClick={() => updateConfig(c => ({ ...c, aboutSection: { ...c.aboutSection, features: [...c.aboutSection.features, { title: "", desc: "", icon: "sparkles" }] } }))}
                         className="flex items-center gap-2 text-xs text-primary hover:underline"><Plus size={12} /> Adicionar card</button>
                     </div>
                   </div>
@@ -493,6 +569,18 @@ const AdminHome = () => {
                   </div>
                   <InputField label="Título" value={config.instagramSection.title}
                     onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, title: v } }))} />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <InputField label="Subtítulo (ao lado do @handle)" value={config.instagramSection.subtitle ?? ""}
+                      onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, subtitle: v } }))} placeholder="Atualizado em tempo real" />
+                    <InputField label="Texto do botão CTA" value={config.instagramSection.ctaText ?? ""}
+                      onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, ctaText: v } }))} placeholder="Ver mais no Instagram" />
+                  </div>
+                  <Toggle
+                    label="Indicador 'Ao vivo'"
+                    hint="Mostra um ponto pulsante ao lado do badge para indicar atualização em tempo real."
+                    value={config.instagramSection.showLiveIndicator ?? true}
+                    onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, showLiveIndicator: v } }))}
+                  />
 
                   {/* Card size */}
                   <div>

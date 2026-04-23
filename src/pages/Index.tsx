@@ -13,10 +13,20 @@ import { useProducts } from "@/hooks/useProducts";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { chatBus, emitCartReply } from "@/lib/chatBus";
 import { roundUpToMultiple } from "@/lib/qty";
-import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
+import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight, Shield, Truck, Wrench, Package, Zap, Heart, Award, Users, type LucideIcon } from "lucide-react";
 import SEO, { buildOrganizationJsonLd, buildWebSiteJsonLd, buildItemListJsonLd } from "@/components/SEO";
 import mascotGirl from "@/assets/mascot-girl.webp";
 import mascotBoy from "@/assets/mascot-boy.webp";
+
+/** Map icon ids saved in config to Lucide components. */
+const ICON_MAP: Record<string, LucideIcon> = {
+  star: Star, trendingUp: TrendingUp, sparkles: Sparkles,
+  calendar: Calendar, globe: Globe, lightbulb: Lightbulb,
+  shield: Shield, truck: Truck, wrench: Wrench, package: Package,
+  zap: Zap, heart: Heart, award: Award, users: Users,
+};
+const resolveIcon = (id: string | undefined, fallback: LucideIcon): LucideIcon =>
+  (id && ICON_MAP[id]) || fallback;
 
 const staggerContainer = {
   hidden: {},
@@ -201,7 +211,7 @@ const IndexContent = () => {
             <div className="container mx-auto px-4">
               <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-8 lg:gap-12 text-sm">
                 {(config?.trustBadges?.items ?? []).map((item, i) => {
-                  const Icon = trustIcons[i % trustIcons.length];
+                  const Icon = resolveIcon(item.icon, trustIcons[i % trustIcons.length]);
                   return (
                     <motion.div key={i} variants={fadeSlideUp} whileHover={{ scale: 1.08, y: -2 }}
                       className="flex items-center gap-3 text-muted-foreground group cursor-default">
@@ -303,41 +313,47 @@ const IndexContent = () => {
               className="absolute bottom-20 right-[20%] w-10 h-10 border border-primary-foreground/10 rounded-full hidden sm:block" />
 
             {/* Floating tools — decorative */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-              className="hidden md:block absolute inset-0 pointer-events-none opacity-90 mix-blend-screen"
-              aria-hidden="true"
-            >
-              <FloatingToolVisual />
-            </motion.div>
+            {(cta?.showFloatingTools ?? true) && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+                className="hidden md:block absolute inset-0 pointer-events-none opacity-90 mix-blend-screen"
+                aria-hidden="true"
+              >
+                <FloatingToolVisual />
+              </motion.div>
+            )}
 
             {/* Mascots — left and right */}
-            <motion.img
-              src={mascotGirl}
-              alt=""
-              aria-hidden="true"
-              initial={{ opacity: 0, x: -40, y: 20 }}
-              whileInView={{ opacity: 1, x: 0, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-              animate={{ y: [0, -8, 0] }}
-              style={{ animationDelay: "0s" }}
-              className="hidden md:block absolute left-2 lg:left-6 xl:left-10 bottom-0 w-44 lg:w-56 xl:w-64 2xl:w-72 pointer-events-none select-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] z-10"
-            />
-            <motion.img
-              src={mascotBoy}
-              alt=""
-              aria-hidden="true"
-              initial={{ opacity: 0, x: 40, y: 20 }}
-              whileInView={{ opacity: 1, x: 0, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.15 }}
-              animate={{ y: [0, -8, 0] }}
-              className="hidden md:block absolute right-2 lg:right-6 xl:right-10 bottom-0 w-44 lg:w-56 xl:w-64 2xl:w-72 pointer-events-none select-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] z-10"
-            />
+            {(cta?.showMascots ?? true) && (
+              <>
+                <motion.img
+                  src={mascotGirl}
+                  alt=""
+                  aria-hidden="true"
+                  initial={{ opacity: 0, x: -40, y: 20 }}
+                  whileInView={{ opacity: 1, x: 0, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+                  animate={{ y: [0, -8, 0] }}
+                  style={{ animationDelay: "0s" }}
+                  className="hidden md:block absolute left-2 lg:left-6 xl:left-10 bottom-0 w-44 lg:w-56 xl:w-64 2xl:w-72 pointer-events-none select-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] z-10"
+                />
+                <motion.img
+                  src={mascotBoy}
+                  alt=""
+                  aria-hidden="true"
+                  initial={{ opacity: 0, x: 40, y: 20 }}
+                  whileInView={{ opacity: 1, x: 0, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.15 }}
+                  animate={{ y: [0, -8, 0] }}
+                  className="hidden md:block absolute right-2 lg:right-6 xl:right-10 bottom-0 w-44 lg:w-56 xl:w-64 2xl:w-72 pointer-events-none select-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] z-10"
+                />
+              </>
+            )}
 
             <div className="container mx-auto px-4 relative z-20 text-center">
               <motion.div initial={{ opacity: 0, y: 40, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }}
@@ -370,7 +386,7 @@ const IndexContent = () => {
                 </motion.div>
                 <motion.div variants={fadeSlideUp} className="grid sm:grid-cols-2 gap-4">
                   {(about?.features ?? []).map((item, i) => {
-                    const Icon = aboutIcons[i % aboutIcons.length];
+                    const Icon = resolveIcon((item as any).icon, aboutIcons[i % aboutIcons.length]);
                     return (
                       <motion.div key={i} whileHover={{ y: -6 }} className="stat-card">
                         <div className="p-2.5 rounded-xl bg-primary/10 w-fit mb-4"><Icon size={18} className="text-primary" /></div>
@@ -396,6 +412,9 @@ const IndexContent = () => {
             maxPosts={config?.instagramSection?.maxPosts ?? 9}
             cardSize={config?.instagramSection?.cardSize ?? "medium"}
             favoritePostIds={config?.instagramSection?.favoritePostIds ?? []}
+            ctaText={config?.instagramSection?.ctaText}
+            subtitle={config?.instagramSection?.subtitle}
+            showLiveIndicator={config?.instagramSection?.showLiveIndicator}
           />
         ) : null;
 

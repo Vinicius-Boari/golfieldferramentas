@@ -23,6 +23,12 @@ export interface InstagramFeedProps {
   cardSize?: InstagramCardSize;
   /** IDs of pinned posts. Always rendered first, in this order. */
   favoritePostIds?: string[];
+  /** CTA button text shown below the grid. */
+  ctaText?: string;
+  /** Optional subtitle shown next to the @handle. */
+  subtitle?: string;
+  /** When true, the live "pulse" indicator is shown next to the badge. */
+  showLiveIndicator?: boolean;
 }
 
 interface BeholdPost {
@@ -234,6 +240,9 @@ const InstagramFeed = ({
   maxPosts = 9,
   cardSize = "medium",
   favoritePostIds = [],
+  ctaText = "Ver mais no Instagram",
+  subtitle = "Atualizado em tempo real",
+  showLiveIndicator = true,
 }: InstagramFeedProps) => {
   const [posts, setPosts] = useState<BeholdPost[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -348,11 +357,12 @@ const InstagramFeed = ({
           className="text-center mb-10 sm:mb-14"
         >
           <span className="section-badge mb-6 inline-flex items-center gap-2">
-            {/* "Ao vivo" pulse dot */}
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-            </span>
+            {showLiveIndicator && (
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+              </span>
+            )}
             {badge}
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-3">
@@ -365,9 +375,11 @@ const InstagramFeed = ({
             className="inline-flex items-center gap-2 text-base sm:text-lg font-semibold text-primary hover:text-primary/80 transition-colors group"
           >
             <span className="story-link">@{handle}</span>
-            <span className="text-xs text-muted-foreground/70 hidden sm:inline">
-              · Atualizado em tempo real
-            </span>
+            {subtitle && (
+              <span className="text-xs text-muted-foreground/70 hidden sm:inline">
+                · {subtitle}
+              </span>
+            )}
           </a>
         </motion.div>
 
@@ -393,7 +405,7 @@ const InstagramFeed = ({
               Enquanto isso, visite nosso perfil para ver as novidades.
             </p>
             <a href={igUrl} target="_blank" rel="noopener noreferrer" className="btn-golfield">
-              Ver mais no Instagram
+              {ctaText}
             </a>
           </div>
         )}
@@ -438,7 +450,7 @@ const InstagramFeed = ({
                 rel="noopener noreferrer"
                 className="btn-golfield"
               >
-                Ver mais no Instagram
+                {ctaText}
               </a>
             </motion.div>
           </>

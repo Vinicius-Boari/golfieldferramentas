@@ -34,8 +34,18 @@ export interface HeroConfig {
   stats: { label: string; desc: string }[];
 }
 
+/** Identifiers of icons that can be used in admin-selectable slots. */
+export type IconId =
+  | "star" | "trendingUp" | "sparkles" | "calendar" | "globe" | "lightbulb"
+  | "shield" | "truck" | "wrench" | "package" | "zap" | "heart" | "award" | "users";
+
+export interface TrustBadgesConfigItem {
+  text: string;
+  icon?: IconId;
+}
+
 export interface TrustBadgesConfig {
-  items: { text: string }[];
+  items: TrustBadgesConfigItem[];
 }
 
 export interface ProductsSectionConfig {
@@ -52,6 +62,10 @@ export interface CtaSectionConfig {
   description: string;
   buttonText: string;
   buttonLink: string;
+  /** When true, animated floating tools are rendered behind the CTA. */
+  showFloatingTools?: boolean;
+  /** When true, both mascot images are rendered. */
+  showMascots?: boolean;
 }
 
 export interface AboutSectionConfig {
@@ -60,7 +74,7 @@ export interface AboutSectionConfig {
   titleHighlight: string;
   paragraph1: string;
   paragraph2: string;
-  features: { title: string; desc: string }[];
+  features: { title: string; desc: string; icon?: IconId }[];
 }
 
 export interface FooterConfig {
@@ -87,6 +101,12 @@ export interface InstagramSectionConfig {
   cardSize: InstagramCardSize;
   /** IDs of pinned posts. Always rendered first, in this order. */
   favoritePostIds: string[];
+  /** CTA button text shown below the grid. */
+  ctaText?: string;
+  /** Optional subtitle shown next to the @handle. */
+  subtitle?: string;
+  /** When true, the live "pulse" indicator is shown next to the badge. */
+  showLiveIndicator?: boolean;
 }
 
 export interface WhatsAppMessageConfig {
@@ -226,9 +246,9 @@ export const defaultHomeConfig: HomeConfig = {
   },
   trustBadges: {
     items: [
-      { text: "Avaliação 5 estrelas" },
-      { text: "+1000 clientes atendidos" },
-      { text: "Qualidade profissional" },
+      { text: "Avaliação 5 estrelas", icon: "star" },
+      { text: "+1000 clientes atendidos", icon: "trendingUp" },
+      { text: "Qualidade profissional", icon: "sparkles" },
     ],
   },
   productsSection: {
@@ -244,6 +264,8 @@ export const defaultHomeConfig: HomeConfig = {
     description: "Monte seu orçamento com os melhores produtos da Golfield e fale com nosso time para receber atendimento personalizado.",
     buttonText: "Explorar catálogo",
     buttonLink: "#produtos",
+    showFloatingTools: true,
+    showMascots: true,
   },
   aboutSection: {
     badge: "Sobre a Golfield",
@@ -252,10 +274,10 @@ export const defaultHomeConfig: HomeConfig = {
     paragraph1: "A Golfield atende clientes de todo o Brasil com uma linha completa de ferramentas e acessórios para profissionais, lojistas e empresas que buscam qualidade, preço competitivo e atendimento ágil.",
     paragraph2: "Trabalhamos com um catálogo variado e condições especiais para compras em volume, sempre com suporte dedicado para ajudar na composição do melhor orçamento para seu negócio.",
     features: [
-      { title: "Experiência", desc: "Atendimento consultivo para vendas B2B" },
-      { title: "Cobertura Nacional", desc: "Distribuição para clientes em todo o Brasil" },
-      { title: "Curadoria", desc: "Seleção de produtos com foco em giro e qualidade" },
-      { title: "Parceria", desc: "Relação próxima para gerar recorrência e confiança" },
+      { title: "Experiência", desc: "Atendimento consultivo para vendas B2B", icon: "calendar" },
+      { title: "Cobertura Nacional", desc: "Distribuição para clientes em todo o Brasil", icon: "globe" },
+      { title: "Curadoria", desc: "Seleção de produtos com foco em giro e qualidade", icon: "lightbulb" },
+      { title: "Parceria", desc: "Relação próxima para gerar recorrência e confiança", icon: "sparkles" },
     ],
   },
   instagramSection: {
@@ -266,6 +288,9 @@ export const defaultHomeConfig: HomeConfig = {
     maxPosts: 9,
     cardSize: "medium",
     favoritePostIds: [],
+    ctaText: "Ver mais no Instagram",
+    subtitle: "Atualizado em tempo real",
+    showLiveIndicator: true,
   },
   footer: {
     description: "Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado.",
