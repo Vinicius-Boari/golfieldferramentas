@@ -1,27 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Play, Heart, MessageCircle, ExternalLink, ImageOff } from "lucide-react";
-
-// Monochrome Instagram glyph — uses currentColor to inherit site palette.
-const InstagramIcon = ({ size = 16, className }: { size?: number; className?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-    aria-hidden="true"
-  >
-    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-  </svg>
-);
+import { Play, Heart, MessageCircle, ExternalLink, ImageOff, Instagram } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
@@ -59,11 +38,10 @@ interface BeholdPost {
 }
 
 const cardVariant = {
-  hidden: { opacity: 0, y: 24, scale: 0.96 },
+  hidden: { opacity: 0, y: 24 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    scale: 1,
     transition: { delay: i * 0.05, duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
   }),
 };
@@ -71,8 +49,8 @@ const cardVariant = {
 const InstagramFeed = ({
   feedId,
   handle = "golfield.ferramentas",
-  title = "Siga a gente no Instagram",
-  badge = "Nossa Galeria",
+  title = "Acompanhe a Golfield",
+  badge = "Instagram",
   profileUrl,
   maxPosts = 9,
 }: InstagramFeedProps) => {
@@ -121,7 +99,7 @@ const InstagramFeed = ({
     <section
       id="instagram"
       data-edit-id="instagram.section"
-      className="py-16 sm:py-20 md:py-24 relative border-t border-border/30"
+      className="py-16 sm:py-20 md:py-24 relative"
     >
       <div className="container mx-auto px-4">
         <motion.div
@@ -131,10 +109,7 @@ const InstagramFeed = ({
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-10 sm:mb-14"
         >
-          <span className="section-badge mb-6 inline-flex items-center gap-2">
-            <InstagramIcon size={14} />
-            {badge}
-          </span>
+          <span className="section-badge mb-6 inline-flex">{badge}</span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-3">
             {title}
           </h2>
@@ -142,7 +117,7 @@ const InstagramFeed = ({
             href={igUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-primary transition-colors text-base sm:text-lg story-link inline-block"
+            className="inline-block text-base sm:text-lg font-semibold text-primary hover:text-primary/80 transition-colors"
           >
             @{handle}
           </a>
@@ -152,15 +127,15 @@ const InstagramFeed = ({
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {Array.from({ length: maxPosts }).map((_, i) => (
-              <Skeleton key={i} className="aspect-square rounded-2xl" />
+              <Skeleton key={i} className="aspect-square rounded-xl bg-muted/60" />
             ))}
           </div>
         )}
 
         {/* Error / not configured */}
         {!loading && (error || !posts || posts.length === 0) && (
-          <div className="max-w-xl mx-auto text-center py-10 px-6 rounded-2xl border border-border/40 bg-card/40">
-            <InstagramIcon size={36} className="mx-auto mb-4 text-primary/70" />
+          <div className="max-w-xl mx-auto text-center py-10 px-6 rounded-xl border border-border/40 bg-card">
+            <Instagram size={36} className="mx-auto mb-4 text-primary/70" />
             <p className="text-foreground font-semibold mb-2">
               {error === "not-configured"
                 ? "Feed do Instagram em configuração"
@@ -170,8 +145,7 @@ const InstagramFeed = ({
               Enquanto isso, visite nosso perfil para ver as novidades.
             </p>
             <a href={igUrl} target="_blank" rel="noopener noreferrer" className="btn-golfield">
-              <InstagramIcon size={18} />
-              Abrir @{handle}
+              Ver mais no Instagram
             </a>
           </div>
         )}
@@ -198,8 +172,7 @@ const InstagramFeed = ({
                     whileInView="visible"
                     viewport={{ once: true, margin: "-40px" }}
                     variants={cardVariant}
-                    whileHover={{ y: -6 }}
-                    className="group relative aspect-square overflow-hidden rounded-2xl border border-border bg-card text-left product-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="group relative aspect-square overflow-hidden rounded-xl border border-border bg-card text-left shadow-md shadow-black/30 transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     aria-label={`Ver postagem ${i + 1} de @${handle}`}
                   >
                     {thumb ? (
@@ -207,7 +180,7 @@ const InstagramFeed = ({
                         src={thumb}
                         alt={post.prunedCaption || `Post de @${handle}`}
                         loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:brightness-90"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).style.display = "none";
                         }}
@@ -220,28 +193,28 @@ const InstagramFeed = ({
 
                     {/* Video play badge */}
                     {isVideo && (
-                      <div className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/70 backdrop-blur-md border border-border/60 grid place-items-center shadow-lg">
+                      <div className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/70 backdrop-blur-md grid place-items-center shadow-lg">
                         <Play size={14} className="text-primary fill-primary ml-0.5" />
                       </div>
                     )}
 
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                      <div className="flex items-center gap-4 text-foreground text-sm font-semibold">
+                    {/* Hover overlay with likes/comments */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                      <div className="flex items-center gap-4 text-white text-sm font-semibold">
                         {typeof post.likes === "number" && (
                           <span className="flex items-center gap-1.5">
-                            <Heart size={16} className="text-primary fill-primary" />
+                            <Heart size={16} className="fill-white" />
                             {formatCount(post.likes)}
                           </span>
                         )}
                         {typeof post.comments === "number" && (
                           <span className="flex items-center gap-1.5">
-                            <MessageCircle size={16} className="text-primary" />
+                            <MessageCircle size={16} />
                             {formatCount(post.comments)}
                           </span>
                         )}
                         {typeof post.likes !== "number" && typeof post.comments !== "number" && post.prunedCaption && (
-                          <span className="line-clamp-2 text-foreground/90 font-normal">
+                          <span className="line-clamp-2 text-white/90 font-normal">
                             {post.prunedCaption}
                           </span>
                         )}
@@ -265,7 +238,6 @@ const InstagramFeed = ({
                 rel="noopener noreferrer"
                 className="btn-golfield"
               >
-                <InstagramIcon size={18} />
                 Ver mais no Instagram
               </a>
             </motion.div>
