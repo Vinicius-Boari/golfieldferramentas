@@ -4,6 +4,8 @@ import { Play, Heart, MessageCircle, ExternalLink, ImageOff, Camera } from "luci
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
+export type InstagramCardSize = "small" | "medium" | "large";
+
 export interface InstagramFeedProps {
   /** Behold.so feed ID. Get one free at https://behold.so */
   feedId?: string;
@@ -17,6 +19,10 @@ export interface InstagramFeedProps {
   profileUrl?: string;
   /** Max posts to show (Behold returns up to 12 on free plan). */
   maxPosts?: number;
+  /** Visual size of each card — controls how many columns the grid uses. */
+  cardSize?: InstagramCardSize;
+  /** IDs of pinned posts. Always rendered first, in this order. */
+  favoritePostIds?: string[];
 }
 
 interface BeholdPost {
