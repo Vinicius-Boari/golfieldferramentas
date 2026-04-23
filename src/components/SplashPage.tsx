@@ -295,7 +295,7 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
               )}
 
               <div
-                className="px-6 sm:px-8 py-8 sm:py-10 space-y-4"
+                className="px-4 sm:px-6 py-4 sm:py-5 space-y-3"
                 style={{ textAlign: cfg.texts.align }}
               >
                 {cfg.texts.titleEnabled && (
