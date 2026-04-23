@@ -9,6 +9,8 @@ import {
   type SplashConfig,
 } from "@/hooks/useSplashConfig";
 import SplashRotatingText from "@/components/SplashRotatingText";
+import SplashInstagramStrip from "@/components/SplashInstagramStrip";
+import { useHomeConfig } from "@/hooks/useHomeConfig";
 
 /** Width preset → max width in px (or full screen). */
 const WIDTH_PX: Record<SplashConfig["appearance"]["width"], string> = {
@@ -29,7 +31,9 @@ interface Props {
 
 const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
   const { data: liveConfig } = useSplashConfig();
+  const { data: homeConfig } = useHomeConfig();
   const cfg = previewConfig ?? liveConfig ?? defaultSplashConfig;
+  const ig = homeConfig?.instagramSection;
 
   const isPreview = !!previewConfig;
   const [open, setOpen] = useState(false);
