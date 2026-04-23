@@ -187,7 +187,9 @@ const AdminHome = () => {
   const { isAdmin, loading: adminLoading, user } = useAdmin();
   const { data: savedConfig, isLoading } = useHomeConfig();
   const saveConfigMutation = useSaveHomeConfig();
+  const { data: savedSplash } = useSplashConfig();
   const [config, setConfig] = useState<HomeConfig>(defaultHomeConfig);
+  const [splashConfig, setSplashConfig] = useState<SplashConfig>(defaultSplashConfig);
   const [activeTab, setActiveTab] = useState("sections");
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -203,6 +205,10 @@ const AdminHome = () => {
       setConfig(savedConfig);
     }
   }, [savedConfig]);
+
+  useEffect(() => {
+    if (savedSplash) setSplashConfig(savedSplash);
+  }, [savedSplash]);
 
   const updateConfig = (updater: (prev: HomeConfig) => HomeConfig) => {
     setConfig(prev => {
