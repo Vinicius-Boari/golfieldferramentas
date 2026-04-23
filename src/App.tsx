@@ -11,10 +11,14 @@ import { useApplyMobileMotionClass } from "@/hooks/useMobileMotion";
 import { useApplyGlobalBackground } from "@/hooks/useGlobalBackground";
 import { CompareProvider } from "@/context/CompareContext";
 import { CartProvider } from "@/context/CartContext";
-import CompareDrawer from "@/components/CompareDrawer";
-import CompareFloatingButton from "@/components/CompareFloatingButton";
-import SplashPage from "@/components/SplashPage";
 import Index from "./pages/Index.tsx";
+
+// Lazy-load global overlays — they are not part of the first paint and only
+// matter after the user interacts (compare/splash). This trims the homepage
+// initial JS noticeably without changing behavior.
+const CompareDrawer = lazy(() => import("@/components/CompareDrawer"));
+const CompareFloatingButton = lazy(() => import("@/components/CompareFloatingButton"));
+const SplashPage = lazy(() => import("@/components/SplashPage"));
 
 // Lazy-load secondary routes — they are not needed for the initial paint of "/".
 // This significantly shrinks the first JS chunk and speeds up TTI on the homepage.
