@@ -5,6 +5,8 @@ import type { SplashConfig } from "@/hooks/useSplashConfig";
 interface Props {
   config: SplashConfig["texts"]["rotating"];
   align: SplashConfig["texts"]["align"];
+  /** Text size variant: title (h2), subtitle (p), or caption (default). */
+  variant?: "title" | "subtitle" | "caption";
   /** Called once after the last phrase has been fully shown
    *  (only fires when loop is OFF). */
   onAllShown?: () => void;
@@ -15,7 +17,7 @@ interface Props {
  * effect (character-by-character, like an Instagram caption being typed) or
  * a smooth fade transition between phrases.
  */
-const SplashRotatingText = ({ config, align, onAllShown }: Props) => {
+const SplashRotatingText = ({ config, align, variant = "caption", onAllShown }: Props) => {
   const firedRef = useRef(false);
   const phrases = (config.phrases || []).filter((p) => p.trim().length > 0);
   const [index, setIndex] = useState(0);
@@ -103,6 +105,13 @@ const SplashRotatingText = ({ config, align, onAllShown }: Props) => {
     : align === "right" ? "justify-end text-right"
     : "justify-start text-left";
 
+  const sizeClass =
+    variant === "title"
+      ? "text-2xl sm:text-3xl md:text-4xl font-bold leading-tight"
+      : variant === "subtitle"
+      ? "text-sm sm:text-base leading-relaxed"
+      : "text-sm sm:text-base font-medium leading-relaxed";
+
   if (config.effect === "fade") {
     const current = phrases[index] ?? "";
     return (
@@ -114,7 +123,7 @@ const SplashRotatingText = ({ config, align, onAllShown }: Props) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.45, ease: "easeOut" }}
-            className="text-sm sm:text-base font-medium leading-relaxed whitespace-pre-line"
+            className={`${sizeClass} whitespace-pre-line`}
             style={{ color: config.color }}
           >
             {current}
@@ -128,11 +137,11 @@ const SplashRotatingText = ({ config, align, onAllShown }: Props) => {
   return (
     <div className={`flex ${justify} min-h-[1.6em]`}>
       <p
-        className="text-sm sm:text-base font-medium leading-relaxed whitespace-pre-line"
+        className={`${sizeClass} whitespace-pre-line`}
         style={{ color: config.color }}
       >
         {displayed}
-        <span className="inline-block w-[2px] h-[1em] align-[-0.15em] ml-0.5 animate-pulse"
+        <span className="inline-block w-[2px] h-[0.9em] align-[-0.1em] ml-0.5 animate-pulse"
           style={{ backgroundColor: config.color }}
         />
       </p>

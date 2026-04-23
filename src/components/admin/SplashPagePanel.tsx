@@ -9,6 +9,7 @@ import {
   defaultSplashConfig,
   useSaveSplashConfig,
   type SplashConfig,
+  type SplashRotatingTextConfig,
 } from "@/hooks/useSplashConfig";
 import SplashPage from "@/components/SplashPage";
 
@@ -114,6 +115,62 @@ const Section = ({ title, icon: Icon, children, defaultOpen = false }: {
         <ChevronDown size={16} className={`transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && <div className="p-4 pt-0 space-y-4">{children}</div>}
+    </div>
+  );
+};
+
+/** Reusable editor for a `SplashRotatingTextConfig` block (used by title,
+ *  subtitle and the caption block). */
+const RotatingEditor = ({ value, onChange, placeholder, defaultColor }: {
+  value: SplashRotatingTextConfig;
+  onChange: (next: SplashRotatingTextConfig) => void;
+  placeholder?: string;
+  defaultColor?: string;
+}) => {
+  const set = (patch: Partial<SplashRotatingTextConfig>) => onChange({ ...value, ...patch });
+  return (
+    <div className="rounded-xl border border-border/50 bg-secondary/30 p-3 space-y-3">
+      <div>
+        <label className="text-xs font-medium text-muted-foreground mb-2 block">Efeito de transição</label>
+        <SegButton<SplashRotatingTextConfig["effect"]>
+          value={value.effect}
+          onChange={(v) => set({ effect: v })}
+          options={[
+            { id: "typewriter", label: "Digitando", hint: "Letra por letra" },
+            { id: "fade", label: "Fade", hint: "Suave" },
+          ]}
+        />
+      </div>
+
+      <div>
+        <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Frases (uma por linha)</label>
+        <textarea
+          value={value.phrases.join("\n")}
+          onChange={(e) => set({ phrases: e.target.value.split("\n") })}
+          rows={4}
+          placeholder={placeholder}
+          className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50 resize-none"
+        />
+        <p className="text-[11px] text-muted-foreground mt-1">
+          {value.phrases.filter((p) => p.trim()).length} frase(s) ativas.
+        </p>
+      </div>
+
+      <ColorInput label="Cor do texto" value={value.color || defaultColor || "#FFFFFF"}
+        onChange={(v) => set({ color: v })} />
+
+      {value.effect === "typewriter" && (
+        <Slider label="Velocidade da digitação" value={value.typeSpeedMs}
+          min={20} max={200} step={5} suffix=" ms/letra"
+          onChange={(v) => set({ typeSpeedMs: v })} />
+      )}
+
+      <Slider label="Tempo exibindo cada frase" value={value.holdMs}
+        min={500} max={6000} step={100} suffix=" ms"
+        onChange={(v) => set({ holdMs: v })} />
+
+      <Toggle label="Repetir em loop" hint="Ao terminar a última frase, recomeça da primeira."
+        value={value.loop} onChange={(v) => set({ loop: v })} />
     </div>
   );
 };
@@ -330,8 +387,26 @@ const SplashPagePanel = ({ value, onChange, userId }: Props) => {
               onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, title: v } }))} />
             <ColorInput label="Cor do título" value={value.texts.titleColor}
               onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, titleColor: v } }))} />
+
+            <Toggle
+              label="Frases rotativas no título"
+              hint="Quando ativado, o título acima é substituído por várias frases que se alternam."
+              value={value.texts.titleRotating.enabled}
+              onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, titleRotating: { ...c.texts.titleRotating, enabled: v } } }))}
+            />
+            {value.texts.titleRotating.enabled && (
+              <RotatingEditor
+                value={value.texts.titleRotating}
+                onChange={(next) => update((c) => ({ ...c, texts: { ...c.texts, titleRotating: next } }))}
+                placeholder={"Bem-vindo!\nFerramentas profissionais\nAtacado para sua loja"}
+                defaultColor={value.texts.titleColor}
+              />
+            )}
           </>
         )}
+
+        <div className="border-t border-border/50 my-2" />
+
         <Toggle label="Exibir subtítulo" value={value.texts.subtitleEnabled}
           onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, subtitleEnabled: v } }))} />
         {value.texts.subtitleEnabled && (
@@ -340,8 +415,24 @@ const SplashPagePanel = ({ value, onChange, userId }: Props) => {
               onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, subtitle: v } }))} rows={3} />
             <ColorInput label="Cor do subtítulo" value={value.texts.subtitleColor}
               onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, subtitleColor: v } }))} />
+
+            <Toggle
+              label="Frases rotativas no subtítulo"
+              hint="Quando ativado, o subtítulo acima é substituído por várias frases que se alternam."
+              value={value.texts.subtitleRotating.enabled}
+              onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, subtitleRotating: { ...c.texts.subtitleRotating, enabled: v } } }))}
+            />
+            {value.texts.subtitleRotating.enabled && (
+              <RotatingEditor
+                value={value.texts.subtitleRotating}
+                onChange={(next) => update((c) => ({ ...c, texts: { ...c.texts, subtitleRotating: next } }))}
+                placeholder={"Confira nossas ofertas\nEntrega rápida\nSuporte dedicado"}
+                defaultColor={value.texts.subtitleColor}
+              />
+            )}
           </>
         )}
+
         <div>
           <label className="text-xs font-medium text-muted-foreground mb-2 block">Alinhamento</label>
           <SegButton<SplashConfig["texts"]["align"]>
@@ -358,82 +449,18 @@ const SplashPagePanel = ({ value, onChange, userId }: Props) => {
         <div className="border-t border-border/50 my-2" />
 
         <Toggle
-          label="Frases rotativas (estilo legenda Instagram)"
-          hint="Exibe várias frases que se alternam suavemente abaixo do subtítulo."
+          label="Frases rotativas extras (estilo legenda Instagram)"
+          hint="Bloco adicional de frases rotativas exibido abaixo do subtítulo."
           value={value.texts.rotating.enabled}
           onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, enabled: v } } }))}
         />
-
         {value.texts.rotating.enabled && (
-          <div className="rounded-xl border border-border/50 bg-secondary/30 p-3 space-y-3">
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-2 block">Efeito de transição</label>
-              <SegButton<SplashConfig["texts"]["rotating"]["effect"]>
-                value={value.texts.rotating.effect}
-                onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, effect: v } } }))}
-                options={[
-                  { id: "typewriter", label: "Digitando", hint: "Letra por letra" },
-                  { id: "fade", label: "Fade", hint: "Suave" },
-                ]}
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
-                Frases (uma por linha)
-              </label>
-              <textarea
-                value={value.texts.rotating.phrases.join("\n")}
-                onChange={(e) =>
-                  update((c) => ({
-                    ...c,
-                    texts: {
-                      ...c.texts,
-                      rotating: {
-                        ...c.texts.rotating,
-                        phrases: e.target.value.split("\n"),
-                      },
-                    },
-                  }))
-                }
-                rows={4}
-                placeholder={"Ferramentas premium\nEntrega rápida\nAtacado exclusivo"}
-                className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50 resize-none"
-              />
-              <p className="text-[11px] text-muted-foreground mt-1">
-                {value.texts.rotating.phrases.filter((p) => p.trim()).length} frase(s) ativas.
-              </p>
-            </div>
-
-            <ColorInput
-              label="Cor do texto rotativo"
-              value={value.texts.rotating.color}
-              onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, color: v } } }))}
-            />
-
-            {value.texts.rotating.effect === "typewriter" && (
-              <Slider
-                label="Velocidade da digitação"
-                value={value.texts.rotating.typeSpeedMs}
-                min={20} max={200} step={5} suffix=" ms/letra"
-                onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, typeSpeedMs: v } } }))}
-              />
-            )}
-
-            <Slider
-              label="Tempo exibindo cada frase"
-              value={value.texts.rotating.holdMs}
-              min={500} max={6000} step={100} suffix=" ms"
-              onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, holdMs: v } } }))}
-            />
-
-            <Toggle
-              label="Repetir em loop"
-              hint="Ao terminar a última frase, recomeça da primeira."
-              value={value.texts.rotating.loop}
-              onChange={(v) => update((c) => ({ ...c, texts: { ...c.texts, rotating: { ...c.texts.rotating, loop: v } } }))}
-            />
-          </div>
+          <RotatingEditor
+            value={value.texts.rotating}
+            onChange={(next) => update((c) => ({ ...c, texts: { ...c.texts, rotating: next } }))}
+            placeholder={"Ferramentas premium\nEntrega rápida\nAtacado exclusivo"}
+            defaultColor="#E84A25"
+          />
         )}
       </Section>
 
