@@ -263,7 +263,7 @@ export const defaultHomeConfig: HomeConfig = {
     title: "Pronto para comprar no atacado?",
     description: "Monte seu orçamento com os melhores produtos da Golfield e fale com nosso time para receber atendimento personalizado.",
     buttonText: "Falar com vendedor",
-    buttonLink: "#produtos",
+    buttonLink: "https://wa.me/5511959409051",
     showFloatingTools: true,
     showMascots: true,
   },
