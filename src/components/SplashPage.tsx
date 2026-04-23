@@ -175,15 +175,27 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
   const showMediaLeft = cfg.media.kind !== "none" && cfg.media.position === "left";
   const showMediaRight = cfg.media.kind !== "none" && cfg.media.position === "right";
 
-  // Auto-close when video ends, if enabled and not in preview mode.
-  const handleMediaEnded = () => {
-    if (!isPreview && cfg.autoCloseOnEnd) close();
-  };
-  const handlePhrasesEnded = () => {
-    if (!isPreview && cfg.autoCloseOnEnd) close();
+  // Auto-close when content ends, if enabled (works in preview too so admin can verify).
+  const handleEnded = () => {
+    if (cfg.autoCloseOnEnd) close();
   };
 
-  const MediaEl = () => renderMedia(cfg.media, handleMediaEnded);
+  // Image media has no onEnded event — auto-close after a sensible display time
+  // when no rotating phrases are present to drive the close.
+  useEffect(() => {
+    if (!open || !cfg.autoCloseOnEnd) return;
+    if (cfg.media.kind !== "image") return;
+    const hasRotating =
+      (cfg.texts.titleEnabled && cfg.texts.titleRotating?.enabled && cfg.texts.titleRotating.phrases.some((p) => p.trim())) ||
+      (cfg.texts.subtitleEnabled && cfg.texts.subtitleRotating?.enabled && cfg.texts.subtitleRotating.phrases.some((p) => p.trim())) ||
+      (cfg.texts.rotating?.enabled && cfg.texts.rotating.phrases.some((p) => p.trim()));
+    if (hasRotating) return; // let the phrases drive the close
+    const t = window.setTimeout(() => close(), 5000);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, cfg.autoCloseOnEnd, cfg.media.kind]);
+
+  const MediaEl = () => renderMedia(cfg.media, handleEnded);
 
   return (
     <AnimatePresence>
@@ -282,10 +294,11 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
                       config={cfg.texts.titleRotating}
                       align={cfg.texts.align}
                       variant="title"
+                      onAllShown={handleEnded}
                     />
                   ) : cfg.texts.title ? (
                     <h2
-                      className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight"
+                      className="text-3xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight"
                       style={{ color: cfg.texts.titleColor }}
                     >
                       {cfg.texts.title}
@@ -299,9 +312,10 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
                       config={cfg.texts.subtitleRotating}
                       align={cfg.texts.align}
                       variant="subtitle"
+                      onAllShown={handleEnded}
                     />
                   ) : cfg.texts.subtitle ? (
-                    <p className="text-sm sm:text-base leading-relaxed whitespace-pre-line" style={{ color: cfg.texts.subtitleColor }}>
+                    <p className="text-lg sm:text-2xl md:text-3xl font-medium leading-relaxed whitespace-pre-line" style={{ color: cfg.texts.subtitleColor }}>
                       {cfg.texts.subtitle}
                     </p>
                   ) : null
@@ -311,7 +325,7 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
                   <SplashRotatingText
                     config={cfg.texts.rotating}
                     align={cfg.texts.align}
-                    onAllShown={handlePhrasesEnded}
+                    onAllShown={handleEnded}
                   />
                 )}
 
