@@ -101,6 +101,12 @@ export interface InstagramSectionConfig {
   cardSize: InstagramCardSize;
   /** IDs of pinned posts. Always rendered first, in this order. */
   favoritePostIds: string[];
+  /** CTA button text shown below the grid. */
+  ctaText?: string;
+  /** Optional subtitle shown next to the @handle. */
+  subtitle?: string;
+  /** When true, the live "pulse" indicator is shown next to the badge. */
+  showLiveIndicator?: boolean;
 }
 
 export interface WhatsAppMessageConfig {
