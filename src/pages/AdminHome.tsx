@@ -424,17 +424,23 @@ const AdminHome = () => {
               {activeTab === "trust" && (
                 <div className="space-y-5">
                   <h2 className="text-lg font-bold mb-1">Selos de Confiança</h2>
-                  <div className="space-y-3">
+                  <p className="text-xs text-muted-foreground -mt-3">Escolha texto e ícone para cada selo exibido logo abaixo do Hero.</p>
+                  <div className="space-y-4">
                     {config.trustBadges.items.map((item, i) => (
-                      <div key={i} className="flex gap-3 items-center">
-                        <input value={item.text} onChange={e => updateConfig(c => {
-                          const items = [...c.trustBadges.items]; items[i] = { text: e.target.value }; return { ...c, trustBadges: { ...c.trustBadges, items } };
-                        })} className="flex-1 px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
-                        <button onClick={() => updateConfig(c => ({ ...c, trustBadges: { ...c.trustBadges, items: c.trustBadges.items.filter((_, j) => j !== i) } }))}
-                          className="p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"><Trash2 size={14} /></button>
+                      <div key={i} className="space-y-2 p-3 rounded-xl bg-secondary/20 border border-border/40">
+                        <div className="flex gap-3 items-center">
+                          <input value={item.text} onChange={e => updateConfig(c => {
+                            const items = [...c.trustBadges.items]; items[i] = { ...items[i], text: e.target.value }; return { ...c, trustBadges: { ...c.trustBadges, items } };
+                          })} className="flex-1 px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" placeholder="Texto do selo" />
+                          <button onClick={() => updateConfig(c => ({ ...c, trustBadges: { ...c.trustBadges, items: c.trustBadges.items.filter((_, j) => j !== i) } }))}
+                            className="p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"><Trash2 size={14} /></button>
+                        </div>
+                        <IconPicker value={item.icon} onChange={(iconId) => updateConfig(c => {
+                          const items = [...c.trustBadges.items]; items[i] = { ...items[i], icon: iconId as any }; return { ...c, trustBadges: { ...c.trustBadges, items } };
+                        })} />
                       </div>
                     ))}
-                    <button onClick={() => updateConfig(c => ({ ...c, trustBadges: { ...c.trustBadges, items: [...c.trustBadges.items, { text: "" }] } }))}
+                    <button onClick={() => updateConfig(c => ({ ...c, trustBadges: { ...c.trustBadges, items: [...c.trustBadges.items, { text: "", icon: "star" }] } }))}
                       className="flex items-center gap-2 text-xs text-primary hover:underline"><Plus size={12} /> Adicionar selo</button>
                   </div>
                 </div>
