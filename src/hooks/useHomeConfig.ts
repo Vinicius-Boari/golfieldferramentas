@@ -34,6 +34,16 @@ export interface HeroConfig {
   stats: { label: string; desc: string }[];
 }
 
+/** Identifiers of icons that can be used in admin-selectable slots. */
+export type IconId =
+  | "star" | "trendingUp" | "sparkles" | "calendar" | "globe" | "lightbulb"
+  | "shield" | "truck" | "wrench" | "package" | "zap" | "heart" | "award" | "users";
+
+export interface TrustBadgesConfigItem {
+  text: string;
+  icon?: IconId;
+}
+
 export interface TrustBadgesConfig {
   items: TrustBadgesConfigItem[];
 }
@@ -46,11 +56,6 @@ export interface ProductsSectionConfig {
   disclaimerText: string;
   showAllButtonText: string;
 }
-
-/** Identifiers of icons that can be used in admin-selectable slots. */
-export type IconId =
-  | "star" | "trendingUp" | "sparkles" | "calendar" | "globe" | "lightbulb"
-  | "shield" | "truck" | "wrench" | "package" | "zap" | "heart" | "award" | "users";
 
 export interface CtaSectionConfig {
   title: string;
@@ -70,11 +75,6 @@ export interface AboutSectionConfig {
   paragraph1: string;
   paragraph2: string;
   features: { title: string; desc: string; icon?: IconId }[];
-}
-
-export interface TrustBadgesConfigItem {
-  text: string;
-  icon?: IconId;
 }
 
 export interface FooterConfig {
