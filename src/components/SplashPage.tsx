@@ -194,8 +194,10 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
   const showMediaRight = cfg.media.kind !== "none" && cfg.media.position === "right";
 
   // Auto-close when content ends, if enabled (works in preview too so admin can verify).
+  // 2s delay so the user sees the final frame/phrase before the splash dismisses.
   const handleEnded = () => {
-    if (cfg.autoCloseOnEnd) close();
+    if (!cfg.autoCloseOnEnd) return;
+    window.setTimeout(() => close(), 2000);
   };
 
   const MediaEl = () => renderMedia(cfg.media, handleEnded);
