@@ -114,7 +114,11 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               <img
                 src="/images/golfield-logo.jpeg"
                 alt="Golfield"
-                className="h-11 sm:h-12 md:h-14 rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
+                width="200"
+                height="56"
+                fetchPriority="high"
+                decoding="async"
+                className="h-11 sm:h-12 md:h-14 w-auto rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
                 data-edit-id="header.logo"
               />
             </motion.a>
