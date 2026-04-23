@@ -20,6 +20,7 @@ const sectionLabels: Record<string, string> = {
   products: "Seção de Produtos",
   cta: "Chamada para Ação (CTA)",
   about: "Sobre a Golfield",
+  instagram: "Galeria do Instagram",
   footer: "Rodapé",
 };
 
@@ -31,6 +32,7 @@ const tabs = [
   { id: "products", label: "Produtos", icon: Type },
   { id: "cta", label: "CTA", icon: Type },
   { id: "about", label: "Sobre", icon: Type },
+  { id: "instagram", label: "Instagram", icon: Image },
   { id: "footer", label: "Rodapé", icon: Type },
   { id: "system", label: "Sistema", icon: Settings },
   { id: "appearance", label: "Aparência", icon: Palette },
@@ -461,6 +463,45 @@ const AdminHome = () => {
                       <button onClick={() => updateConfig(c => ({ ...c, aboutSection: { ...c.aboutSection, features: [...c.aboutSection.features, { title: "", desc: "" }] } }))}
                         className="flex items-center gap-2 text-xs text-primary hover:underline"><Plus size={12} /> Adicionar card</button>
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {/* INSTAGRAM TAB */}
+              {activeTab === "instagram" && (
+                <div className="space-y-5">
+                  <h2 className="text-lg font-bold mb-1">Galeria do Instagram</h2>
+                  <p className="text-xs text-muted-foreground -mt-3">
+                    O feed é atualizado automaticamente via{" "}
+                    <a href="https://behold.so" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                      Behold.so
+                    </a>
+                    {" "}(plano gratuito). Crie uma conta, conecte o Instagram e cole o Feed ID abaixo.
+                  </p>
+                  <InputField
+                    label="Behold.so Feed ID"
+                    value={config.instagramSection.beholdFeedId}
+                    onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, beholdFeedId: v.trim() } }))}
+                    placeholder="ex: abc123xyz"
+                  />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <InputField label="Badge" value={config.instagramSection.badge}
+                      onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, badge: v } }))} />
+                    <InputField label="Handle (sem @)" value={config.instagramSection.handle}
+                      onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, handle: v.replace(/^@/, "") } }))} />
+                  </div>
+                  <InputField label="Título" value={config.instagramSection.title}
+                    onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, title: v } }))} />
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Quantidade de posts (3 a 12)</label>
+                    <input
+                      type="number"
+                      min={3}
+                      max={12}
+                      value={config.instagramSection.maxPosts}
+                      onChange={e => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, maxPosts: Math.max(3, Math.min(12, Number(e.target.value) || 9)) } }))}
+                      className="w-full px-3 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50 transition-colors"
+                    />
                   </div>
                 </div>
               )}

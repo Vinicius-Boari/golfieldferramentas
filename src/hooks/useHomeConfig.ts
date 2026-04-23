@@ -74,6 +74,15 @@ export interface FooterConfig {
   categories: string[];
 }
 
+export interface InstagramSectionConfig {
+  badge: string;
+  title: string;
+  handle: string;
+  /** Behold.so feed ID — get one free at https://behold.so */
+  beholdFeedId: string;
+  maxPosts: number;
+}
+
 export interface WhatsAppMessageConfig {
   enabled: boolean;
   template: string;
@@ -149,6 +158,7 @@ export interface HomeConfig {
   productsSection: ProductsSectionConfig;
   ctaSection: CtaSectionConfig;
   aboutSection: AboutSectionConfig;
+  instagramSection: InstagramSectionConfig;
   footer: FooterConfig;
   systemSettings: SystemSettingsConfig;
   appearance: AppearanceConfig;
@@ -178,7 +188,8 @@ export const defaultHomeConfig: HomeConfig = {
     { id: "products", enabled: true, order: 2 },
     { id: "cta", enabled: true, order: 3 },
     { id: "about", enabled: true, order: 4 },
-    { id: "footer", enabled: true, order: 5 },
+    { id: "instagram", enabled: true, order: 5 },
+    { id: "footer", enabled: true, order: 6 },
   ],
   hero: {
     logoImage: "/images/bb415772-a3bf-433b-bd51-77e20e6dbf5f.png",
@@ -241,6 +252,13 @@ export const defaultHomeConfig: HomeConfig = {
       { title: "Parceria", desc: "Relação próxima para gerar recorrência e confiança" },
     ],
   },
+  instagramSection: {
+    badge: "Nossa Galeria",
+    title: "Siga a gente no Instagram",
+    handle: "golfield.ferramentas",
+    beholdFeedId: "",
+    maxPosts: 9,
+  },
   footer: {
     description: "Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado.",
     phone: "(11) 95940-9051",
@@ -301,6 +319,7 @@ export const useHomeConfig = () => {
         productsSection: { ...defaultHomeConfig.productsSection, ...(saved.productsSection ?? {}) },
         ctaSection: { ...defaultHomeConfig.ctaSection, ...(saved.ctaSection ?? {}) },
         aboutSection: { ...defaultHomeConfig.aboutSection, ...(saved.aboutSection ?? {}) },
+        instagramSection: { ...defaultHomeConfig.instagramSection, ...(saved.instagramSection ?? {}) },
         footer: { ...defaultHomeConfig.footer, ...(saved.footer ?? {}) },
         systemSettings: {
           whatsappMessage: {
