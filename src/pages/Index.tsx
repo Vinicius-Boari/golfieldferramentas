@@ -386,7 +386,7 @@ const IndexContent = () => {
                 </motion.div>
                 <motion.div variants={fadeSlideUp} className="grid sm:grid-cols-2 gap-4">
                   {(about?.features ?? []).map((item, i) => {
-                    const Icon = aboutIcons[i % aboutIcons.length];
+                    const Icon = resolveIcon((item as any).icon, aboutIcons[i % aboutIcons.length]);
                     return (
                       <motion.div key={i} whileHover={{ y: -6 }} className="stat-card">
                         <div className="p-2.5 rounded-xl bg-primary/10 w-fit mb-4"><Icon size={18} className="text-primary" /></div>
