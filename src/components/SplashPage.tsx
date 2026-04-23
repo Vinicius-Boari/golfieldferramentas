@@ -396,6 +396,19 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
                     )}
                   </div>
                 )}
+
+                {/* Instagram strip — small teaser shown below the CTAs while
+                    the splash content is playing. Uses the same Behold feed
+                    as the homepage so admins manage one source of truth. */}
+                {ig && (ig.beholdFeedId || ig.handle) && (
+                  <SplashInstagramStrip
+                    feedId={ig.beholdFeedId}
+                    handle={ig.handle}
+                    favoritePostIds={ig.favoritePostIds ?? []}
+                    maxPosts={6}
+                    ctaText={ig.ctaText || "Ver mais no Instagram"}
+                  />
+                )}
               </div>
             </div>
           </div>
