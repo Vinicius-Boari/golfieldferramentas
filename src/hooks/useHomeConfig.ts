@@ -259,6 +259,7 @@ export const defaultHomeConfig: HomeConfig = {
     beholdFeedId: "",
     maxPosts: 9,
   },
+  footer: {
     description: "Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado.",
     phone: "(11) 95940-9051",
     email: "paula.profield@hotmail.com",
