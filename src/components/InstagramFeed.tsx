@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Play, Heart, MessageCircle, ExternalLink, ImageOff, Camera } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
