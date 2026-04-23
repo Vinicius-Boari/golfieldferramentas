@@ -35,7 +35,7 @@ export interface HeroConfig {
 }
 
 export interface TrustBadgesConfig {
-  items: { text: string }[];
+  items: TrustBadgesConfigItem[];
 }
 
 export interface ProductsSectionConfig {
