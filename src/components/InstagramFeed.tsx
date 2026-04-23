@@ -357,11 +357,12 @@ const InstagramFeed = ({
           className="text-center mb-10 sm:mb-14"
         >
           <span className="section-badge mb-6 inline-flex items-center gap-2">
-            {/* "Ao vivo" pulse dot */}
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-            </span>
+            {showLiveIndicator && (
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+              </span>
+            )}
             {badge}
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-3">
@@ -374,9 +375,11 @@ const InstagramFeed = ({
             className="inline-flex items-center gap-2 text-base sm:text-lg font-semibold text-primary hover:text-primary/80 transition-colors group"
           >
             <span className="story-link">@{handle}</span>
-            <span className="text-xs text-muted-foreground/70 hidden sm:inline">
-              · Atualizado em tempo real
-            </span>
+            {subtitle && (
+              <span className="text-xs text-muted-foreground/70 hidden sm:inline">
+                · {subtitle}
+              </span>
+            )}
           </a>
         </motion.div>
 
