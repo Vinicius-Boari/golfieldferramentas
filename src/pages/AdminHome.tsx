@@ -569,6 +569,18 @@ const AdminHome = () => {
                   </div>
                   <InputField label="Título" value={config.instagramSection.title}
                     onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, title: v } }))} />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <InputField label="Subtítulo (ao lado do @handle)" value={config.instagramSection.subtitle ?? ""}
+                      onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, subtitle: v } }))} placeholder="Atualizado em tempo real" />
+                    <InputField label="Texto do botão CTA" value={config.instagramSection.ctaText ?? ""}
+                      onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, ctaText: v } }))} placeholder="Ver mais no Instagram" />
+                  </div>
+                  <Toggle
+                    label="Indicador 'Ao vivo'"
+                    hint="Mostra um ponto pulsante ao lado do badge para indicar atualização em tempo real."
+                    value={config.instagramSection.showLiveIndicator ?? true}
+                    onChange={v => updateConfig(c => ({ ...c, instagramSection: { ...c.instagramSection, showLiveIndicator: v } }))}
+                  />
 
                   {/* Card size */}
                   <div>
