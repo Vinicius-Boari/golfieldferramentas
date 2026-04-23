@@ -406,23 +406,28 @@ const IndexContent = () => {
 
       case "instagram":
         return isSectionEnabled("instagram") ? (
-          <InstagramFeed
-            key="instagram"
-            feedId={config?.instagramSection?.beholdFeedId}
-            handle={config?.instagramSection?.handle}
-            title={config?.instagramSection?.title}
-            badge={config?.instagramSection?.badge}
-            maxPosts={config?.instagramSection?.maxPosts ?? 9}
-            cardSize={config?.instagramSection?.cardSize ?? "medium"}
-            favoritePostIds={config?.instagramSection?.favoritePostIds ?? []}
-            ctaText={config?.instagramSection?.ctaText}
-            subtitle={config?.instagramSection?.subtitle}
-            showLiveIndicator={config?.instagramSection?.showLiveIndicator}
-          />
+          <Suspense key="instagram" fallback={null}>
+            <InstagramFeed
+              feedId={config?.instagramSection?.beholdFeedId}
+              handle={config?.instagramSection?.handle}
+              title={config?.instagramSection?.title}
+              badge={config?.instagramSection?.badge}
+              maxPosts={config?.instagramSection?.maxPosts ?? 9}
+              cardSize={config?.instagramSection?.cardSize ?? "medium"}
+              favoritePostIds={config?.instagramSection?.favoritePostIds ?? []}
+              ctaText={config?.instagramSection?.ctaText}
+              subtitle={config?.instagramSection?.subtitle}
+              showLiveIndicator={config?.instagramSection?.showLiveIndicator}
+            />
+          </Suspense>
         ) : null;
 
       case "footer":
-        return isSectionEnabled("footer") ? <Footer key="footer" config={config?.footer} /> : null;
+        return isSectionEnabled("footer") ? (
+          <Suspense key="footer" fallback={null}>
+            <Footer config={config?.footer} />
+          </Suspense>
+        ) : null;
 
       default:
         return null;
