@@ -20,6 +20,7 @@ const sectionLabels: Record<string, string> = {
   products: "Seção de Produtos",
   cta: "Chamada para Ação (CTA)",
   about: "Sobre a Golfield",
+  instagram: "Galeria do Instagram",
   footer: "Rodapé",
 };
 
@@ -31,6 +32,7 @@ const tabs = [
   { id: "products", label: "Produtos", icon: Type },
   { id: "cta", label: "CTA", icon: Type },
   { id: "about", label: "Sobre", icon: Type },
+  { id: "instagram", label: "Instagram", icon: Image },
   { id: "footer", label: "Rodapé", icon: Type },
   { id: "system", label: "Sistema", icon: Settings },
   { id: "appearance", label: "Aparência", icon: Palette },
