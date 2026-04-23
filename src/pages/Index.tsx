@@ -447,8 +447,10 @@ const IndexContent = () => {
       {sortedSections.map(section => (
         <div key={section.id}>{renderSection(section.id)}</div>
       ))}
-      <CartDrawer relatedProducts={products} />
-      <ChatWidget />
+      <Suspense fallback={null}>
+        <CartDrawer relatedProducts={products} />
+        <ChatWidget />
+      </Suspense>
     </div>
   );
 };
