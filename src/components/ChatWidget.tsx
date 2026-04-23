@@ -63,7 +63,7 @@ const WhatsAppButton = () => (
 );
 
 /** Default human-looking avatar (initials) when admin hasn't uploaded one. */
-const InitialsAvatar = ({ name, osize = 40 }: { name: string; osize?: number }) => {
+const InitialsAvatar = ({ name, size = 40 }: { name: string; size?: number }) => {
   const initial = (name?.trim()?.[0] || "A").toUpperCase();
   // Pick a stable warm color from the name — feels more like a real photo placeholder.
   const palette = ["#F59E0B", "#EC4899", "#10B981", "#6366F1", "#EF4444", "#06B6D4"];
@@ -71,7 +71,7 @@ const InitialsAvatar = ({ name, osize = 40 }: { name: string; osize?: number }) 
   return (
     <div
       className="rounded-full flex items-center justify-center font-semibold text-white shrink-0"
-      style={{ width: osize, height: osize, background: palette[idx], fontSize: osize * 0.42 }}
+      style={{ width: size, height: size, background: palette[idx], fontSize: size * 0.42 }}
     >
       {initial}
     </div>
