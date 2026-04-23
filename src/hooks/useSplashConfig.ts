@@ -243,6 +243,14 @@ const mergeWithDefaults = (saved: Partial<SplashConfig> | null | undefined): Spl
     texts: {
       ...defaultSplashConfig.texts,
       ...(saved.texts ?? {}),
+      titleRotating: {
+        ...defaultSplashConfig.texts.titleRotating,
+        ...(saved.texts?.titleRotating ?? {}),
+      },
+      subtitleRotating: {
+        ...defaultSplashConfig.texts.subtitleRotating,
+        ...(saved.texts?.subtitleRotating ?? {}),
+      },
       rotating: {
         ...defaultSplashConfig.texts.rotating,
         ...(saved.texts?.rotating ?? {}),
