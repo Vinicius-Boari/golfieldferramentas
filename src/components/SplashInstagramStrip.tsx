@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Play, Instagram, ExternalLink } from "lucide-react";
+import { Play, Camera, ExternalLink } from "lucide-react";
 
 interface BeholdPost {
   id: string;
