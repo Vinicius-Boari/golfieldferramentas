@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { ShoppingCart, Plus, Minus, Check, Scale } from "lucide-react";
 import { toast } from "sonner";
@@ -20,6 +20,7 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
   const inCompare = hasInCompare(product.id);
   const isMobile = useIsMobile();
 
+  // 3D tilt effect — disabled on mobile (no hover, also saves CPU).
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-100, 100], [8, -8]);
@@ -27,19 +28,19 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
   const springRotateX = useSpring(rotateX, { stiffness: 300, damping: 30 });
   const springRotateY = useSpring(rotateY, { stiffness: 300, damping: 30 });
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (isMobile) return;
     const rect = e.currentTarget.getBoundingClientRect();
     x.set(e.clientX - rect.left - rect.width / 2);
     y.set(e.clientY - rect.top - rect.height / 2);
-  };
-  const handleMouseLeave = () => { x.set(0); y.set(0); };
+  }, [isMobile, x, y]);
+  const handleMouseLeave = useCallback(() => { x.set(0); y.set(0); }, [x, y]);
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     addItem(product, qty);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
-  };
+  }, [addItem, product, qty]);
 
   return (
     <motion.div
