@@ -87,7 +87,7 @@ const SplashInstagramStrip = ({
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold border transition-all hover:scale-105"
           style={{ borderColor: "#2A2A2A", color: "#FFFFFF", backgroundColor: "rgba(255,255,255,0.05)" }}
         >
-          <Instagram size={14} />
+          <Camera size={14} />
           {ctaText}
           <ExternalLink size={12} />
         </a>
@@ -99,7 +99,7 @@ const SplashInstagramStrip = ({
     <div className="pt-2 space-y-3">
       {/* Tiny header */}
       <div className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.18em] font-semibold" style={{ color: "#AAAAAA" }}>
-        <Instagram size={12} />
+        <Camera size={12} />
         <span>@{handle}</span>
       </div>
 
@@ -123,7 +123,7 @@ const SplashInstagramStrip = ({
             background: "linear-gradient(135deg, rgba(232,74,37,0.15), rgba(232,74,37,0.05))",
           }}
         >
-          <Instagram size={14} />
+          <Camera size={14} />
           {ctaText}
           <ExternalLink size={12} />
         </a>
