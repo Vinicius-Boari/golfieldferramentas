@@ -303,7 +303,7 @@ const InstagramFeed = ({
 
         {/* Loading state */}
         {loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          <div className={`grid ${gridColsClass} ${gapClass}`}>
             {Array.from({ length: maxPosts }).map((_, i) => (
               <Skeleton key={i} className="aspect-square rounded-xl bg-muted/60" />
             ))}
@@ -331,7 +331,7 @@ const InstagramFeed = ({
         {/* Grid */}
         {!loading && posts && posts.length > 0 && (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            <div className={`grid ${gridColsClass} ${gapClass}`}>
               {posts.map((post, i) => {
                 const isVideo = post.mediaType === "VIDEO";
                 const thumb =
