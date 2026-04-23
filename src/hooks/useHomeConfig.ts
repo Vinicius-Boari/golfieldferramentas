@@ -319,6 +319,7 @@ export const useHomeConfig = () => {
         productsSection: { ...defaultHomeConfig.productsSection, ...(saved.productsSection ?? {}) },
         ctaSection: { ...defaultHomeConfig.ctaSection, ...(saved.ctaSection ?? {}) },
         aboutSection: { ...defaultHomeConfig.aboutSection, ...(saved.aboutSection ?? {}) },
+        instagramSection: { ...defaultHomeConfig.instagramSection, ...(saved.instagramSection ?? {}) },
         footer: { ...defaultHomeConfig.footer, ...(saved.footer ?? {}) },
         systemSettings: {
           whatsappMessage: {
