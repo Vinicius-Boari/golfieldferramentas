@@ -13,10 +13,20 @@ import { useProducts } from "@/hooks/useProducts";
 import { useHomeConfig } from "@/hooks/useHomeConfig";
 import { chatBus, emitCartReply } from "@/lib/chatBus";
 import { roundUpToMultiple } from "@/lib/qty";
-import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight } from "lucide-react";
+import { Sparkles, TrendingUp, Star, Search, Calendar, Globe, Lightbulb, ArrowRight, Shield, Truck, Wrench, Package, Zap, Heart, Award, Users, type LucideIcon } from "lucide-react";
 import SEO, { buildOrganizationJsonLd, buildWebSiteJsonLd, buildItemListJsonLd } from "@/components/SEO";
 import mascotGirl from "@/assets/mascot-girl.webp";
 import mascotBoy from "@/assets/mascot-boy.webp";
+
+/** Map icon ids saved in config to Lucide components. */
+const ICON_MAP: Record<string, LucideIcon> = {
+  star: Star, trendingUp: TrendingUp, sparkles: Sparkles,
+  calendar: Calendar, globe: Globe, lightbulb: Lightbulb,
+  shield: Shield, truck: Truck, wrench: Wrench, package: Package,
+  zap: Zap, heart: Heart, award: Award, users: Users,
+};
+const resolveIcon = (id: string | undefined, fallback: LucideIcon): LucideIcon =>
+  (id && ICON_MAP[id]) || fallback;
 
 const staggerContainer = {
   hidden: {},
