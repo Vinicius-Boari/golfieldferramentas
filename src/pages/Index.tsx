@@ -211,7 +211,7 @@ const IndexContent = () => {
             <div className="container mx-auto px-4">
               <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-8 lg:gap-12 text-sm">
                 {(config?.trustBadges?.items ?? []).map((item, i) => {
-                  const Icon = trustIcons[i % trustIcons.length];
+                  const Icon = resolveIcon(item.icon, trustIcons[i % trustIcons.length]);
                   return (
                     <motion.div key={i} variants={fadeSlideUp} whileHover={{ scale: 1.08, y: -2 }}
                       className="flex items-center gap-3 text-muted-foreground group cursor-default">
