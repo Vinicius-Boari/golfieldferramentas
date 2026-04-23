@@ -481,6 +481,21 @@ const AdminHome = () => {
                     <InputField label="Link do botão" value={config.ctaSection.buttonLink}
                       onChange={v => updateConfig(c => ({ ...c, ctaSection: { ...c.ctaSection, buttonLink: v } }))} />
                   </div>
+                  <div className="space-y-3 pt-2">
+                    <label className="text-xs font-medium text-muted-foreground block">Elementos visuais</label>
+                    <Toggle
+                      label="Ferramentas flutuantes animadas"
+                      hint="Ícones decorativos de ferramentas que flutuam atrás do CTA (apenas desktop)."
+                      value={config.ctaSection.showFloatingTools ?? true}
+                      onChange={v => updateConfig(c => ({ ...c, ctaSection: { ...c.ctaSection, showFloatingTools: v } }))}
+                    />
+                    <Toggle
+                      label="Mascotes (menino e menina)"
+                      hint="Personagens nas laterais inferiores da seção (apenas desktop)."
+                      value={config.ctaSection.showMascots ?? true}
+                      onChange={v => updateConfig(c => ({ ...c, ctaSection: { ...c.ctaSection, showMascots: v } }))}
+                    />
+                  </div>
                 </div>
               )}
 
@@ -502,22 +517,27 @@ const AdminHome = () => {
                     onChange={v => updateConfig(c => ({ ...c, aboutSection: { ...c.aboutSection, paragraph2: v } }))} rows={3} />
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-2 block">Cards de Diferenciais</label>
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {config.aboutSection.features.map((feat, i) => (
-                        <div key={i} className="flex gap-3 items-start">
-                          <div className="flex-1 grid grid-cols-2 gap-2">
-                            <input value={feat.title} onChange={e => updateConfig(c => {
-                              const features = [...c.aboutSection.features]; features[i] = { ...features[i], title: e.target.value }; return { ...c, aboutSection: { ...c.aboutSection, features } };
-                            })} placeholder="Título" className="px-3 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
-                            <input value={feat.desc} onChange={e => updateConfig(c => {
-                              const features = [...c.aboutSection.features]; features[i] = { ...features[i], desc: e.target.value }; return { ...c, aboutSection: { ...c.aboutSection, features } };
-                            })} placeholder="Descrição" className="px-3 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
+                        <div key={i} className="space-y-2 p-3 rounded-xl bg-secondary/20 border border-border/40">
+                          <div className="flex gap-3 items-start">
+                            <div className="flex-1 grid grid-cols-2 gap-2">
+                              <input value={feat.title} onChange={e => updateConfig(c => {
+                                const features = [...c.aboutSection.features]; features[i] = { ...features[i], title: e.target.value }; return { ...c, aboutSection: { ...c.aboutSection, features } };
+                              })} placeholder="Título" className="px-3 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
+                              <input value={feat.desc} onChange={e => updateConfig(c => {
+                                const features = [...c.aboutSection.features]; features[i] = { ...features[i], desc: e.target.value }; return { ...c, aboutSection: { ...c.aboutSection, features } };
+                              })} placeholder="Descrição" className="px-3 py-2 rounded-xl bg-secondary/50 border border-border/50 text-sm outline-none focus:border-primary/50" />
+                            </div>
+                            <button onClick={() => updateConfig(c => ({ ...c, aboutSection: { ...c.aboutSection, features: c.aboutSection.features.filter((_, j) => j !== i) } }))}
+                              className="p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"><Trash2 size={14} /></button>
                           </div>
-                          <button onClick={() => updateConfig(c => ({ ...c, aboutSection: { ...c.aboutSection, features: c.aboutSection.features.filter((_, j) => j !== i) } }))}
-                            className="p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"><Trash2 size={14} /></button>
+                          <IconPicker value={(feat as any).icon} onChange={(iconId) => updateConfig(c => {
+                            const features = [...c.aboutSection.features]; features[i] = { ...features[i], icon: iconId as any }; return { ...c, aboutSection: { ...c.aboutSection, features } };
+                          })} />
                         </div>
                       ))}
-                      <button onClick={() => updateConfig(c => ({ ...c, aboutSection: { ...c.aboutSection, features: [...c.aboutSection.features, { title: "", desc: "" }] } }))}
+                      <button onClick={() => updateConfig(c => ({ ...c, aboutSection: { ...c.aboutSection, features: [...c.aboutSection.features, { title: "", desc: "", icon: "sparkles" }] } }))}
                         className="flex items-center gap-2 text-xs text-primary hover:underline"><Plus size={12} /> Adicionar card</button>
                     </div>
                   </div>
