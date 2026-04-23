@@ -302,9 +302,19 @@ const InstagramFeed = ({
     <section
       id="instagram"
       data-edit-id="instagram.section"
-      className="py-16 sm:py-20 md:py-24 relative"
+      className="py-16 sm:py-20 md:py-24 relative overflow-hidden"
     >
-      <div className="container mx-auto px-4">
+      {/* Ambient glow — gives the section a vibrant "alive" feel without
+          breaking the dark sober palette of the rest of the site. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-0"
+      >
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[80%] h-[420px] bg-primary/10 blur-[140px] rounded-full" />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-primary/5 blur-[120px] rounded-full" />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -312,7 +322,14 @@ const InstagramFeed = ({
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-10 sm:mb-14"
         >
-          <span className="section-badge mb-6 inline-flex">{badge}</span>
+          <span className="section-badge mb-6 inline-flex items-center gap-2">
+            {/* "Ao vivo" pulse dot */}
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+            </span>
+            {badge}
+          </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-3">
             {title}
           </h2>
@@ -320,9 +337,12 @@ const InstagramFeed = ({
             href={igUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block text-base sm:text-lg font-semibold text-primary hover:text-primary/80 transition-colors"
+            className="inline-flex items-center gap-2 text-base sm:text-lg font-semibold text-primary hover:text-primary/80 transition-colors group"
           >
-            @{handle}
+            <span className="story-link">@{handle}</span>
+            <span className="text-xs text-muted-foreground/70 hidden sm:inline">
+              · Atualizado em tempo real
+            </span>
           </a>
         </motion.div>
 
