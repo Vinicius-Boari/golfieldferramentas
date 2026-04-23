@@ -38,12 +38,20 @@ const SplashRotatingText = ({ config, align, onAllShown }: Props) => {
     const id = window.setInterval(() => {
       setIndex((i) => {
         const next = i + 1;
-        if (next >= phrases.length) return config.loop ? 0 : i;
+        if (next >= phrases.length) {
+          if (config.loop) return 0;
+          if (!firedRef.current) {
+            firedRef.current = true;
+            // Defer so the last phrase remains visible briefly before close.
+            window.setTimeout(() => onAllShown?.(), 400);
+          }
+          return i;
+        }
         return next;
       });
     }, total);
     return () => window.clearInterval(id);
-  }, [config.effect, config.holdMs, config.loop, phrases.length]);
+  }, [config.effect, config.holdMs, config.loop, phrases.length, onAllShown]);
 
   /** Typewriter effect: type → hold → delete → next phrase. */
   useEffect(() => {
