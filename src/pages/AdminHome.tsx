@@ -5,7 +5,7 @@ import {
   ArrowLeft, Save, LogOut, Home, Type, Image, Palette, LayoutGrid,
   ChevronUp, ChevronDown, Eye, EyeOff, Plus, Trash2, Upload, Link2, Loader2, GripVertical,
   Film, Volume2, VolumeX, Repeat, Settings, MousePointer2,
-  Star, TrendingUp, Sparkles, Calendar, Globe, Lightbulb, Shield, Truck, Wrench, Package, Zap, Heart, Award, Users
+  Star, TrendingUp, Sparkles, Calendar, Globe, Lightbulb, Shield, Truck, Wrench, Package, Zap, Heart, Award, Users, Bot
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -15,7 +15,9 @@ import SystemSettingsPanel from "@/components/admin/SystemSettingsPanel";
 import AppearancePanel from "@/components/admin/AppearancePanel";
 import InstagramFavoritesPicker from "@/components/admin/InstagramFavoritesPicker";
 import SplashPagePanel from "@/components/admin/SplashPagePanel";
+import AssistantPanel from "@/components/admin/AssistantPanel";
 import { useSplashConfig, useSaveSplashConfig, defaultSplashConfig, type SplashConfig } from "@/hooks/useSplashConfig";
+import { useAssistantConfig, useSaveAssistantConfig, defaultAssistantConfig, type AssistantConfig } from "@/hooks/useAssistantConfig";
 import { toast } from "sonner";
 
 const sectionLabels: Record<string, string> = {
@@ -38,6 +40,7 @@ const tabs = [
   { id: "about", label: "Sobre", icon: Type },
   { id: "instagram", label: "Instagram", icon: Image },
   { id: "splash", label: "Splash Page", icon: Sparkles },
+  { id: "assistant", label: "Assistente", icon: Bot },
   { id: "footer", label: "Rodapé", icon: Type },
   { id: "system", label: "Sistema", icon: Settings },
   { id: "appearance", label: "Aparência", icon: Palette },
