@@ -653,6 +653,11 @@ const AdminHome = () => {
                 />
               )}
 
+              {/* ASSISTANT TAB */}
+              {activeTab === "assistant" && (
+                <AssistantSection userId={user?.id} />
+              )}
+
 
               {activeTab === "footer" && (
                 <div className="space-y-5">
