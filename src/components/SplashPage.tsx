@@ -184,7 +184,7 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.25, ease: "easeOut" }}
-        className="fixed inset-0 flex items-center justify-center p-4"
+        className={`fixed inset-0 flex items-center justify-center ${isFull ? "p-0" : "p-4"}`}
         style={{ zIndex: 9999, ...overlayStyle }}
         onMouseDown={(e) => {
           // Only treat clicks on the backdrop itself, not bubbled clicks.
