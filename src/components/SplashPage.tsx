@@ -292,7 +292,11 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
                 )}
 
                 {cfg.texts.rotating?.enabled && cfg.texts.rotating.phrases.length > 0 && (
-                  <SplashRotatingText config={cfg.texts.rotating} align={cfg.texts.align} />
+                  <SplashRotatingText
+                    config={cfg.texts.rotating}
+                    align={cfg.texts.align}
+                    onAllShown={handlePhrasesEnded}
+                  />
                 )}
 
                 {cfg.countdown.enabled && (
