@@ -47,6 +47,18 @@ export interface SplashConfig {
     subtitleEnabled: boolean;
     subtitleColor: string;
     align: SplashTextAlign;
+    /** Rotating phrases shown below the subtitle (Instagram-style caption). */
+    rotating: {
+      enabled: boolean;
+      phrases: string[];
+      effect: "typewriter" | "fade";
+      /** Typing speed (ms per character) — only for typewriter. */
+      typeSpeedMs: number;
+      /** How long to keep each phrase fully visible (ms). */
+      holdMs: number;
+      color: string;
+      loop: boolean;
+    };
   };
 
   /** Primary CTA button. */
@@ -130,6 +142,19 @@ export const defaultSplashConfig: SplashConfig = {
     subtitleEnabled: true,
     subtitleColor: "#AAAAAA",
     align: "center",
+    rotating: {
+      enabled: false,
+      phrases: [
+        "Ferramentas de qualidade premium",
+        "Entrega rápida para todo o Brasil",
+        "Atendimento exclusivo para atacado",
+      ],
+      effect: "typewriter",
+      typeSpeedMs: 60,
+      holdMs: 1800,
+      color: "#E84A25",
+      loop: true,
+    },
   },
   primaryButton: {
     enabled: true,
