@@ -385,6 +385,18 @@ const IndexContent = () => {
           </section>
         ) : null;
 
+      case "instagram":
+        return isSectionEnabled("instagram") ? (
+          <InstagramFeed
+            key="instagram"
+            feedId={config?.instagramSection?.beholdFeedId}
+            handle={config?.instagramSection?.handle}
+            title={config?.instagramSection?.title}
+            badge={config?.instagramSection?.badge}
+            maxPosts={config?.instagramSection?.maxPosts ?? 9}
+          />
+        ) : null;
+
       case "footer":
         return isSectionEnabled("footer") ? <Footer key="footer" config={config?.footer} /> : null;
 
