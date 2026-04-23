@@ -47,22 +47,16 @@ export interface SplashConfig {
     title: string;
     titleEnabled: boolean;
     titleColor: string;
+    /** Rotating phrases shown IN PLACE OF the static title. */
+    titleRotating: SplashRotatingTextConfig;
     subtitle: string;
     subtitleEnabled: boolean;
     subtitleColor: string;
+    /** Rotating phrases shown IN PLACE OF the static subtitle. */
+    subtitleRotating: SplashRotatingTextConfig;
     align: SplashTextAlign;
-    /** Rotating phrases shown below the subtitle (Instagram-style caption). */
-    rotating: {
-      enabled: boolean;
-      phrases: string[];
-      effect: "typewriter" | "fade";
-      /** Typing speed (ms per character) — only for typewriter. */
-      typeSpeedMs: number;
-      /** How long to keep each phrase fully visible (ms). */
-      holdMs: number;
-      color: string;
-      loop: boolean;
-    };
+    /** Extra rotating phrases shown below the subtitle (Instagram-style caption). */
+    rotating: SplashRotatingTextConfig;
   };
 
   /** Primary CTA button. */
