@@ -28,6 +28,10 @@ export interface SplashConfig {
   /** Custom frequency in hours (used when frequency === "custom"). */
   customHours: number;
 
+  /** Auto-close the splash when the content finishes
+   *  (video ended, or rotating phrases finished one full pass). */
+  autoCloseOnEnd: boolean;
+
   /** Media block (image, video or none). */
   media: {
     kind: SplashMediaKind;
