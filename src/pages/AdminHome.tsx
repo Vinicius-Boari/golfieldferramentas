@@ -130,6 +130,55 @@ const ImageField = ({ label, value, onChange, userId }: {
   );
 };
 
+/** Icon options exposed to admin in icon-pickers. The id matches IconId in useHomeConfig. */
+const ICON_OPTIONS = [
+  { id: "star", Icon: Star }, { id: "trendingUp", Icon: TrendingUp }, { id: "sparkles", Icon: Sparkles },
+  { id: "calendar", Icon: Calendar }, { id: "globe", Icon: Globe }, { id: "lightbulb", Icon: Lightbulb },
+  { id: "shield", Icon: Shield }, { id: "truck", Icon: Truck }, { id: "wrench", Icon: Wrench },
+  { id: "package", Icon: Package }, { id: "zap", Icon: Zap }, { id: "heart", Icon: Heart },
+  { id: "award", Icon: Award }, { id: "users", Icon: Users },
+] as const;
+
+const IconPicker = ({ value, onChange }: { value?: string; onChange: (v: string) => void }) => (
+  <div className="flex flex-wrap gap-1.5 p-2 rounded-xl bg-secondary/30 border border-border/40">
+    {ICON_OPTIONS.map(({ id, Icon }) => {
+      const active = value === id;
+      return (
+        <button
+          key={id}
+          type="button"
+          title={id}
+          onClick={() => onChange(id)}
+          className={`p-2 rounded-lg border transition-all ${
+            active
+              ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/30"
+              : "bg-background/50 text-muted-foreground border-border/40 hover:border-primary/40 hover:text-foreground"
+          }`}
+        >
+          <Icon size={14} />
+        </button>
+      );
+    })}
+  </div>
+);
+
+const Toggle = ({ label, value, onChange, hint }: { label: string; value: boolean; onChange: (v: boolean) => void; hint?: string }) => (
+  <div className="flex items-start justify-between gap-4 p-3 rounded-xl bg-secondary/30 border border-border/40">
+    <div>
+      <p className="text-sm font-medium">{label}</p>
+      {hint && <p className="text-xs text-muted-foreground mt-0.5">{hint}</p>}
+    </div>
+    <button
+      type="button"
+      onClick={() => onChange(!value)}
+      className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${value ? "bg-primary" : "bg-secondary"}`}
+      aria-pressed={value}
+    >
+      <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-background shadow transition-transform ${value ? "translate-x-5" : ""}`} />
+    </button>
+  </div>
+);
+
 const AdminHome = () => {
   const navigate = useNavigate();
   const { isAdmin, loading: adminLoading, user } = useAdmin();
