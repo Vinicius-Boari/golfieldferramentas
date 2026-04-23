@@ -15,6 +15,7 @@ const WIDTH_PX: Record<SplashConfig["appearance"]["width"], string> = {
   medium: "600px",
   large: "800px",
   full: "100vw",
+  custom: "100%",
 };
 
 interface Props {
@@ -140,12 +141,22 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
     backgroundColor: hexToRgba(cfg.appearance.overlayColor, cfg.appearance.overlayOpacity),
   };
 
-  const cardStyle = {
+  const isCustom = cfg.appearance.width === "custom";
+  const isFull = cfg.appearance.width === "full";
+  const customW = isCustom
+    ? `${cfg.appearance.customWidth}${cfg.appearance.customWidthUnit}`
+    : undefined;
+  const customH = (isCustom || isFull) && cfg.appearance.customHeight > 0
+    ? `${cfg.appearance.customHeight}${cfg.appearance.customHeightUnit}`
+    : undefined;
+
+  const cardStyle: React.CSSProperties = {
     backgroundColor: cfg.appearance.cardBackground,
     borderRadius: `${cfg.appearance.borderRadius}px`,
-    maxWidth: WIDTH_PX[cfg.appearance.width],
-    width: cfg.appearance.width === "full" ? "100vw" : "100%",
-    maxHeight: cfg.appearance.width === "full" ? "100vh" : "90vh",
+    maxWidth: isCustom ? customW : WIDTH_PX[cfg.appearance.width],
+    width: isFull ? "100vw" : isCustom ? customW : "100%",
+    height: customH,
+    maxHeight: isFull ? "100vh" : customH ?? "90vh",
   };
 
   const formatTime = (ms: number) => {
