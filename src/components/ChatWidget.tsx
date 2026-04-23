@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { X, Send, MessageCircle } from "lucide-react";
+import { X, Send, Headset } from "lucide-react";
 import { chatBus, normalizeCategoryId, onCartReply, type CartReplyPayload } from "@/lib/chatBus";
 import { useCart } from "@/context/CartContext";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -545,7 +545,7 @@ const ChatWidget = () => {
             </motion.span>
           ) : (
             <motion.span key="msg" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} className="block">
-              <MessageCircle size={26} />
+              <Headset size={26} />
             </motion.span>
           )}
         </AnimatePresence>
