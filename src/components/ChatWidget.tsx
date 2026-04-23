@@ -608,7 +608,7 @@ const ChatWidget = () => {
             </div>
 
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-slate-50">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-white">
               {messages.map((m, i) => {
                 const prev = messages[i - 1];
                 const grouped = prev && prev.role === m.role;
@@ -621,8 +621,8 @@ const ChatWidget = () => {
                         transition={{ duration: 0.18 }}
                         className={`px-3.5 py-2 text-sm rounded-2xl whitespace-pre-wrap break-words ${
                           m.role === "user"
-                            ? "bg-[#1d4ed8] text-white rounded-br-md"
-                            : "bg-white text-slate-800 rounded-bl-md border border-slate-200 shadow-sm"
+                            ? "bg-[#2563EB] text-white rounded-br-md"
+                            : "bg-slate-100 text-slate-900 rounded-bl-md border border-slate-200"
                         } ${grouped ? "mt-0.5" : "mt-1.5"}`}
                       >
                         {m.content || <span className="opacity-50">…</span>}
