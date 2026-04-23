@@ -388,8 +388,11 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
                       <button
                         type="button"
                         onClick={handleSecondary}
-                        className="px-6 py-3 rounded-xl font-medium text-sm transition-colors border"
-                        style={{ borderColor: "#2A2A2A", color: "#AAAAAA", backgroundColor: "transparent" }}
+                        className="px-7 py-3 rounded-xl font-bold text-sm uppercase tracking-wide transition-all hover:scale-105 hover:brightness-110 shadow-[0_8px_24px_-4px_rgba(232,74,37,0.6)] ring-1 ring-white/20"
+                        style={{
+                          background: "linear-gradient(135deg, #FF5A2C 0%, #E84A25 50%, #C13A18 100%)",
+                          color: "#FFFFFF",
+                        }}
                       >
                         {cfg.secondaryButton.text || "Fechar"}
                       </button>
