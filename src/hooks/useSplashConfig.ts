@@ -205,7 +205,14 @@ const mergeWithDefaults = (saved: Partial<SplashConfig> | null | undefined): Spl
     ...defaultSplashConfig,
     ...saved,
     media: { ...defaultSplashConfig.media, ...(saved.media ?? {}) },
-    texts: { ...defaultSplashConfig.texts, ...(saved.texts ?? {}) },
+    texts: {
+      ...defaultSplashConfig.texts,
+      ...(saved.texts ?? {}),
+      rotating: {
+        ...defaultSplashConfig.texts.rotating,
+        ...(saved.texts?.rotating ?? {}),
+      },
+    },
     primaryButton: { ...defaultSplashConfig.primaryButton, ...(saved.primaryButton ?? {}) },
     secondaryButton: { ...defaultSplashConfig.secondaryButton, ...(saved.secondaryButton ?? {}) },
     audio: { ...defaultSplashConfig.audio, ...(saved.audio ?? {}) },
