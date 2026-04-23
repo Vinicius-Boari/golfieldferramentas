@@ -32,9 +32,23 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   const headerBg = config?.appearance?.headerBackgroundColor || DEFAULT_HEADER_BACKGROUND_COLOR;
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    let ticking = false;
+    let lastScrolled = scrolled;
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const next = window.scrollY > 20;
+        if (next !== lastScrolled) {
+          lastScrolled = next;
+          setScrolled(next);
+        }
+        ticking = false;
+      });
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const hexToRgba = (hex: string, alpha: number) => {
