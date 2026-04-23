@@ -9,6 +9,7 @@ import {
   defaultSplashConfig,
   useSaveSplashConfig,
   type SplashConfig,
+  type SplashRotatingTextConfig,
 } from "@/hooks/useSplashConfig";
 import SplashPage from "@/components/SplashPage";
 
