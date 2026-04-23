@@ -207,6 +207,8 @@ const InstagramFeed = ({
   badge = "Instagram",
   profileUrl,
   maxPosts = 9,
+  cardSize = "medium",
+  favoritePostIds = [],
 }: InstagramFeedProps) => {
   const [posts, setPosts] = useState<BeholdPost[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -233,7 +235,19 @@ const InstagramFeed = ({
       .then((data) => {
         if (cancelled) return;
         const list: BeholdPost[] = Array.isArray(data?.posts) ? data.posts : [];
-        setPosts(list.slice(0, maxPosts));
+
+        // Re-order: favorites first (in admin-defined order), then the rest
+        // (which Behold already returns newest-first).
+        const favIds = favoritePostIds ?? [];
+        const favSet = new Set(favIds);
+        const byId = new Map(list.map((p) => [p.id, p]));
+        const pinned = favIds
+          .map((id) => byId.get(id))
+          .filter((p): p is BeholdPost => Boolean(p));
+        const rest = list.filter((p) => !favSet.has(p.id));
+        const ordered = [...pinned, ...rest];
+
+        setPosts(ordered.slice(0, maxPosts));
       })
       .catch((e) => {
         if (cancelled) return;
@@ -247,7 +261,17 @@ const InstagramFeed = ({
     return () => {
       cancelled = true;
     };
-  }, [feedId, maxPosts]);
+  }, [feedId, maxPosts, favoritePostIds]);
+
+  // Map card size → tailwind grid columns. Smaller cards = more columns.
+  const gridColsClass =
+    cardSize === "small"
+      ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+      : cardSize === "large"
+      ? "grid-cols-1 sm:grid-cols-2"
+      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+
+  const gapClass = cardSize === "small" ? "gap-3 sm:gap-4" : "gap-4 sm:gap-5";
 
   return (
     <section
