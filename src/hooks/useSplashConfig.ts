@@ -19,6 +19,20 @@ export type SplashSizeUnit = "px" | "%" | "vw" | "vh";
 export type SplashSecondaryAction = "close" | "redirect";
 export type SplashCountdownAction = "hide" | "close" | "message";
 
+/** Reusable rotating-phrases config (used for title, subtitle, and the
+ *  Instagram-style caption block). */
+export interface SplashRotatingTextConfig {
+  enabled: boolean;
+  phrases: string[];
+  effect: "typewriter" | "fade";
+  /** Typing speed in ms/char (only used when effect === "typewriter"). */
+  typeSpeedMs: number;
+  /** How long each phrase stays fully visible (ms). */
+  holdMs: number;
+  color: string;
+  loop: boolean;
+}
+
 export interface SplashConfig {
   /** Master ON/OFF switch. */
   enabled: boolean;
@@ -137,9 +151,31 @@ export const defaultSplashConfig: SplashConfig = {
     title: "Bem-vindo à Golfield!",
     titleEnabled: true,
     titleColor: "#FFFFFF",
+    titleRotating: {
+      enabled: false,
+      phrases: ["Bem-vindo à Golfield!", "Ferramentas profissionais", "Atacado para sua loja"],
+      effect: "typewriter",
+      typeSpeedMs: 70,
+      holdMs: 1800,
+      color: "#FFFFFF",
+      loop: true,
+    },
     subtitle: "Confira nossas ofertas exclusivas para atacado.",
     subtitleEnabled: true,
     subtitleColor: "#AAAAAA",
+    subtitleRotating: {
+      enabled: false,
+      phrases: [
+        "Confira nossas ofertas exclusivas para atacado.",
+        "Entrega rápida para todo o Brasil.",
+        "Suporte dedicado ao seu negócio.",
+      ],
+      effect: "fade",
+      typeSpeedMs: 60,
+      holdMs: 2200,
+      color: "#AAAAAA",
+      loop: true,
+    },
     align: "center",
     rotating: {
       enabled: false,
