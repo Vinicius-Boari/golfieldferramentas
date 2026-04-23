@@ -413,6 +413,9 @@ const SplashPage = ({ previewConfig, onPreviewClose }: Props) => {
                     ctaText={ig.ctaText || "Ver mais no Instagram"}
                   />
                 )}
+
+                {/* Physical store location — mini map + address + directions CTA */}
+                <SplashLocation />
               </div>
             </div>
           </div>
