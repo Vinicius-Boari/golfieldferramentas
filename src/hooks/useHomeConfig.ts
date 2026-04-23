@@ -310,9 +310,26 @@ export const useHomeConfig = () => {
       if (!data) return defaultHomeConfig;
 
       const saved = (data.config as unknown as Partial<HomeConfig>) ?? {};
+
+      // Auto-inject the "instagram" section if missing in saved config (handles
+      // configs persisted before the section existed). Inserted right before
+      // the footer so order remains visually correct without requiring an
+      // admin re-save.
+      let mergedSections = saved.sections ?? defaultHomeConfig.sections;
+      if (!mergedSections.some((s) => s.id === "instagram")) {
+        const footerIdx = mergedSections.findIndex((s) => s.id === "footer");
+        const insertOrder = footerIdx >= 0 ? mergedSections[footerIdx].order : mergedSections.length;
+        const igSection: HomeSection = { id: "instagram", enabled: true, order: insertOrder };
+        const bumped = mergedSections.map((s) =>
+          s.id === "footer" ? { ...s, order: s.order + 1 } : s,
+        );
+        mergedSections = [...bumped, igSection].sort((a, b) => a.order - b.order);
+      }
+
       return {
         ...defaultHomeConfig,
         ...saved,
+        sections: mergedSections,
         hero: { ...defaultHomeConfig.hero, ...(saved.hero ?? {}) },
         heroVideo: { ...defaultHomeConfig.heroVideo, ...(saved.heroVideo ?? {}) },
         trustBadges: { ...defaultHomeConfig.trustBadges, ...(saved.trustBadges ?? {}) },
