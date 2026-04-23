@@ -230,7 +230,7 @@ export const useSplashConfig = () => {
   // splash and the admin preview both reflect new edits without a reload.
   useEffect(() => {
     const channel = supabase
-      .channel("splash_config_changes")
+      .channel(`splash_config_changes_${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "splash_config" },
