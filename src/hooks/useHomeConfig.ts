@@ -74,6 +74,8 @@ export interface FooterConfig {
   categories: string[];
 }
 
+export type InstagramCardSize = "small" | "medium" | "large";
+
 export interface InstagramSectionConfig {
   badge: string;
   title: string;
@@ -81,6 +83,10 @@ export interface InstagramSectionConfig {
   /** Behold.so feed ID — get one free at https://behold.so */
   beholdFeedId: string;
   maxPosts: number;
+  /** Card size — controls grid columns (small=4-5 cols, medium=3, large=2) */
+  cardSize: InstagramCardSize;
+  /** IDs of pinned posts. Always rendered first, in this order. */
+  favoritePostIds: string[];
 }
 
 export interface WhatsAppMessageConfig {
@@ -258,6 +264,8 @@ export const defaultHomeConfig: HomeConfig = {
     handle: "golfield.ferramentas",
     beholdFeedId: "",
     maxPosts: 9,
+    cardSize: "medium",
+    favoritePostIds: [],
   },
   footer: {
     description: "Ferramentas premium com preços de atacado. Distribuímos para todo o Brasil com qualidade garantida e atendimento personalizado.",

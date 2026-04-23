@@ -394,6 +394,8 @@ const IndexContent = () => {
             title={config?.instagramSection?.title}
             badge={config?.instagramSection?.badge}
             maxPosts={config?.instagramSection?.maxPosts ?? 9}
+            cardSize={config?.instagramSection?.cardSize ?? "medium"}
+            favoritePostIds={config?.instagramSection?.favoritePostIds ?? []}
           />
         ) : null;
 
