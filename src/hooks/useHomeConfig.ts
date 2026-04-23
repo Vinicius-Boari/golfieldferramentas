@@ -47,11 +47,20 @@ export interface ProductsSectionConfig {
   showAllButtonText: string;
 }
 
+/** Identifiers of icons that can be used in admin-selectable slots. */
+export type IconId =
+  | "star" | "trendingUp" | "sparkles" | "calendar" | "globe" | "lightbulb"
+  | "shield" | "truck" | "wrench" | "package" | "zap" | "heart" | "award" | "users";
+
 export interface CtaSectionConfig {
   title: string;
   description: string;
   buttonText: string;
   buttonLink: string;
+  /** When true, animated floating tools are rendered behind the CTA. */
+  showFloatingTools?: boolean;
+  /** When true, both mascot images are rendered. */
+  showMascots?: boolean;
 }
 
 export interface AboutSectionConfig {
@@ -60,7 +69,12 @@ export interface AboutSectionConfig {
   titleHighlight: string;
   paragraph1: string;
   paragraph2: string;
-  features: { title: string; desc: string }[];
+  features: { title: string; desc: string; icon?: IconId }[];
+}
+
+export interface TrustBadgesConfigItem {
+  text: string;
+  icon?: IconId;
 }
 
 export interface FooterConfig {
