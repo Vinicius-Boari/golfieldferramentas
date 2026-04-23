@@ -27,7 +27,8 @@ const TypingDots = () => (
     {[0, 1, 2].map((i) => (
       <motion.span
         key={i}
-        className="block w-2 h-2 rounded-full bg-slate-400"
+        className="block w-2 h-2 rounded-full"
+        style={{ backgroundColor: "#94A3B8" }}
         animate={{ y: [0, -4, 0], opacity: [0.4, 1, 0.4] }}
         transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15 }}
       />
@@ -62,7 +63,7 @@ const WhatsAppButton = () => (
 );
 
 /** Default human-looking avatar (initials) when admin hasn't uploaded one. */
-const InitialsAvatar = ({ name, size = 40 }: { name: string; size?: number }) => {
+const InitialsAvatar = ({ name, osize = 40 }: { name: string; osize?: number }) => {
   const initial = (name?.trim()?.[0] || "A").toUpperCase();
   // Pick a stable warm color from the name — feels more like a real photo placeholder.
   const palette = ["#F59E0B", "#EC4899", "#10B981", "#6366F1", "#EF4444", "#06B6D4"];
@@ -70,7 +71,7 @@ const InitialsAvatar = ({ name, size = 40 }: { name: string; size?: number }) =>
   return (
     <div
       className="rounded-full flex items-center justify-center font-semibold text-white shrink-0"
-      style={{ width: size, height: size, background: palette[idx], fontSize: size * 0.42 }}
+      style={{ width: osize, height: osize, background: palette[idx], fontSize: osize * 0.42 }}
     >
       {initial}
     </div>
@@ -523,154 +524,203 @@ const ChatWidget = () => {
 
   return (
     <>
-      <motion.button
-        onClick={() => setOpen((v) => !v)}
-        initial={{ scale: 0, opacity: 0, x: 0 }}
-        animate={{ scale: 1, opacity: 1, x: shiftLeft ? -472 : 0 }}
-        transition={{
-          scale: { delay: 1.2, type: "spring", stiffness: 260, damping: 20 },
-          opacity: { delay: 1.2, duration: 0.3 },
-          x: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 },
+      {/* Theme isolation wrapper - forces light mode regardless of global theme */}
+      <div
+        className="fixed bottom-0 right-0 z-50"
+        style={{
+          colorScheme: "light",
         }}
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.92 }}
-        className={`fixed bottom-4 right-4 md:bottom-6 md:right-6 ${cartOpen ? "z-[60]" : "z-40"} p-3.5 md:p-4 rounded-full shadow-xl text-white transition-shadow hover:shadow-2xl`}
-        style={{ background: "#2563EB", boxShadow: "0 10px 30px -8px rgba(37,99,235,0.55)" }}
-        aria-label="Abrir conversa"
+        data-theme="light"
       >
-        <AnimatePresence mode="wait" initial={false}>
-          {open ? (
-            <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} className="block">
-              <X size={26} />
-            </motion.span>
-          ) : (
-            <motion.span key="msg" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} className="block">
-              <Headset size={26} />
-            </motion.span>
+        <style>{`
+          [data-theme="light"] {
+            color-scheme: light !important;
+          }
+          [data-theme="light"] * {
+            color-scheme: light !important;
+          }
+          [data-theme="light"] input,
+          [data-theme="light"] button {
+            color-scheme: light !important;
+          }
+        `}</style>
+        <motion.button
+          onClick={() => setOpen((v) => !v)}
+          initial={{ scale: 0, opacity: 0, x: 0 }}
+          animate={{ scale: 1, opacity: 1, x: shiftLeft ? -472 : 0 }}
+          transition={{
+            scale: { delay: 1.2, type: "spring", stiffness: 260, damping: 20 },
+            opacity: { delay: 1.2, duration: 0.3 },
+            x: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 },
+          }}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
+          className={`fixed bottom-4 right-4 md:bottom-6 md:right-6 ${cartOpen ? "z-[60]" : "z-40"} p-3.5 md:p-4 rounded-full shadow-xl text-white transition-shadow hover:shadow-2xl`}
+          style={{ background: "#2563EB", boxShadow: "0 10px 30px -8px rgba(37,99,235,0.55)" }}
+          aria-label="Abrir conversa"
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            {open ? (
+              <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} className="block">
+                <X size={26} color="#FFFFFF" />
+              </motion.span>
+            ) : (
+              <motion.span key="msg" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} className="block">
+                <Headset size={26} color="#FFFFFF" />
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.button>
+
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.95, x: shiftLeft ? -472 : 0 }}
+              animate={{ opacity: 1, y: 0, scale: 1, x: shiftLeft ? -472 : 0 }}
+              exit={{ opacity: 0, y: 24, scale: 0.95 }}
+              transition={{
+                opacity: { duration: 0.25 },
+                y: { type: "spring", stiffness: 280, damping: 26 },
+                scale: { type: "spring", stiffness: 280, damping: 26 },
+                x: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 },
+              }}
+              className={`fixed ${cartOpen ? "z-[60]" : "z-40"} rounded-2xl shadow-2xl flex flex-col overflow-hidden border
+                         bottom-20 right-4 left-4 max-h-[calc(100vh-7rem)]
+                         md:bottom-24 md:right-6 md:left-auto md:w-[380px] md:h-[560px] md:max-h-[80vh]`}
+              style={{
+                boxShadow: "0 25px 60px -15px rgba(0,0,0,0.3)",
+                backgroundColor: "#FFFFFF",
+                borderColor: "#E2E8F0",
+              }}
+            >
+              {/* Header */}
+              <div
+                className="flex items-center gap-3 px-4 py-3.5"
+                style={{ background: "linear-gradient(135deg, #3b82f6, #2563EB)" }}
+              >
+                {assistant.avatarUrl ? (
+                  <img
+                    src={assistant.avatarUrl}
+                    alt={assistant.attendantName}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-white/40"
+                  />
+                ) : (
+                  <InitialsAvatar name={assistant.attendantName} size={40} />
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-[15px] leading-tight truncate" style={{ color: "#FFFFFF" }}>
+                    {assistant.attendantName}
+                  </div>
+                  {assistant.companyLabel && (
+                    <div className="text-[10px] uppercase tracking-wider truncate" style={{ color: "rgba(255,255,255,0.7)" }}>
+                      {assistant.companyLabel}
+                    </div>
+                  )}
+                  <div className="text-xs flex items-center gap-1.5" style={{ color: "rgba(255,255,255,0.85)" }}>
+                    <span
+                      className="w-1.5 h-1.5 rounded-full inline-block"
+                      style={{ backgroundColor: online ? "#4ADE80" : "#F87171" }}
+                    />
+                    {online ? "Online agora" : "Ausente no momento"}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="p-1.5 rounded-lg transition-colors"
+                  style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.2)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")}
+                  aria-label="Fechar conversa"
+                >
+                  <X size={18} color="#FFFFFF" />
+                </button>
+              </div>
+
+              {/* Messages */}
+              <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-4 space-y-2" style={{ backgroundColor: "#FFFFFF" }}>
+                {messages.map((m, i) => {
+                  const prev = messages[i - 1];
+                  const grouped = prev && prev.role === m.role;
+                  return (
+                    <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                      <div className={`max-w-[85%] flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
+                        <motion.div
+                          initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ duration: 0.18 }}
+                          className={`px-3.5 py-2 text-sm rounded-2xl whitespace-pre-wrap break-words ${
+                            m.role === "user"
+                              ? "rounded-br-md"
+                              : "rounded-bl-md"
+                          } ${grouped ? "mt-0.5" : "mt-1.5"}`}
+                          style={
+                            m.role === "user"
+                              ? { backgroundColor: "#2563EB", color: "#FFFFFF" }
+                              : { backgroundColor: "#F1F5F9", color: "#0F172A", border: "1px solid #E2E8F0" }
+                          }
+                        >
+                          {m.content || <span style={{ opacity: 0.5 }}>…</span>}
+                        </motion.div>
+                        {m.showWhatsApp && <WhatsAppButton />}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {isTyping && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="flex justify-start"
+                  >
+                    <div className="rounded-2xl rounded-bl-md px-3" style={{ backgroundColor: "#F1F5F9", border: "1px solid #E2E8F0" }}>
+                      <TypingDots />
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Input */}
+              <div className="flex items-center gap-2 px-3 py-2.5 border-t" style={{ backgroundColor: "#FFFFFF", borderColor: "#E2E8F0" }}>
+                <input
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={onKey}
+                  disabled={loading}
+                  placeholder="Digite sua mensagem..."
+                  className="flex-1 px-3.5 py-2.5 text-sm rounded-full outline-none transition-all disabled:opacity-60"
+                  style={{
+                    backgroundColor: "#F1F5F9",
+                    color: "#0F172A",
+                    border: "1.5px solid #E2E8F0",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.backgroundColor = "#FFFFFF";
+                    e.currentTarget.style.borderColor = "#3B82F6";
+                    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59,130,246,0.15)";
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.backgroundColor = "#F1F5F9";
+                    e.currentTarget.style.borderColor = "#E2E8F0";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                />
+                <button
+                  onClick={send}
+                  disabled={!input.trim() || loading || isTyping}
+                  className="w-10 h-10 flex items-center justify-center rounded-full transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+                  style={{ background: "#2563EB" }}
+                  aria-label="Enviar mensagem"
+                >
+                  <Send size={16} color="#FFFFFF" />
+                </button>
+              </div>
+            </motion.div>
           )}
         </AnimatePresence>
-      </motion.button>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.95, x: shiftLeft ? -472 : 0 }}
-            animate={{ opacity: 1, y: 0, scale: 1, x: shiftLeft ? -472 : 0 }}
-            exit={{ opacity: 0, y: 24, scale: 0.95 }}
-            transition={{
-              opacity: { duration: 0.25 },
-              y: { type: "spring", stiffness: 280, damping: 26 },
-              scale: { type: "spring", stiffness: 280, damping: 26 },
-              x: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 },
-            }}
-            className={`fixed ${cartOpen ? "z-[60]" : "z-40"} bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-200
-                       bottom-20 right-4 left-4 max-h-[calc(100vh-7rem)]
-                       md:bottom-24 md:right-6 md:left-auto md:w-[380px] md:h-[560px] md:max-h-[80vh]`}
-            style={{ boxShadow: "0 25px 60px -15px rgba(0,0,0,0.3)" }}
-          >
-            {/* Header */}
-            <div
-              className="flex items-center gap-3 px-4 py-3.5 text-white"
-              style={{ background: "linear-gradient(135deg, #3b82f6, #2563EB)" }}
-            >
-              {assistant.avatarUrl ? (
-                <img
-                  src={assistant.avatarUrl}
-                  alt={assistant.attendantName}
-                  className="w-10 h-10 rounded-full object-cover border-2 border-white/40"
-                />
-              ) : (
-                <InitialsAvatar name={assistant.attendantName} size={40} />
-              )}
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold text-[15px] leading-tight truncate">
-                  {assistant.attendantName}
-                </div>
-                {assistant.companyLabel && (
-                  <div className="text-[10px] uppercase tracking-wider text-white/70 truncate">
-                    {assistant.companyLabel}
-                  </div>
-                )}
-                <div className="text-xs text-white/85 flex items-center gap-1.5">
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full inline-block ${online ? "bg-green-400" : "bg-red-400"}`}
-                  />
-                  {online ? "Online agora" : "Ausente no momento"}
-                </div>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-white/15 transition-colors"
-                aria-label="Fechar conversa"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Messages */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-white">
-              {messages.map((m, i) => {
-                const prev = messages[i - 1];
-                const grouped = prev && prev.role === m.role;
-                return (
-                  <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[85%] flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
-                      <motion.div
-                        initial={{ opacity: 0, y: 6, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ duration: 0.18 }}
-                        className={`px-3.5 py-2 text-sm rounded-2xl whitespace-pre-wrap break-words ${
-                          m.role === "user"
-                            ? "bg-[#2563EB] text-white rounded-br-md"
-                            : "bg-slate-100 text-slate-900 rounded-bl-md border border-slate-200"
-                        } ${grouped ? "mt-0.5" : "mt-1.5"}`}
-                      >
-                        {m.content || <span className="opacity-50">…</span>}
-                      </motion.div>
-                      {m.showWhatsApp && <WhatsAppButton />}
-                    </div>
-                  </div>
-                );
-              })}
-
-              {isTyping && (
-                <motion.div
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="flex justify-start"
-                >
-                  <div className="bg-slate-100 border border-slate-200 rounded-2xl rounded-bl-md px-3">
-                    <TypingDots />
-                  </div>
-                </motion.div>
-              )}
-            </div>
-
-            {/* Input */}
-            <div className="border-t border-slate-200 bg-white px-3 py-2.5 flex items-center gap-2">
-              <input
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={onKey}
-                disabled={loading}
-                placeholder="Digite sua mensagem..."
-                className="flex-1 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 bg-slate-100 rounded-full outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/40 transition-all disabled:opacity-60"
-              />
-              <button
-                onClick={send}
-                disabled={!input.trim() || loading || isTyping}
-                className="w-10 h-10 flex items-center justify-center rounded-full text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-                style={{ background: "#2563EB" }}
-                aria-label="Enviar mensagem"
-              >
-                <Send size={16} />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </div>
     </>
   );
 };
