@@ -5,6 +5,9 @@ import type { SplashConfig } from "@/hooks/useSplashConfig";
 interface Props {
   config: SplashConfig["texts"]["rotating"];
   align: SplashConfig["texts"]["align"];
+  /** Called once after the last phrase has been fully shown
+   *  (only fires when loop is OFF). */
+  onAllShown?: () => void;
 }
 
 /**
@@ -12,7 +15,8 @@ interface Props {
  * effect (character-by-character, like an Instagram caption being typed) or
  * a smooth fade transition between phrases.
  */
-const SplashRotatingText = ({ config, align }: Props) => {
+const SplashRotatingText = ({ config, align, onAllShown }: Props) => {
+  const firedRef = useRef(false);
   const phrases = (config.phrases || []).filter((p) => p.trim().length > 0);
   const [index, setIndex] = useState(0);
   const [displayed, setDisplayed] = useState("");
@@ -24,6 +28,7 @@ const SplashRotatingText = ({ config, align }: Props) => {
     setIndex(0);
     setDisplayed("");
     setPhase("typing");
+    firedRef.current = false;
   }, [phrases.length, config.effect, config.typeSpeedMs, config.holdMs]);
 
   /** Fade effect: switch the whole phrase every (holdMs + 600ms transition). */
@@ -33,12 +38,20 @@ const SplashRotatingText = ({ config, align }: Props) => {
     const id = window.setInterval(() => {
       setIndex((i) => {
         const next = i + 1;
-        if (next >= phrases.length) return config.loop ? 0 : i;
+        if (next >= phrases.length) {
+          if (config.loop) return 0;
+          if (!firedRef.current) {
+            firedRef.current = true;
+            // Defer so the last phrase remains visible briefly before close.
+            window.setTimeout(() => onAllShown?.(), 400);
+          }
+          return i;
+        }
         return next;
       });
     }, total);
     return () => window.clearInterval(id);
-  }, [config.effect, config.holdMs, config.loop, phrases.length]);
+  }, [config.effect, config.holdMs, config.loop, phrases.length, onAllShown]);
 
   /** Typewriter effect: type → hold → delete → next phrase. */
   useEffect(() => {
@@ -58,7 +71,13 @@ const SplashRotatingText = ({ config, align }: Props) => {
       }
     } else if (phase === "holding") {
       const isLast = index >= phrases.length - 1;
-      if (isLast && !config.loop) return; // stop at the end
+      if (isLast && !config.loop) {
+        if (!firedRef.current) {
+          firedRef.current = true;
+          timerRef.current = window.setTimeout(() => onAllShown?.(), Math.max(600, config.holdMs));
+        }
+        return; // stop at the end
+      }
       timerRef.current = window.setTimeout(() => setPhase("deleting"), Math.max(400, config.holdMs));
     } else if (phase === "deleting") {
       if (displayed.length > 0) {
@@ -75,7 +94,7 @@ const SplashRotatingText = ({ config, align }: Props) => {
     return () => {
       if (timerRef.current) window.clearTimeout(timerRef.current);
     };
-  }, [config.effect, config.typeSpeedMs, config.holdMs, config.loop, displayed, index, phase, phrases]);
+  }, [config.effect, config.typeSpeedMs, config.holdMs, config.loop, displayed, index, phase, phrases, onAllShown]);
 
   if (phrases.length === 0) return null;
 

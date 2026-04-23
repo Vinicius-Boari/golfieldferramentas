@@ -261,6 +261,15 @@ const SplashPagePanel = ({ value, onChange, userId }: Props) => {
             </div>
           )}
         </div>
+
+        <div className="border-t border-border/50 my-2" />
+
+        <Toggle
+          label="Fechar automaticamente ao terminar"
+          hint="Fecha o splash quando o vídeo acabar ou quando todas as frases rotativas forem exibidas (apenas se o loop estiver desligado)."
+          value={value.autoCloseOnEnd}
+          onChange={(v) => update((c) => ({ ...c, autoCloseOnEnd: v }))}
+        />
       </Section>
 
       {/* MÍDIA */}
