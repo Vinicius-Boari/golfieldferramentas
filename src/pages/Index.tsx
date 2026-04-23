@@ -313,41 +313,47 @@ const IndexContent = () => {
               className="absolute bottom-20 right-[20%] w-10 h-10 border border-primary-foreground/10 rounded-full hidden sm:block" />
 
             {/* Floating tools — decorative */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-              className="hidden md:block absolute inset-0 pointer-events-none opacity-90 mix-blend-screen"
-              aria-hidden="true"
-            >
-              <FloatingToolVisual />
-            </motion.div>
+            {(cta?.showFloatingTools ?? true) && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+                className="hidden md:block absolute inset-0 pointer-events-none opacity-90 mix-blend-screen"
+                aria-hidden="true"
+              >
+                <FloatingToolVisual />
+              </motion.div>
+            )}
 
             {/* Mascots — left and right */}
-            <motion.img
-              src={mascotGirl}
-              alt=""
-              aria-hidden="true"
-              initial={{ opacity: 0, x: -40, y: 20 }}
-              whileInView={{ opacity: 1, x: 0, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-              animate={{ y: [0, -8, 0] }}
-              style={{ animationDelay: "0s" }}
-              className="hidden md:block absolute left-2 lg:left-6 xl:left-10 bottom-0 w-44 lg:w-56 xl:w-64 2xl:w-72 pointer-events-none select-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] z-10"
-            />
-            <motion.img
-              src={mascotBoy}
-              alt=""
-              aria-hidden="true"
-              initial={{ opacity: 0, x: 40, y: 20 }}
-              whileInView={{ opacity: 1, x: 0, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.15 }}
-              animate={{ y: [0, -8, 0] }}
-              className="hidden md:block absolute right-2 lg:right-6 xl:right-10 bottom-0 w-44 lg:w-56 xl:w-64 2xl:w-72 pointer-events-none select-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] z-10"
-            />
+            {(cta?.showMascots ?? true) && (
+              <>
+                <motion.img
+                  src={mascotGirl}
+                  alt=""
+                  aria-hidden="true"
+                  initial={{ opacity: 0, x: -40, y: 20 }}
+                  whileInView={{ opacity: 1, x: 0, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+                  animate={{ y: [0, -8, 0] }}
+                  style={{ animationDelay: "0s" }}
+                  className="hidden md:block absolute left-2 lg:left-6 xl:left-10 bottom-0 w-44 lg:w-56 xl:w-64 2xl:w-72 pointer-events-none select-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] z-10"
+                />
+                <motion.img
+                  src={mascotBoy}
+                  alt=""
+                  aria-hidden="true"
+                  initial={{ opacity: 0, x: 40, y: 20 }}
+                  whileInView={{ opacity: 1, x: 0, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.15 }}
+                  animate={{ y: [0, -8, 0] }}
+                  className="hidden md:block absolute right-2 lg:right-6 xl:right-10 bottom-0 w-44 lg:w-56 xl:w-64 2xl:w-72 pointer-events-none select-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] z-10"
+                />
+              </>
+            )}
 
             <div className="container mx-auto px-4 relative z-20 text-center">
               <motion.div initial={{ opacity: 0, y: 40, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }}
