@@ -1,6 +1,7 @@
 // Edge function: gera ou edita imagens via Lovable AI (Nano Banana / Gemini Image)
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { checkAiBudget, logAiUsage, getUserIdFromRequest, COST_BY_FEATURE } from "../_shared/ai-budget.ts";
+import { checkAiBudget, logAiUsage, COST_BY_FEATURE } from "../_shared/ai-budget.ts";
+import { requireAdmin } from "../_shared/require-admin.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,6 +19,11 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // Exige admin/owner autenticado
+    const auth = await requireAdmin(req, corsHeaders);
+    if (!auth.ok) return auth.response;
+    const userId = auth.userId;
+
     const { prompt, imageUrl, model } = await req.json();
     if (!prompt || typeof prompt !== "string") {
       return new Response(JSON.stringify({ error: "Prompt obrigatório" }), {
@@ -42,8 +48,6 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    const userId = await getUserIdFromRequest(req);
 
     const userContent: any = imageUrl
       ? [
