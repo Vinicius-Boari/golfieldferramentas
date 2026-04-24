@@ -257,35 +257,6 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
                 <WhatsAppIcon size={18} /> {config?.secondaryButtonText || "Falar com Vendedor"}
               </motion.a>
             </motion.div>
-
-            {/* Mobile-only search bar (md hidden) — mirrors the desktop header search */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.75 }}
-              className="md:hidden mt-6 relative"
-              data-edit-id="hero.mobileSearch"
-            >
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground z-10" size={18} />
-              <input
-                type="text"
-                placeholder="Buscar ferramentas..."
-                className="search-input pl-11 text-sm w-full"
-                aria-label="Buscar ferramentas"
-                onChange={(e) => {
-                  const v = e.target.value;
-                  chatBus.emit("chat:setSearch", v);
-                  if (v.trim() !== "") {
-                    const el = document.getElementById("produtos");
-                    if (el) {
-                      const offset = 80;
-                      const top = el.getBoundingClientRect().top + window.scrollY - offset;
-                      window.scrollTo({ top, behavior: "smooth" });
-                    }
-                  }
-                }}
-              />
-            </motion.div>
         </div>
 
         <motion.div
