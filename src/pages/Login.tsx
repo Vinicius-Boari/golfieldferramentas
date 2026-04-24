@@ -32,12 +32,14 @@ const Login = () => {
     if (!validate()) return;
     setLoading(true);
     try {
-      // 1. Buscar e-mail vinculado ao CNPJ
-      const { data: email, error: rpcError } = await supabase.rpc("get_email_by_cnpj", {
-        _cnpj: cnpj,
-      });
+      // 1. Buscar e-mail vinculado ao CNPJ via edge function (sem expor RPC anônima)
+      const { data: lookup, error: rpcError } = await supabase.functions.invoke(
+        "lookup-email-by-cnpj",
+        { body: { cnpj } },
+      );
 
       if (rpcError) throw rpcError;
+      const email = (lookup as { email?: string | null } | null)?.email ?? null;
       if (!email) {
         setBanner("CNPJ ou senha incorretos. Verifique seus dados e tente novamente.");
         setLoading(false);
