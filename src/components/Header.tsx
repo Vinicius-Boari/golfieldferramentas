@@ -190,7 +190,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               />
             </div>
 
-            <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+            <div className="flex items-center gap-0.5 sm:gap-1.5 shrink-0">
               <motion.a
                 href="https://www.instagram.com/golfield.ferramentas/"
                 target="_blank"
@@ -219,7 +219,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 onClick={() => setIsOpen(true)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative p-2 sm:p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
+                className="relative p-1.5 sm:p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
               >
                 <ShoppingCart size={20} className="text-primary-foreground" />
                 {totalItems > 0 && (
@@ -235,7 +235,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               </motion.button>
 
               <button
-                className="md:hidden p-2 sm:p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                className="md:hidden p-1.5 sm:p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Abrir menu"
               >
