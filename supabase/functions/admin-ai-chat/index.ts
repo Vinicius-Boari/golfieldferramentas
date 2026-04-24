@@ -1,6 +1,7 @@
 // Edge function: chat assistant para o painel admin (Lovable AI Gateway)
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { checkAiBudget, logAiUsage, getUserIdFromRequest, COST_BY_FEATURE } from "../_shared/ai-budget.ts";
+import { checkAiBudget, logAiUsage, COST_BY_FEATURE } from "../_shared/ai-budget.ts";
+import { requireAdmin } from "../_shared/require-admin.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,6 +32,11 @@ serve(async (req) => {
   }
 
   try {
+    // Exige admin/owner autenticado
+    const auth = await requireAdmin(req, corsHeaders);
+    if (!auth.ok) return auth.response;
+    const userId = auth.userId;
+
     const { messages } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
@@ -44,8 +50,6 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    const userId = await getUserIdFromRequest(req);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

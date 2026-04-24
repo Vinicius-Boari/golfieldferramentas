@@ -1,7 +1,8 @@
 // Edge function: gera prompts otimizados (vídeo, imagem cinematográfica, anúncios, etc)
 // usando GPT-5 / Gemini Pro via Lovable AI Gateway
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { checkAiBudget, logAiUsage, getUserIdFromRequest, COST_BY_FEATURE } from "../_shared/ai-budget.ts";
+import { checkAiBudget, logAiUsage, COST_BY_FEATURE } from "../_shared/ai-budget.ts";
+import { requireAdmin } from "../_shared/require-admin.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -58,6 +59,11 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // Exige admin/owner autenticado
+    const auth = await requireAdmin(req, corsHeaders);
+    if (!auth.ok) return auth.response;
+    const userId = auth.userId;
+
     const { idea, kind } = await req.json();
     if (!idea || typeof idea !== "string") {
       return new Response(JSON.stringify({ error: "Ideia obrigatória" }), {
@@ -78,8 +84,6 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    const userId = await getUserIdFromRequest(req);
-
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
