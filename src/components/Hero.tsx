@@ -1,10 +1,10 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Wrench, Shield, Truck, Zap, Package, Search } from "lucide-react";
+import { ArrowRight, Wrench, Shield, Truck, Zap, Package } from "lucide-react";
 import { products } from "@/data/products";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMobileMotionEnabled } from "@/hooks/useMobileMotion";
-import { chatBus } from "@/lib/chatBus";
+
 
 const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
