@@ -102,8 +102,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
         style={{ backgroundColor: scrolled ? headerBgScrolled : headerBg }}
         data-edit-id="header.bar"
       >
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-3 md:gap-4">
+        <div className="container mx-auto px-3 sm:px-4 py-3">
+          <div className="flex items-center justify-between gap-2 md:gap-4">
             <motion.a
               href="/"
               className="flex-shrink-0 group"
@@ -118,7 +118,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 height="56"
                 fetchPriority="high"
                 decoding="async"
-                className="h-11 sm:h-12 md:h-14 w-auto rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
+                className="h-9 sm:h-12 md:h-14 w-auto rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
                 data-edit-id="header.logo"
               />
             </motion.a>
