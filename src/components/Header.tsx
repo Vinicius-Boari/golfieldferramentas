@@ -102,8 +102,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
         style={{ backgroundColor: scrolled ? headerBgScrolled : headerBg }}
         data-edit-id="header.bar"
       >
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-3 md:gap-4">
+        <div className="container mx-auto px-3 sm:px-4 py-3">
+          <div className="flex items-center justify-between gap-2 md:gap-4">
             <motion.a
               href="/"
               className="flex-shrink-0 group"
@@ -118,7 +118,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 height="56"
                 fetchPriority="high"
                 decoding="async"
-                className="h-11 sm:h-12 md:h-14 w-auto rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
+                className="h-9 sm:h-12 md:h-14 w-auto rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
                 data-edit-id="header.logo"
               />
             </motion.a>
@@ -190,7 +190,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               />
             </div>
 
-            <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+            <div className="flex items-center gap-0.5 sm:gap-1.5 shrink-0">
               <motion.a
                 href="https://www.instagram.com/golfield.ferramentas/"
                 target="_blank"
@@ -219,7 +219,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 onClick={() => setIsOpen(true)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative p-2 sm:p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
+                className="relative p-1.5 sm:p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-300"
               >
                 <ShoppingCart size={20} className="text-primary-foreground" />
                 {totalItems > 0 && (
@@ -235,7 +235,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               </motion.button>
 
               <button
-                className="md:hidden p-2 sm:p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                className="md:hidden p-1.5 sm:p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Abrir menu"
               >
