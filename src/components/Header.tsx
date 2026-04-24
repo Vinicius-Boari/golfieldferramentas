@@ -256,16 +256,6 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 className="md:hidden mt-3 overflow-hidden"
               >
                 <div className="space-y-3 pb-2">
-                  <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-                    <input
-                      type="text"
-                      placeholder="Buscar ferramentas..."
-                      className="search-input pl-11 text-sm"
-                      value={searchQuery}
-                      onChange={e => onSearchChange(e.target.value)}
-                    />
-                  </div>
                   <div className="flex flex-col gap-1 text-sm">
                     {[
                       { label: "Sobre Nós", target: "sobre" },
