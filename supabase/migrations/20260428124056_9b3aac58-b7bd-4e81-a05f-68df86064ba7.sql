@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Public can read ai usage" ON public.ai_usage_log;
