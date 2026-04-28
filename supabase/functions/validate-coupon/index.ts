@@ -156,10 +156,58 @@ Deno.serve(async (req) => {
         return json({ success: false, reason: "Usuário não autenticado" }, 401);
       }
 
-      const { coupon_id, discount_amount } = body;
+      const { coupon_id } = body;
       if (!coupon_id) {
         return json({ success: false, reason: "Dados inválidos" }, 400);
       }
+
+      // Re-fetch coupon and recalculate discount server-side — never trust client value
+      const { data: coupon, error: couponErr } = await adminClient
+        .from("coupons")
+        .select("*")
+        .eq("id", coupon_id)
+        .maybeSingle();
+
+      if (couponErr || !coupon) {
+        return json({ success: false, reason: "Cupom inválido" }, 400);
+      }
+
+      // Recompute eligible total
+      let eligibleTotal = order_total || 0;
+      if (cart_items && Array.isArray(cart_items) && coupon.applies_to !== "all") {
+        eligibleTotal = 0;
+        for (const item of cart_items) {
+          let eligible = true;
+          if (coupon.applies_to === "products" && coupon.product_ids?.length > 0) {
+            eligible = coupon.product_ids.includes(item.product_id);
+          } else if (coupon.applies_to === "categories" && coupon.category_ids?.length > 0) {
+            eligible = coupon.category_ids.includes(item.category);
+          }
+          if (coupon.exclude_product_ids?.length > 0 && coupon.exclude_product_ids.includes(item.product_id)) {
+            eligible = false;
+          }
+          if (coupon.exclude_category_ids?.length > 0 && coupon.exclude_category_ids.includes(item.category)) {
+            eligible = false;
+          }
+          if (eligible) {
+            eligibleTotal += (item.price || 0) * (item.quantity || 0);
+          }
+        }
+      }
+
+      // Recompute discount
+      let serverDiscount = 0;
+      if (coupon.discount_type === "percentage") {
+        serverDiscount = eligibleTotal * (Number(coupon.discount_value) / 100);
+        if (coupon.max_discount !== null && serverDiscount > Number(coupon.max_discount)) {
+          serverDiscount = Number(coupon.max_discount);
+        }
+      } else {
+        serverDiscount = Number(coupon.discount_value);
+      }
+      serverDiscount = Math.min(serverDiscount, Math.max(eligibleTotal, 0));
+      if (!Number.isFinite(serverDiscount) || serverDiscount < 0) serverDiscount = 0;
+      serverDiscount = Math.round(serverDiscount * 100) / 100;
 
       // Increment times_used
       const { error: updateError } = await adminClient.rpc("increment_coupon_usage", { _coupon_id: coupon_id });
@@ -172,14 +220,14 @@ Deno.serve(async (req) => {
           .eq("id", coupon_id);
       }
 
-      // Record usage
+      // Record usage with server-derived discount value
       const { error: insertError } = await adminClient
         .from("coupon_usage")
         .insert({
           coupon_id,
           user_id: userId,
           order_total: order_total || 0,
-          discount_amount: discount_amount || 0,
+          discount_amount: serverDiscount,
         });
 
       if (insertError) {
