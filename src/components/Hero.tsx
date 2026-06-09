@@ -117,8 +117,9 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
   const { scrollY } = useScroll();
   const isMobile = useIsMobile();
   const motionEnabled = useMobileMotionEnabled();
-  const parallaxY = useTransform(scrollY, [0, 600], [0, isMobile ? 40 : 120]);
-  const toolScale = useTransform(scrollY, [0, 300, 600], [1, 1.18, 0.82]);
+  const parallaxY = useTransform(scrollY, [0, 800], [0, isMobile ? 60 : 180]);
+  const toolScale = useTransform(scrollY, [0, 400, 800], [1, 1.25, 0.75]);
+
   const [videoFailed, setVideoFailed] = React.useState(false);
 
   // On mobile with motion disabled, never render the decorative hero video.
@@ -126,7 +127,8 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
   const overlayEnabled = videoConfig?.overlayEnabled !== false;
   const overlay = Math.min(1, Math.max(0, videoConfig?.overlayOpacity ?? 0.55));
   const overlayColor = videoConfig?.overlayColor || "#000000";
-  const heroBg = backgroundColor || "#1E1E1E";
+  const heroBg = backgroundColor || "#09090b";
+
 
   return (
     <section
@@ -210,7 +212,7 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
                   className="absolute -inset-5 md:-inset-8 bg-gradient-to-br from-primary/15 via-gold/10 to-primary/15 rounded-[2rem] blur-[40px]"
                 />
                 <div className="absolute -inset-[2px] bg-gradient-to-br from-primary/20 via-transparent to-gold/15 rounded-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
-                <img data-edit-id="hero.logo" src={config?.logoImage || "/images/bb415772-a3bf-433b-bd51-77e20e6dbf5f.png"} alt="Golfield" width={512} height={512} fetchPriority="high" decoding="async" className="relative h-28 sm:h-32 md:h-52 lg:h-64 w-auto max-w-full rounded-2xl object-contain shadow-2xl shadow-primary/10 bg-card/40 p-3 sm:p-4 md:p-6 backdrop-blur-sm transition-transform duration-500 group-hover:scale-[1.03]" />
+                <img data-edit-id="hero.logo" src={config?.logoImage || "/images/bb415772-a3bf-433b-bd51-77e20e6dbf5f.png"} alt="Golfield" width={512} height={512} fetchPriority="high" decoding="async" className="relative h-28 sm:h-32 md:h-52 lg:h-64 w-auto max-w-full rounded-2xl object-contain shadow-2xl shadow-primary/20 bg-white/5 p-4 sm:p-6 md:p-8 backdrop-blur-xl border border-white/10 transition-transform duration-700 group-hover:scale-[1.05] group-hover:border-primary/30" />
               </div>
             </motion.div>
 
@@ -225,7 +227,7 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-              className="text-4xl sm:text-5xl md:text-7xl lg:text-7xl xl:text-8xl font-bold leading-[0.92] mb-6 md:mb-8 tracking-tight"
+              className="text-5xl sm:text-6xl md:text-8xl lg:text-8xl xl:text-9xl font-black leading-[0.85] mb-8 md:mb-12 tracking-tighter"
               data-edit-id="hero.title"
             >
               <motion.span data-edit-id="hero.title.line1" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.3 }} className="block text-foreground">{config?.titleLine1 || "Ferramentas"}</motion.span>

@@ -6,53 +6,42 @@
 
 @layer base {
   :root {
-    /* Base background — medium gray, between light and dark (~#5C5C5C ≈ hsl(0 0% 36%)) */
-    --background: 0 0% 36%;
-    --foreground: 0 0% 100%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 14%;
-    --card-foreground: 0 0% 100%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 14%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Brand red — UNCHANGED */
-    --primary: 0 78% 52%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 84.2% 60.2%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 0 0% 18%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 16%;
-    --muted-foreground: 0 0% 100%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
 
-    /* Brand red accent — UNCHANGED */
-    --accent: 0 78% 52%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 22%;
-    --input: 0 0% 22%;
-    --ring: 0 78% 52%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
 
-    --radius: 0.875rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 10%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 0 78% 52%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 16%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 22%;
-    --sidebar-ring: 0 78% 52%;
-
-    --gold: 25 90% 55%;
+    --gold: 45 93% 47%;
     --gold-foreground: 0 0% 100%;
 
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
+
 }
 
 @layer base {
@@ -72,47 +61,48 @@
 
 @layer components {
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(0, 78%, 52%), hsl(0, 78%, 40%));
+    background: linear-gradient(135deg, hsl(0, 84%, 60%), hsl(0, 84%, 45%));
   }
 
   .gradient-dark {
-    background: linear-gradient(180deg, hsl(220, 20%, 5%), hsl(220, 20%, 3%));
+    background: linear-gradient(180deg, hsl(240, 10%, 4%), hsl(240, 10%, 2%));
   }
 
   .gradient-card {
-    background: linear-gradient(145deg, hsl(220, 18%, 9%), hsl(220, 18%, 6%));
+    background: linear-gradient(145deg, hsl(240, 10%, 6%), hsl(240, 10%, 4%));
   }
 
   .text-gradient-gold {
-    background: linear-gradient(135deg, hsl(0, 78%, 55%), hsl(25, 90%, 60%));
+    background: linear-gradient(135deg, hsl(45, 93%, 47%), hsl(45, 93%, 65%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .text-gradient-shine {
-    background: linear-gradient(135deg, hsl(220, 10%, 94%), hsl(220, 10%, 70%), hsl(220, 10%, 94%));
+    background: linear-gradient(135deg, hsl(0, 0%, 100%), hsl(0, 0%, 60%), hsl(0, 0%, 100%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .glow-red {
-    box-shadow: 0 0 40px -8px hsl(0, 78%, 52%, 0.25);
+    box-shadow: 0 0 40px -8px hsl(0, 84%, 60%, 0.3);
   }
 
   .glass {
-    background: hsl(220, 18%, 6%, 0.75);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    background: hsla(240, 10%, 4%, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
   .glass-card {
-    background: hsl(220, 18%, 8%, 0.6);
-    backdrop-filter: blur(16px) saturate(150%);
-    -webkit-backdrop-filter: blur(16px) saturate(150%);
-    border: 1px solid hsl(220, 12%, 18%, 0.5);
+    background: hsla(240, 10%, 6%, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsla(0, 0%, 100%, 0.08);
   }
+
 
   .product-card-hover {
     @apply transition-all duration-500;
@@ -123,68 +113,71 @@
   }
 
   .btn-golfield {
-    @apply inline-flex items-center justify-center gap-2.5 px-7 py-3.5 font-semibold rounded-xl transition-all duration-300;
-    background: linear-gradient(135deg, hsl(0, 78%, 52%), hsl(0, 78%, 42%));
-    color: hsl(0, 0%, 100%);
-    box-shadow: 0 4px 15px -3px hsl(0, 78%, 52%, 0.35);
+    @apply inline-flex items-center justify-center gap-3 px-8 py-4 font-bold rounded-2xl transition-all duration-500;
+    background: linear-gradient(135deg, hsl(0, 84%, 60%), hsl(0, 84%, 50%));
+    color: white;
+    box-shadow: 0 10px 30px -5px hsla(0, 84%, 60%, 0.4);
   }
   .btn-golfield:hover {
-    background: linear-gradient(135deg, hsl(0, 78%, 58%), hsl(0, 78%, 48%));
-    box-shadow: 0 8px 30px -5px hsl(0, 78%, 52%, 0.5);
-    transform: translateY(-2px);
+    background: linear-gradient(135deg, hsl(0, 84%, 65%), hsl(0, 84%, 55%));
+    box-shadow: 0 15px 40px -5px hsla(0, 84%, 60%, 0.6);
+    transform: translateY(-3px);
   }
 
   .btn-outline-golfield {
-    @apply inline-flex items-center justify-center gap-2.5 px-7 py-3.5 font-semibold rounded-xl transition-all duration-300;
-    border: 1.5px solid hsl(220, 12%, 22%);
-    color: hsl(220, 10%, 85%);
-    background: hsl(220, 18%, 8%, 0.5);
-    backdrop-filter: blur(8px);
+    @apply inline-flex items-center justify-center gap-3 px-8 py-4 font-bold rounded-2xl transition-all duration-500;
+    border: 1px solid hsla(0, 0%, 100%, 0.1);
+    color: white;
+    background: hsla(0, 0%, 100%, 0.03);
+    backdrop-filter: blur(12px);
   }
   .btn-outline-golfield:hover {
-    border-color: hsl(0, 78%, 52%);
-    color: hsl(0, 78%, 55%);
-    background: hsl(0, 78%, 52%, 0.08);
+    border-color: hsla(0, 0%, 100%, 0.2);
+    background: hsla(0, 0%, 100%, 0.08);
+    transform: translateY(-3px);
   }
+
 
   .category-chip {
-    @apply px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer whitespace-nowrap;
-    background: hsl(220, 15%, 10%);
-    color: hsl(220, 10%, 60%);
-    border: 1px solid hsl(220, 12%, 16%);
+    @apply px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-500 cursor-pointer whitespace-nowrap;
+    background: hsla(0, 0%, 100%, 0.03);
+    color: hsla(0, 0%, 100%, 0.5);
+    border: 1px solid hsla(0, 0%, 100%, 0.05);
   }
   .category-chip:hover {
-    background: hsl(220, 15%, 14%);
-    color: hsl(220, 10%, 85%);
-    border-color: hsl(220, 12%, 22%);
+    background: hsla(0, 0%, 100%, 0.06);
+    color: hsla(0, 0%, 100%, 0.9);
+    border-color: hsla(0, 0%, 100%, 0.1);
   }
   .category-chip.active {
-    background: hsl(0, 78%, 52%);
+    background: hsl(0, 84%, 60%);
     color: hsl(0, 0%, 100%);
-    border-color: hsl(0, 78%, 52%);
-    box-shadow: 0 4px 15px -3px hsl(0, 78%, 52%, 0.4);
+    border-color: hsl(0, 84%, 60%);
+    box-shadow: 0 10px 20px -5px hsla(0, 84%, 60%, 0.4);
   }
 
+
   .search-input {
-    @apply w-full px-5 py-3.5 rounded-xl text-foreground placeholder:text-muted-foreground transition-all duration-300;
-    background: hsl(220, 15%, 8%);
-    border: 1.5px solid hsl(0, 78%, 52%, 0.4);
+    @apply w-full px-6 py-4 rounded-2xl text-foreground placeholder:text-muted-foreground transition-all duration-500;
+    background: hsla(0, 0%, 100%, 0.03);
+    border: 1px solid hsla(0, 0%, 100%, 0.1);
   }
+
   .search-input:focus {
     outline: none;
-    border-color: hsl(0, 78%, 52%, 0.8);
-    box-shadow: 0 0 0 3px hsl(0, 78%, 52%, 0.12);
-    background: hsl(220, 15%, 9%);
+    border-color: hsla(0, 84%, 60%, 0.5);
+    box-shadow: 0 0 0 4px hsla(0, 84%, 60%, 0.1);
+    background: hsla(0, 0%, 100%, 0.05);
   }
 
   .section-badge {
-    @apply inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold tracking-wider uppercase;
-    background: hsl(0, 78%, 52%, 0.12);
-    color: hsl(0, 78%, 65%);
-    border: 1.5px solid hsl(0, 78%, 52%, 0.25);
-    box-shadow: 0 4px 20px -4px hsl(0, 78%, 52%, 0.25);
-    text-shadow: 0 1px 2px hsl(0, 78%, 52%, 0.3);
+    @apply inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold tracking-[0.2em] uppercase;
+    background: hsla(0, 84%, 60%, 0.1);
+    color: hsl(0, 84%, 65%);
+    border: 1px solid hsla(0, 84%, 60%, 0.2);
+    box-shadow: 0 10px 30px -10px hsla(0, 84%, 60%, 0.3);
   }
+
 
   /* Animated gradient border — rotating red conic flow.
      Uses @property to animate the gradient angle (true rotation around element). */
@@ -264,14 +257,14 @@
 
   .stat-card {
     @apply relative p-6 rounded-2xl overflow-hidden transition-all duration-500;
-    background: linear-gradient(145deg, hsl(220, 18%, 9%), hsl(220, 18%, 6%));
-    border: 1px solid hsl(220, 12%, 14%);
+    background: hsla(0, 0%, 100%, 0.02);
+    border: 1px solid hsla(0, 0%, 100%, 0.05);
   }
   .stat-card::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, hsl(0, 78%, 52%, 0.03), transparent, hsl(25, 90%, 55%, 0.03));
+    background: linear-gradient(135deg, hsla(0, 84%, 60%, 0.05), transparent, hsla(45, 93%, 47%, 0.05));
     opacity: 0;
     transition: opacity 0.5s;
   }
@@ -279,10 +272,11 @@
     opacity: 1;
   }
   .stat-card:hover {
-    border-color: hsl(220, 12%, 20%);
-    transform: translateY(-2px);
-    box-shadow: 0 20px 40px -15px hsl(0, 0%, 0%, 0.3);
+    border-color: hsla(0, 0%, 100%, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
   }
+
 }
 
 /* Custom scrollbar */
@@ -290,15 +284,16 @@
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(220, 20%, 4%);
+  background: black;
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(220, 12%, 20%);
-  border-radius: 3px;
+  background: hsla(0, 0%, 100%, 0.1);
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(0, 78%, 52%);
+  background: hsl(0, 84%, 60%);
 }
+
 
 /* Smooth scrolling */
 html {
@@ -307,6 +302,7 @@ html {
 
 /* Selection color */
 ::selection {
-  background: hsl(0, 78%, 52%, 0.3);
-  color: hsl(0, 0%, 100%);
+  background: hsla(0, 84%, 60%, 0.4);
+  color: white;
 }
+

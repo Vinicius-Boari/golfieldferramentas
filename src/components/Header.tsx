@@ -29,7 +29,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { data: config } = useHomeConfig();
-  const headerBg = config?.appearance?.headerBackgroundColor || DEFAULT_HEADER_BACKGROUND_COLOR;
+  const headerBg = config?.appearance?.headerBackgroundColor || "#09090b";
 
   useEffect(() => {
     let ticking = false;
@@ -94,11 +94,12 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
           scrolled
-            ? "shadow-2xl shadow-background/80 border-b border-border/30 backdrop-blur-md"
+            ? "shadow-2xl shadow-black/80 border-b border-white/5 backdrop-blur-xl"
             : "backdrop-blur-sm"
         }`}
+
         style={{ backgroundColor: scrolled ? headerBgScrolled : headerBg }}
         data-edit-id="header.bar"
       >
@@ -118,7 +119,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 height="56"
                 fetchPriority="high"
                 decoding="async"
-                className="h-9 sm:h-12 md:h-14 w-auto rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
+                className="h-9 sm:h-12 md:h-14 w-auto rounded-lg object-contain transition-all duration-500 group-hover:shadow-xl group-hover:shadow-primary/20 group-hover:scale-105"
                 data-edit-id="header.logo"
               />
             </motion.a>

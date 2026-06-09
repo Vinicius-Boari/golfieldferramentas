@@ -56,9 +56,10 @@ const Footer = ({ config }: FooterProps) => {
   const waPhone = waUrl.includes("wa.me") ? waUrl : "https://wa.me/5511959409051";
 
   return (
-    <footer id="contato" data-edit-id="footer.section" className="relative border-t border-border/50 bg-card/30">
+    <footer id="contato" data-edit-id="footer.section" className="relative border-t border-white/5 bg-black">
       {/* Top accent line */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+
 
       <motion.div
         variants={containerVariants}
@@ -84,22 +85,23 @@ const Footer = ({ config }: FooterProps) => {
                 href={igUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.9 }}
-                className="p-2.5 rounded-xl bg-secondary/60 hover:bg-secondary transition-all duration-300 text-primary-foreground"
+                className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all duration-500 text-foreground"
               >
-                <InstagramIcon size={18} />
+                <InstagramIcon size={20} />
               </motion.a>
               <motion.a
                 href={waPhone}
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.9 }}
-                className="p-2.5 rounded-xl bg-secondary/60 hover:bg-secondary transition-all duration-300 text-primary-foreground"
+                className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all duration-500 text-foreground"
               >
-                <WhatsAppIcon size={18} className="text-primary-foreground" />
+                <WhatsAppIcon size={20} />
               </motion.a>
+
             </div>
           </motion.div>
 
@@ -148,13 +150,14 @@ const Footer = ({ config }: FooterProps) => {
 
         <motion.div
           variants={itemVariants}
-          className="border-t border-border/50 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground"
+          className="border-t border-white/5 mt-16 pt-10 flex flex-col md:flex-row items-center justify-between gap-6 text-[11px] font-medium tracking-wide text-muted-foreground/60"
         >
-          <p className="text-primary-foreground">© {new Date().getFullYear()} Golfield. Todos os direitos reservados.</p>
-          <Link to="/admin/login" className="transition-colors cursor-pointer text-[10px] text-primary-foreground">
-            Painel
+          <p>© {new Date().getFullYear()} GOLFIELD. ALL RIGHTS RESERVED.</p>
+          <Link to="/admin/login" className="transition-all hover:text-primary uppercase tracking-widest px-4 py-2 rounded-lg bg-white/5 border border-white/5">
+            Admin Panel
           </Link>
-          <p className="text-primary-foreground">Os valores são exclusivos para compras por atacado.</p>
+          <p className="uppercase">Exclusive wholesale pricing.</p>
+
         </motion.div>
       </motion.div>
     </footer>
