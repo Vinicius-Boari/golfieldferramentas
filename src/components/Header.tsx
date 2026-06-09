@@ -29,7 +29,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { data: config } = useHomeConfig();
-  const headerBg = config?.appearance?.headerBackgroundColor || DEFAULT_HEADER_BACKGROUND_COLOR;
+  const headerBg = config?.appearance?.headerBackgroundColor || "#09090b";
 
   useEffect(() => {
     let ticking = false;
@@ -118,7 +118,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 height="56"
                 fetchPriority="high"
                 decoding="async"
-                className="h-9 sm:h-12 md:h-14 w-auto rounded-lg object-contain transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/10"
+                className="h-9 sm:h-12 md:h-14 w-auto rounded-lg object-contain transition-all duration-500 group-hover:shadow-xl group-hover:shadow-primary/20 group-hover:scale-105"
                 data-edit-id="header.logo"
               />
             </motion.a>

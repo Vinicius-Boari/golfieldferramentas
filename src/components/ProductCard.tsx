@@ -51,7 +51,7 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
       style={isMobile ? undefined : { rotateX: springRotateX, rotateY: springRotateY, transformPerspective: 800 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className={`group relative rounded-2xl border border-border/60 bg-card overflow-hidden transition-all duration-500 hover:border-primary/30 hover:shadow-[0_25px_60px_-15px_hsl(0,78%,52%,0.12)] ${product.badge === "Mais Vendido" ? "gradient-border-animated" : ""}`}
+      className={`group relative rounded-2xl border border-white/5 bg-zinc-900/50 backdrop-blur-sm overflow-hidden transition-all duration-700 hover:border-primary/40 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] ${product.badge === "Mais Vendido" ? "gradient-border-animated" : ""}`}
     >
       <motion.div
         className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
@@ -155,7 +155,7 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center bg-secondary/60 rounded-lg overflow-hidden border border-border/40 shrink-0">
+          <div className="flex items-center bg-zinc-800/80 rounded-xl overflow-hidden border border-white/5 shrink-0">
             <motion.button
               whileTap={{ scale: 0.75 }}
               whileHover={isMobile ? undefined : { backgroundColor: "hsl(220,15%,15%)" }}
