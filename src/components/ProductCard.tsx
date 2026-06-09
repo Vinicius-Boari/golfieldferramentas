@@ -60,7 +60,7 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
         }}
       />
 
-      <div className="relative aspect-square bg-secondary/20 flex items-center justify-center overflow-hidden">
+      <div className="relative aspect-square bg-zinc-800/30 flex items-center justify-center overflow-hidden">
         {product.badge && (
           <motion.span
             initial={{ x: -30, opacity: 0 }}
@@ -200,14 +200,15 @@ const ProductCardImpl = ({ product, index }: ProductCardProps) => {
           </div>
           <motion.button
             onClick={handleAdd}
-            whileHover={{ scale: 1.04, y: -1 }}
-            whileTap={{ scale: 0.95 }}
-            className={`flex-1 min-w-0 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-400 ${
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className={`flex-1 min-w-0 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-500 ${
               added
-                ? "bg-[hsl(142,70%,45%)] text-primary-foreground shadow-lg shadow-[hsl(142,70%,45%,0.3)]"
-                : "bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/25"
+                ? "bg-green-600 text-white shadow-[0_0_20px_rgba(22,163,74,0.4)]"
+                : "bg-primary text-white hover:shadow-[0_0_30px_rgba(239,68,68,0.3)]"
             }`}
           >
+
             {added ? (
               <>
                 <motion.span initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300 }}>

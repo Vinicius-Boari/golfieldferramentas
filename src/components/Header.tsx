@@ -94,11 +94,12 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
           scrolled
-            ? "shadow-2xl shadow-background/80 border-b border-border/30 backdrop-blur-md"
+            ? "shadow-2xl shadow-black/80 border-b border-white/5 backdrop-blur-xl"
             : "backdrop-blur-sm"
         }`}
+
         style={{ backgroundColor: scrolled ? headerBgScrolled : headerBg }}
         data-edit-id="header.bar"
       >

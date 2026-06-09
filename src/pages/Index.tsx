@@ -242,9 +242,10 @@ const IndexContent = () => {
             <div className="container mx-auto px-4">
               <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12 sm:mb-16">
                 <motion.span data-edit-id="products.badge" variants={scaleIn} className="section-badge mb-6 inline-flex">{pc?.badge}</motion.span>
-                <motion.h2 data-edit-id="products.title" variants={fadeSlideUp} className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-4">
+                <motion.h2 data-edit-id="products.title" variants={fadeSlideUp} className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter mb-6">
                   {pc?.title}{" "}<span className="text-gradient-gold">{pc?.titleHighlight}</span>
                 </motion.h2>
+
                 <motion.p data-edit-id="products.subtitle" variants={fadeSlideUp} className="text-muted-foreground max-w-md mx-auto text-base px-2">{pc?.subtitle}</motion.p>
               </motion.div>
 

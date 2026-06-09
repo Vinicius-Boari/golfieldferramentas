@@ -117,8 +117,9 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
   const { scrollY } = useScroll();
   const isMobile = useIsMobile();
   const motionEnabled = useMobileMotionEnabled();
-  const parallaxY = useTransform(scrollY, [0, 600], [0, isMobile ? 40 : 120]);
-  const toolScale = useTransform(scrollY, [0, 300, 600], [1, 1.18, 0.82]);
+  const parallaxY = useTransform(scrollY, [0, 800], [0, isMobile ? 60 : 180]);
+  const toolScale = useTransform(scrollY, [0, 400, 800], [1, 1.25, 0.75]);
+
   const [videoFailed, setVideoFailed] = React.useState(false);
 
   // On mobile with motion disabled, never render the decorative hero video.
@@ -226,7 +227,7 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-              className="text-4xl sm:text-5xl md:text-7xl lg:text-7xl xl:text-8xl font-bold leading-[0.92] mb-6 md:mb-8 tracking-tight"
+              className="text-5xl sm:text-6xl md:text-8xl lg:text-8xl xl:text-9xl font-black leading-[0.85] mb-8 md:mb-12 tracking-tighter"
               data-edit-id="hero.title"
             >
               <motion.span data-edit-id="hero.title.line1" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.3 }} className="block text-foreground">{config?.titleLine1 || "Ferramentas"}</motion.span>
