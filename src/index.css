@@ -165,19 +165,19 @@
 
   .search-input:focus {
     outline: none;
-    border-color: hsl(0, 78%, 52%, 0.8);
-    box-shadow: 0 0 0 3px hsl(0, 78%, 52%, 0.12);
-    background: hsl(220, 15%, 9%);
+    border-color: hsla(0, 84%, 60%, 0.5);
+    box-shadow: 0 0 0 4px hsla(0, 84%, 60%, 0.1);
+    background: hsla(0, 0%, 100%, 0.05);
   }
 
   .section-badge {
-    @apply inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold tracking-wider uppercase;
-    background: hsl(0, 78%, 52%, 0.12);
-    color: hsl(0, 78%, 65%);
-    border: 1.5px solid hsl(0, 78%, 52%, 0.25);
-    box-shadow: 0 4px 20px -4px hsl(0, 78%, 52%, 0.25);
-    text-shadow: 0 1px 2px hsl(0, 78%, 52%, 0.3);
+    @apply inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold tracking-[0.2em] uppercase;
+    background: hsla(0, 84%, 60%, 0.1);
+    color: hsl(0, 84%, 65%);
+    border: 1px solid hsla(0, 84%, 60%, 0.2);
+    box-shadow: 0 10px 30px -10px hsla(0, 84%, 60%, 0.3);
   }
+
 
   /* Animated gradient border — rotating red conic flow.
      Uses @property to animate the gradient angle (true rotation around element). */
@@ -284,15 +284,16 @@
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(220, 20%, 4%);
+  background: black;
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(220, 12%, 20%);
-  border-radius: 3px;
+  background: hsla(0, 0%, 100%, 0.1);
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(0, 78%, 52%);
+  background: hsl(0, 84%, 60%);
 }
+
 
 /* Smooth scrolling */
 html {
@@ -301,6 +302,7 @@ html {
 
 /* Selection color */
 ::selection {
-  background: hsl(0, 78%, 52%, 0.3);
-  color: hsl(0, 0%, 100%);
+  background: hsla(0, 84%, 60%, 0.4);
+  color: white;
 }
+
