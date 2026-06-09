@@ -107,10 +107,10 @@ const SplashRotatingText = ({ config, align, variant = "caption", onAllShown }: 
 
   const sizeClass =
     variant === "title"
-      ? "text-3xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight"
+      ? "text-4xl sm:text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter"
       : variant === "subtitle"
       ? "text-lg sm:text-2xl md:text-3xl font-medium leading-relaxed"
-      : "text-base sm:text-xl md:text-2xl font-medium leading-relaxed";
+      : "text-lg sm:text-2xl md:text-3xl font-semibold leading-relaxed tracking-tight opacity-80";
 
   if (config.effect === "fade") {
     const current = phrases[index] ?? "";
