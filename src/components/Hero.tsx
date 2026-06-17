@@ -4,6 +4,7 @@ import { ArrowRight, Wrench, Shield, Truck, Zap, Package } from "lucide-react";
 import { products } from "@/data/products";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMobileMotionEnabled } from "@/hooks/useMobileMotion";
+import InkReveal from "@/components/ui/ink-reveal";
 
 
 const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
@@ -197,7 +198,14 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
         className="absolute -bottom-32 right-0 w-[500px] h-[500px] bg-gold rounded-full blur-[180px]"
       />
 
+      {!isMobile && (
+        <div className="absolute inset-0 z-[2] pointer-events-auto hidden md:block" aria-hidden="true">
+          <InkReveal maskColor={[9, 9, 11]} brushSize={140} />
+        </div>
+      )}
+
       <motion.div style={{ y: parallaxY }} className="container mx-auto px-4 relative z-10">
+
         <div className="max-w-3xl mx-auto lg:mx-0">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
