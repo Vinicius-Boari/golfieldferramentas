@@ -204,7 +204,7 @@ const Hero = ({ config, videoConfig, backgroundColor, sectionTransition }: HeroP
         </div>
       )}
 
-      <motion.div style={{ y: parallaxY }} className="container mx-auto px-4 relative z-10">
+      <motion.div style={{ y: parallaxY }} className="container mx-auto px-4 relative z-10 pointer-events-none [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
 
         <div className="max-w-3xl mx-auto lg:mx-0">
             <motion.div
