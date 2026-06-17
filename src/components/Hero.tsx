@@ -4,6 +4,7 @@ import { ArrowRight, Wrench, Shield, Truck, Zap, Package } from "lucide-react";
 import { products } from "@/data/products";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMobileMotionEnabled } from "@/hooks/useMobileMotion";
+import InkReveal from "@/components/ui/ink-reveal";
 
 
 const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
